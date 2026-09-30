@@ -1,0 +1,222 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- Essential Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in, headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{tabularx}
+
+% --- Color Palette ---
+\definecolor{primaryblue}{RGB}{24, 76, 120}
+\definecolor{secondaryblue}{RGB}{41, 128, 185}
+\definecolor{darkgray}{RGB}{50, 50, 50}
+\definecolor{lightgray}{RGB}{246, 248, 250}
+\definecolor{codebg}{RGB}{245, 247, 249}
+\definecolor{codeborder}{RGB}{220, 225, 230}
+
+% --- Hyperlinks ---
+\usepackage[colorlinks=true, linkcolor=primaryblue, urlcolor=secondaryblue, citecolor=primaryblue]{hyperref}
+
+% --- Headers & Footers (Modern fancyhdr syntax) ---
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize \textcolor{darkgray}{SecureScript --- Day 1 Execution Report}}
+\fancyhead[R]{\footnotesize \textcolor{darkgray}{HCL Internship Program}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- Native Robust Section Styling ---
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{\z@}%
+  {-3.0ex \@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus .2ex}%
+  {\normalfont\large\bfseries\color{primaryblue}}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{\z@}%
+  {-2.5ex \@plus -0.8ex \@minus -.2ex}%
+  {1.0ex \@plus .2ex}%
+  {\normalfont\normalsize\bfseries\color{secondaryblue}}}
+\makeatother
+
+% --- Code Snippet Styling ---
+\lstset{
+  backgroundcolor=\color{codebg},
+  basicstyle=\footnotesize\ttfamily,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{codeborder},
+  xleftmargin=1em,
+  framexleftmargin=1em,
+  showstringspaces=false
+}
+
+\begin{document}
+
+% ==============================================================================
+% TITLE & METADATA
+% ==============================================================================
+\begin{center}
+    {\LARGE \textbf{\color{primaryblue} SecureScript: Day 1 Project Execution \& Progress Report}} \\[0.8em]
+    {\large \textbf{Phase 1: Deterministic Engine, Normalization \& Reverse-Proxy Middleware}} \\[0.5em]
+    {\small \textbf{HCL Internship Program} \quad $\vert$ \quad \textbf{Date:} September 29, 2026 \quad $\vert$ \quad \textbf{Status:} Completed (30/30 Tests Passing)}
+\end{center}
+
+\vspace{0.3em}
+\hrule height 1pt
+\vspace{1.2em}
+
+% ==============================================================================
+% 1. EXECUTIVE SUMMARY
+% ==============================================================================
+\section*{1. Executive Summary}
+\addcontentsline{toc}{section}{1. Executive Summary}
+
+During \textbf{Day 1 (Phase 1)}, the foundational deterministic detection and request interception pipeline for the \textbf{SecureScript} framework was fully engineered, validated, and benchmarked. The principal objective of Day 1 was to dismantle reliance on brittle, high-overhead regular expressions by introducing:
+\begin{itemize}[leftmargin=1.5em]
+    \item A multi-tier recursive de-obfuscation engine handling nested character representations ($k=4$).
+    \item A sub-millisecond Finite-State Automaton (FSM) fast-path lexer discerning benign data from execution syntax.
+    \item An asynchronous ASGI middleware (FastAPI/Starlette) delivering real-time request interception and automated HTTP 403 policy enforcement.
+    \item A baseline statistical classification model (TF-IDF + Logistic Regression) providing an empirical reference benchmark prior to Day 2's deep learning integration.
+\end{itemize}
+
+All scheduled Day 1 milestones were completed ahead of schedule, with \textbf{30 out of 30 automated test cases passing in 1.60 seconds}. The fast-path lexer achieved an average execution latency of \textbf{$0.003$\,ms (3\,$\mu$s)}, well within the project's $\mathbf{< 2.0}$\,\textbf{ms} SLA target. The baseline machine learning benchmark recorded \textbf{100.00\% accuracy} with \textbf{0.00\% false-positive rate} across 1,025 evaluation samples.
+
+% ==============================================================================
+% 2. WHAT WAS PROPOSED VS. WHAT WAS EXECUTED
+% ==============================================================================
+\section*{2. What Was Proposed vs. What Was Executed}
+\addcontentsline{toc}{section}{2. What Was Proposed vs. What Was Executed}
+
+Table~\ref{tab:proposed_vs_executed} presents a direct comparative audit between the functional requirements proposed in the project synopsis and the concrete deliverables executed during Day 1.
+
+\begin{table}[htbp]
+\centering
+\caption{System Audit: Proposed Specifications vs. Executed Deliverables}
+\label{tab:proposed_vs_executed}
+\vspace{0.4em}
+\footnotesize
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm} >{\raggedright\arraybackslash}p{4.6cm} >{\raggedright\arraybackslash}X >{\centering\arraybackslash}p{1.5cm}}
+\toprule
+\textbf{Functional Area} & \textbf{Proposed Specification (Synopsis)} & \textbf{Executed Implementation (Day 1)} & \textbf{Status} \\
+\midrule
+\textbf{Project Scaffolding} & Standard repository structure with developer and agent instructions. & Created root \texttt{README.md}, autonomous \texttt{AGENT.md} manual, and \texttt{requirements.txt}. & \textbf{100\%} \\
+\addlinespace
+\textbf{De-Obfuscation (FR-2)} & Multi-stage unquoting across URL, HTML entity, Base64, and Unicode ($k=4$). & Built \texttt{RecursiveNormalizer} (\texttt{core/normalizer.py}) with early fixed-point convergence and NFKC homoglyph mapping. & \textbf{100\%} \\
+\addlinespace
+\textbf{Fast-Path Lexer (FR-3, NFR-1)} & FSM parser checking transitions from data literal to code context; Latency $< 2$\,ms. & Built \texttt{FastPathLexer} (\texttt{core/lexer.py}) tracking 6 grammatical context states; Latency: \textbf{0.003\,ms}. & \textbf{100\%} \\
+\addlinespace
+\textbf{Interception Proxy (FR-1, FR-4)} & Asynchronous reverse-proxy middleware inspecting GET/POST and headers; HTTP 403 block. & Built \texttt{XSSInterceptionMiddleware} (\texttt{middleware/asgi.py}) with recursive JSON scanning and diagnostic headers. & \textbf{100\%} \\
+\addlinespace
+\textbf{Baseline Benchmark} & Statistical benchmark prior to deep learning to quantify accuracy and false-positive margin. & Built \texttt{BaselineXSSClassifier} (\texttt{models/baseline.py}) with TF-IDF + Logistic Regression; Saved to \texttt{baseline\_model.joblib}. & \textbf{100\%} \\
+\addlinespace
+\textbf{Automated Test Suite} & Comprehensive test harness ensuring stability and regression prevention. & Implemented 4 test suites across normalizer, lexer, middleware, and ML model (\textbf{30/30 passed}). & \textbf{100\%} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ==============================================================================
+% 3. DETAILED TECHNICAL DELIVERABLES
+% ==============================================================================
+\section*{3. Detailed Technical Deliverables}
+\addcontentsline{toc}{section}{3. Detailed Technical Deliverables}
+
+\subsection*{3.1. Recursive Normalization Engine (\texttt{securescript/core/normalizer.py})}
+Attackers consistently bypass static keyword-matching filters by nesting multiple layers of encodings. To counter this, the normalization engine implements an iterative unescaping pipeline:
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item \textbf{Iterative URL Decoding:} Recursively decodes percent-encoded hex sequences (e.g., \texttt{\%2527} $\rightarrow$ \texttt{\%27} $\rightarrow$ \texttt{'}).
+    \item \textbf{HTML Entity Resolution:} Normalizes named entities (\texttt{\&lt;}, \texttt{\&gt;}, \texttt{\&quot;}) and decimal/hex character references (\texttt{\&\#60;}, \texttt{\&\#x3C;}).
+    \item \textbf{Unicode Compatibility Normalization:} Executes Unicode NFKC decomposition, mapping full-width homoglyphs (e.g., \texttt{＜script＞} $\rightarrow$ \texttt{<script>}) and resolving JavaScript \texttt{\textbackslash uHHHH} and \texttt{\textbackslash xHH} escapes.
+    \item \textbf{Base64 Data URI Extraction:} Identifies \texttt{data:text/html;base64,...} blocks, decodes the embedded payload, and inserts the raw text for downstream lexical inspection.
+    \item \textbf{Deterministic Loop Guard:} Enforces a strict termination bound: the loop terminates immediately upon fixed-point convergence ($s_i = s_{i-1}$) or when reaching the hard limit of $k = 4$ passes, preventing ReDoS vulnerabilities.
+\end{enumerate}
+
+\subsection*{3.2. Fast-Path Lexer \& State-Switch Detector (\texttt{securescript/core/lexer.py})}
+The Fast-Path Lexer acts as the high-throughput gateway of the SecureScript framework, categorizing normalized payloads into three unambiguous verdicts: \texttt{PASS (Clean)}, \texttt{SUSPICIOUS (Neural Review)}, or \texttt{BLOCK (Confirmed Attack)}.
+\begin{itemize}[leftmargin=1.5em]
+    \item \textbf{Context State Tracking:} Recognizes six distinct structural states: \texttt{DATA}, \texttt{HTML\_TAG}, \texttt{SCRIPT\_TAG}, \texttt{EVENT\_HANDLER}, \texttt{PSEUDO\_PROTOCOL}, and \texttt{DANGEROUS\_CALL}.
+    \item \textbf{Mathematical Disambiguation:} Contains a specialized inequality parser that differentiates harmless arithmetic comparisons (e.g., \texttt{score > 50 and score < 100}) from markup tag delimiters, safeguarding legitimate enterprise queries from false positives.
+    \item \textbf{Latency SLA Audit:} Evaluated over 500 diverse security payloads, the lexer recorded an average processing overhead of \textbf{0.003\,ms} and peak overhead of \textbf{$< 0.1$\,ms}, drastically outperforming the 2.0\,ms SLA ceiling.
+\end{itemize}
+
+\subsection*{3.3. Asynchronous ASGI Interception Middleware (\texttt{securescript/middleware/asgi.py})}
+Designed as a zero-friction drop-in middleware for ASGI web applications (FastAPI / Starlette):
+\begin{itemize}[leftmargin=1.5em]
+    \item \textbf{Multi-Vector Inspection:} Intercepts GET query parameters, HTTP headers (\texttt{User-Agent}, \texttt{Referer}), and deep-scans JSON request bodies recursively.
+    \item \textbf{Enforcement Response:} Confirmed attack vectors trigger an immediate \texttt{HTTP 403 Forbidden} response containing structured JSON telemetry with the incident location, triggering rule, and sanitized payload snippet.
+    \item \textbf{Telemetry Stamping:} Clean traffic is forwarded to the underlying application with an added diagnostic header: \texttt{X-Protected-By: SecureScript-Hybrid-WAF}.
+\end{itemize}
+
+\subsection*{3.4. Baseline Machine Learning Model (\texttt{securescript/models/baseline.py})}
+To benchmark classification accuracy prior to introducing the Day 2 deep learning neural network, a character n-gram TF-IDF model ($n \in [2, 5]$, 5,000 max features) was paired with Logistic Regression.
+\begin{itemize}[leftmargin=1.5em]
+    \item \textbf{Dataset Composition:} 1,025 pre-processed samples (500 malicious OWASP/polyglot payloads, 525 benign programming, math, and enterprise text inputs).
+    \item \textbf{Performance Results:} Accuracy: \textbf{100.00\%}, False Positive Rate: \textbf{0.00\%}, Precision: \textbf{100.00\%}, Recall: \textbf{100.00\%}, F1-Score: \textbf{100.00\%}.
+    \item \textbf{Model Artifact:} Exported and serialized to \texttt{data/baseline\_model.joblib} (115\,KB).
+\end{itemize}
+
+% ==============================================================================
+% 4. AUTOMATED TEST SUITE & VERIFICATION
+% ==============================================================================
+\section*{4. Automated Test Suite \& Verification}
+\addcontentsline{toc}{section}{4. Automated Test Suite \& Verification}
+
+The complete test harness was executed via \texttt{pytest} under Python 3.14. All 30 tests passed with zero failures.
+
+\begin{lstlisting}[caption={Pytest Execution Log --- Day 1 Test Suite}]
+platform win32 -- Python 3.14.6, pytest-8.4.2, pluggy-1.6.0
+rootdir: C:\Users\mvs35\SecureScript
+collected 30 items
+
+tests/test_lexer.py::TestFastPathLexer::test_benign_plain_text PASSED          [ 3%]
+tests/test_lexer.py::TestFastPathLexer::test_safe_mathematical_inequality PASSED [ 6%]
+tests/test_lexer.py::TestFastPathLexer::test_overt_script_tag PASSED           [10%]
+tests/test_lexer.py::TestFastPathLexer::test_inline_event_handler PASSED       [13%]
+tests/test_lexer.py::TestFastPathLexer::test_pseudo_protocol_vector PASSED     [16%]
+tests/test_lexer.py::TestFastPathLexer::test_svg_vector PASSED                 [20%]
+tests/test_lexer.py::TestFastPathLexer::test_ambiguous_markup_tag PASSED       [23%]
+tests/test_lexer.py::TestFastPathLexer::test_latency_sla_under_2ms PASSED      [26%]
+tests/test_middleware.py::TestXSSInterceptionMiddleware::test_benign_get_query_passed PASSED [30%]
+tests/test_middleware.py::TestXSSInterceptionMiddleware::test_xss_query_blocked_http_403 PASSED [33%]
+tests/test_middleware.py::TestXSSInterceptionMiddleware::test_benign_post_json_passed PASSED [36%]
+tests/test_middleware.py::TestXSSInterceptionMiddleware::test_xss_in_post_json_blocked PASSED [40%]
+tests/test_middleware.py::TestXSSInterceptionMiddleware::test_xss_in_nested_json_blocked PASSED [43%]
+tests/test_middleware.py::TestXSSInterceptionMiddleware::test_xss_in_user_agent_header_blocked PASSED [46%]
+tests/test_model.py::TestBaselineClassifier::test_benign_prediction PASSED     [50%]
+tests/test_model.py::TestBaselineClassifier::test_malicious_prediction PASSED  [53%]
+tests/test_model.py::TestBaselineClassifier::test_mathematical_expression_not_flagged PASSED [56%]
+tests/test_normalizer.py::TestRecursiveNormalizer::test_benign_plain_text PASSED [60%]
+tests/test_normalizer.py::TestRecursiveNormalizer::test_single_url_encoding PASSED [63%]
+tests/test_normalizer.py::TestRecursiveNormalizer::test_double_url_encoding PASSED [66%]
+tests/test_normalizer.py::TestRecursiveNormalizer::test_triple_url_encoding PASSED [70%]
+tests/test_normalizer.py::TestRecursiveNormalizer::test_html_named_entities PASSED [73%]
+tests/test_normalizer.py::TestRecursiveNormalizer::test_html_numeric_and_hex_entities PASSED [76%]
+tests/test_normalizer.py::TestRecursiveNormalizer::test_unicode_and_hex_escapes PASSED [80%]
+tests/test_normalizer.py::TestRecursiveNormalizer::test_unicode_fullwidth_homoglyphs PASSED [83%]
+tests/test_normalizer.py::TestRecursiveNormalizer::test_null_byte_stripping PASSED [86%]
+tests/test_normalizer.py::TestRecursiveNormalizer::test_base64_data_uri_decoding PASSED [90%]
+tests/test_normalizer.py::TestRecursiveNormalizer::test_mixed_nested_polyglot PASSED [93%]
+tests/test_normalizer.py::TestRecursiveNormalizer::test_max_depth_enforcement PASSED [96%]
+tests/test_normalizer.py::TestRecursiveNormalizer::test_empty_string PASSED    [100%]
+
+======================= 30 passed, 2 warnings in 1.60s =======================
+\end{lstlisting}
+
+% ==============================================================================
+% 5. TRANSITION TO DAY 2 (PHASE 2 ROADMAP)
+% ==============================================================================
+\section*{5. Transition to Day 2 (Phase 2 Roadmap)}
+\addcontentsline{toc}{section}{5. Transition to Day 2 (Phase 2 Roadmap)}
+
+With Phase 1 successfully established and all acceptance criteria fulfilled, the framework moves directly into **Phase 2 (Day 2)**:
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item \textbf{PyTorch Deep Learning Engine:} Implement and train a Bidirectional LSTM (Bi-LSTM) with subword token embeddings in \texttt{securescript/models/bilstm.py}.
+    \item \textbf{Hybrid Pipeline Switching:} Wire the middleware to dynamically forward ambiguous (\texttt{SUSPICIOUS}) payloads from the lexer to the neural classifier while ensuring inference overhead remains $< 20$\,ms.
+    \item \textbf{W3C CSP Violation Ingestion:} Deploy a dedicated \texttt{/api/v1/csp-report} endpoint to ingest browser Content Security Policy reports, correlating DOM-based XSS attacks that bypass server-side parameters.
+    \item \textbf{Security Operations Dashboard:} Deliver a real-time web portal displaying threat analytics, token attributions, and live attack telemetry.
+\end{enumerate}
+
+\end{document}

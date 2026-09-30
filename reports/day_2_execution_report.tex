@@ -1,0 +1,282 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- Essential Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.8in, headheight=14pt]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{tabularx}
+\usepackage{tcolorbox}
+
+% --- Color Palette ---
+\definecolor{primaryblue}{RGB}{24, 76, 120}
+\definecolor{secondaryblue}{RGB}{41, 128, 185}
+\definecolor{darkgray}{RGB}{50, 50, 50}
+\definecolor{lightgray}{RGB}{248, 250, 252}
+\definecolor{codebg}{RGB}{245, 247, 250}
+\definecolor{codeborder}{RGB}{218, 224, 233}
+
+% --- Hyperlinks ---
+\usepackage[colorlinks=true, linkcolor=primaryblue, urlcolor=secondaryblue, citecolor=primaryblue]{hyperref}
+
+% --- Headers & Footers ---
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize \textcolor{darkgray}{\textbf{SecureScript} --- Daily Execution Report}}
+\fancyhead[R]{\footnotesize \textcolor{darkgray}{HCL Internship Program}}
+\fancyfoot[C]{\footnotesize Page \thepage\ of 3}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- Native Section Styling ---
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{\z@}%
+  {-1.6ex \@plus -0.4ex \@minus -.2ex}%
+  {0.8ex \@plus .2ex}%
+  {\normalfont\large\bfseries\color{primaryblue}}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{\z@}%
+  {-1.2ex \@plus -0.3ex \@minus -.2ex}%
+  {0.5ex \@plus .1ex}%
+  {\normalfont\normalsize\bfseries\color{secondaryblue}}}
+\makeatother
+
+% --- Code Snippet Styling ---
+\lstset{
+  backgroundcolor=\color{codebg},
+  basicstyle=\scriptsize\ttfamily,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{codeborder},
+  xleftmargin=0.6em,
+  framexleftmargin=0.6em,
+  showstringspaces=false
+}
+
+\begin{document}
+
+% ==============================================================================
+% PAGE 1: DEDICATED TO DAY 2 (TODAY'S EXECUTION REPORT)
+% ==============================================================================
+
+% Top Student & Project Information Table
+\noindent
+\begin{tabularx}{\textwidth}{|>{\bfseries\raggedright\arraybackslash}p{2.2cm}|>{\raggedright\arraybackslash}X|>{\bfseries\raggedright\arraybackslash}p{2.3cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{primaryblue!10}
+Name & Manvendra Singh & Roll Number & 2400320100XXX \\
+\hline
+\rowcolor{primaryblue!5}
+Department & Computer Science \& Engineering & Project Title & SecureScript: Real-Time XSS Detection \\
+\hline
+\end{tabularx}
+
+\vspace{0.8em}
+
+\begin{center}
+    {\LARGE \textbf{\color{primaryblue} Day 2 -- Execution Report}} \\[0.25em]
+    {\large \textbf{Phase 1: Deterministic Engine, Normalization \& Reverse-Proxy Deployment}} \\[0.2em]
+    {\footnotesize \textbf{Program:} HCL Internship Program \quad $\vert$ \quad \textbf{Date:} September 29, 2026 \quad $\vert$ \quad \textbf{Status:} Completed (30/30 Tests Passing)}
+\end{center}
+
+\vspace{0.3em}
+\hrule height 1pt
+\vspace{0.8em}
+
+\section*{Today's Execution Summary}
+Today's engineering effort delivered the complete deterministic inspection tier for the \textbf{SecureScript} framework. The multi-stage recursive de-obfuscation engine, the sub-millisecond fast-path lexer, the reverse-proxy ASGI middleware, and the baseline statistical model were fully implemented and validated. All \textbf{30 unit and integration tests passed in 1.60 seconds}, with the fast-path lexer achieving an average latency of \textbf{0.003\,ms} (vastly surpassing the 2.0\,ms SLA).
+
+\section*{Work Completed}
+\begin{itemize}[leftmargin=1.5em, itemsep=1pt]
+    \item \textbf{Repository Scaffolding \& Operating Protocols:} Initialized the \texttt{SecureScript} codebase with root \texttt{README.md} and autonomous \texttt{AGENT.md} operating manual enforcing strict invariants ($k=4$ recursion cap, $< 2$\,ms latency SLA).
+    \item \textbf{Recursive Normalization Engine (\texttt{core/normalizer.py}):} Engineered multi-pass unquoting handling nested URL hex (\texttt{\%2527} $\rightarrow$ \texttt{'}), HTML entities (\texttt{\&lt;}, \texttt{\&\#60;}), Base64 data URIs (\texttt{data:text/html;base64,...}), and Unicode NFKC homoglyph normalization.
+    \item \textbf{Fast-Path Lexer (\texttt{core/lexer.py}):} Developed a Finite-State Automaton tracking 6 grammar states (\texttt{DATA}, \texttt{HTML\_TAG}, \texttt{SCRIPT\_TAG}, \texttt{EVENT\_HANDLER}, \texttt{PSEUDO\_PROTOCOL}, \texttt{DANGEROUS\_CALL}) and built an inequality parser preventing false alarms on mathematical prose (e.g., \texttt{x < y and y > z}).
+    \item \textbf{Asynchronous ASGI Middleware (\texttt{middleware/asgi.py}):} Built FastAPI proxy middleware with recursive JSON scanning, query filtering, and automated \texttt{HTTP 403 Forbidden} enforcement with diagnostic telemetry headers.
+    \item \textbf{Baseline ML Benchmark (\texttt{models/baseline.py}):} Trained character n-gram TF-IDF ($n \in [2, 5]$) + Logistic Regression on 1,025 samples, achieving \textbf{100.00\% accuracy} and \textbf{0.00\% FPR}; saved to \texttt{data/baseline\_model.joblib}.
+\end{itemize}
+
+\section*{Tools / Technologies Used}
+\begin{table}[htbp]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{>{\bfseries\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{3.8cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Category} & \textbf{Tool / Library} & \textbf{Application in SecureScript} \\
+\midrule
+Language \& Runtime & Python 3.14+ (64-bit) & Core asynchronous processing and data pipeline execution \\
+Backend Framework & FastAPI, Starlette, Uvicorn & Asynchronous ASGI interception middleware and demo API \\
+Data Science \& ML & scikit-learn, NumPy, joblib & Character n-gram TF-IDF vectorization and Logistic Regression \\
+Testing Harness & PyTest, PyTest-Asyncio, HTTPX & Automated regression suite and latency SLA profiling \\
+Normalization Libs & urllib, html, unicodedata, re & Zero-overhead recursive decoding ($k=4$) and homoglyph mapping \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\vspace{-0.6em}
+
+\section*{Screenshots / Evidence}
+\begin{lstlisting}[caption={Automated Pytest Execution & Latency SLA Verification Log}]
+rootdir: C:\Users\mvs35\SecureScript | collected 30 items
+tests/test_lexer.py::TestFastPathLexer::test_safe_mathematical_inequality PASSED [ 6%]
+tests/test_lexer.py::TestFastPathLexer::test_overt_script_tag PASSED           [10%]
+tests/test_lexer.py::TestFastPathLexer::test_latency_sla_under_2ms PASSED      [26%]
+tests/test_middleware.py::TestXSSInterceptionMiddleware::test_xss_query_blocked_http_403 PASSED [33%]
+tests/test_middleware.py::TestXSSInterceptionMiddleware::test_xss_in_post_json_blocked PASSED   [40%]
+tests/test_model.py::TestBaselineClassifier::test_benign_prediction PASSED     [50%]
+tests/test_normalizer.py::TestRecursiveNormalizer::test_double_url_encoding PASSED [66%]
+tests/test_normalizer.py::TestRecursiveNormalizer::test_base64_data_uri_decoding PASSED [90%]
+======================= 30 passed, 2 warnings in 1.60s =======================
+Fast-Path Latency: 0.003 ms avg (< 2.0 ms target) | Baseline Accuracy: 100.00% | FPR: 0.00%
+\end{lstlisting}
+
+\vfill
+\begin{center}
+\footnotesize \textcolor{darkgray}{--- End of Day 2 Report $\vert$ Continued on Page 2: Tomorrow's Plan (Day 3) ---}
+\end{center}
+
+\newpage
+% ==============================================================================
+% PAGE 2: DEDICATED TO DAY 3 (TOMORROW'S PLAN)
+% ==============================================================================
+
+\begin{center}
+    {\LARGE \textbf{\color{primaryblue} Day 3 -- Tomorrow's Plan}} \\[0.25em]
+    {\large \textbf{Phase 2: PyTorch Bi-LSTM Deep Learning Engine \& Hybrid Routing}} \\[0.2em]
+    {\footnotesize \textbf{Scheduled Execution Date:} September 30, 2026 \quad $\vert$ \quad \textbf{Sprint Phase:} Phase 2 (Day 3)}
+\end{center}
+
+\vspace{0.3em}
+\hrule height 1pt
+\vspace{0.8em}
+
+\section*{Day 3 Strategic Objective}
+The primary objective for Day 3 is to transition from deterministic pattern analysis to semantic neural classification. Payloads marked as \texttt{SUSPICIOUS} (ambiguous markup or potential polyglots) by the fast-path lexer will be dynamically dispatched to a trained \textbf{Bidirectional LSTM} neural network to generalize across unseen attack mutations with $\ge 98.0\%$ accuracy and $< 20$\,ms latency.
+
+\section*{Detailed Action Plan for Day 3}
+\begin{itemize}[leftmargin=1.5em, itemsep=3pt]
+    \item \textbf{PyTorch Deep Learning Environment Setup:}
+    Install the PyTorch 2.x runtime and configure tokenizer pipelines using subword and character token embeddings to represent raw script fragments without out-of-vocabulary loss.
+    
+    \item \textbf{Bi-LSTM Model Architecture Design (\texttt{models/bilstm.py}):}
+    Construct a Bidirectional LSTM classifier:
+    \begin{itemize}[leftmargin=1.2em, itemsep=1pt]
+        \item Embedding layer: Character-level embedding matrix (dimension: 64).
+        \item Recurrent layer: Bidirectional LSTM with 128 hidden units and dropout (0.3) to capture forward and backward contextual relationships in script syntax.
+        \item Classification Head: Fully connected linear layers with Sigmoid activation outputting an attack probability $\in [0.0, 1.0]$.
+    \end{itemize}
+
+    \item \textbf{Training, Validation \& Convergence Audit:}
+    Train the model on the curated security corpus across 10--15 epochs with Adam optimizer, binary cross-entropy loss, and early stopping. Benchmark against the validation split to verify that accuracy $\ge 98.0\%$ and false-positive rate $\le 1.5\%$.
+
+    \item \textbf{Low-Latency Optimization \& Serialization:}
+    Quantize and export trained model weights to \textbf{TorchScript} and \textbf{ONNX Runtime} formats, verifying that per-sample CPU inference overhead remains strictly $< 20.0$\,ms.
+
+    \item \textbf{Hybrid Pipeline Integration in Middleware (\texttt{middleware/asgi.py}):}
+    Connect the Fast-Path Lexer to the PyTorch classifier:
+    \begin{itemize}[leftmargin=1.2em, itemsep=1pt]
+        \item Clean payloads $\rightarrow$ Immediate \texttt{PASS} ($< 2\,\text{ms}$).
+        \item Suspicious payloads $\rightarrow$ Deep Learning evaluation. If confidence $\ge 0.85$, issue \texttt{BLOCK (HTTP 403)}; otherwise, route to \texttt{PASS / AUDIT}.
+    \end{itemize}
+\end{itemize}
+
+\section*{Day 3 Architecture \& Technology Stack}
+\begin{table}[htbp]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{>{\bfseries\raggedright\arraybackslash}p{3.0cm} >{\raggedright\arraybackslash}p{3.8cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Component} & \textbf{Framework / Model} & \textbf{Engineering Target} \\
+\midrule
+Deep Learning Framework & PyTorch 2.x & Clean tensor graph construction and GPU/CPU training \\
+Neural Architecture & Bidirectional LSTM & Syntactic sequence modeling (128 units, dropout 0.3) \\
+Inference Runtime & TorchScript / ONNX Runtime & Optimized CPU deployment with $< 20$\,ms latency SLA \\
+Vocabulary Engine & HuggingFace Tokenizers & Character-level tokenization preserving symbol delimiters \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section*{Expected Milestones for Day 3}
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+    \item Serialized PyTorch model artifact (\texttt{data/bilstm\_model.pt}) and ONNX graph.
+    \item Automated evaluation test suite (\texttt{tests/test_bilstm.py}) validating $\ge 98\%$ accuracy on zero-day polyglot samples.
+    \item Hybrid routing latency test verifying overall request latency $< 22$\,ms for neural inspection.
+\end{itemize}
+
+\vfill
+\begin{center}
+\footnotesize \textcolor{darkgray}{--- End of Day 3 Plan $\vert$ Continued on Page 3: Day 4 Plan & Final Deliverables ---}
+\end{center}
+
+\newpage
+% ==============================================================================
+% PAGE 3: DEDICATED TO DAY 4 (NEXT DAY'S PLAN & EXPECTED DELIVERABLES)
+% ==============================================================================
+
+\begin{center}
+    {\LARGE \textbf{\color{primaryblue} Day 4 -- Next Day's Plan \& Expected Deliverables}} \\[0.25em]
+    {\large \textbf{Client-Side CSP Telemetry, Operations Portal \& Full-Stack Delivery}} \\[0.2em]
+    {\footnotesize \textbf{Scheduled Execution Date:} October 1, 2026 \quad $\vert$ \quad \textbf{Final Milestone Delivery}}
+\end{center}
+
+\vspace{0.3em}
+\hrule height 1pt
+\vspace{0.8em}
+
+\section*{Detailed Action Plan for Day 4}
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+    \item \textbf{W3C CSP Violation Reporting Endpoint (\texttt{telemetry/csp.py}):}
+    Deploy a dedicated asynchronous endpoint (\texttt{/api/v1/csp-report}) compliant with W3C Reporting API specifications. Parses browser-reported CSP violation payloads (blocked URIs, violated directives, inline script triggers).
+
+    \item \textbf{Client-Side DOM-XSS Correlation Engine:}
+    Correlate browser CSP telemetry with server-side ingress logs to detect and alert on client-side execution sinks (\texttt{innerHTML}, \texttt{eval}, \texttt{document.write}) that never traverse server-side HTTP request parameters.
+
+    \item \textbf{Real-Time Security Operations Dashboard (\texttt{dashboard/app.py}):}
+    Construct an interactive web management console displaying live incident feeds, attack volume distributions, verdict breakdowns (\texttt{PASS}, \texttt{BLOCK}, \texttt{AUDIT}), and token attribution heatmaps.
+
+    \item \textbf{End-to-End Penetration Testing \& Hardening:}
+    Deploy test applications (DVWA and OWASP Juice Shop) behind the SecureScript proxy to validate defense efficacy against real-world attack vectors, polyglots, and nested mutation strategies.
+
+    \item \textbf{Containerized Deployment Package:}
+    Package the full-stack system with \texttt{docker-compose.yml} (FastAPI proxy, PostgreSQL telemetry store, Redis cache, and Dashboard) for one-command deployment.
+\end{itemize}
+
+\section*{Consolidated Expected Deliverables}
+\begin{table}[htbp]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{>{\bfseries\raggedright\arraybackslash}p{2.6cm} >{\raggedright\arraybackslash}p{3.2cm} >{\raggedright\arraybackslash}X >{\centering\arraybackslash}p{1.8cm}}
+\toprule
+\textbf{Deliverable} & \textbf{Component Module} & \textbf{Target Acceptance Criteria} & \textbf{Target Day} \\
+\midrule
+Bi-LSTM Classifier & \texttt{models/bilstm.py} & Accuracy $\ge 98.0\%$, FPR $\le 1.5\%$ & Day 3 \\
+\addlinespace
+Inference Engine & \texttt{TorchScript / ONNX} & Inference Latency $< 20$\,ms (CPU) & Day 3 \\
+\addlinespace
+CSP Telemetry Ingest & \texttt{telemetry/csp.py} & W3C Reporting API Compliance & Day 4 \\
+\addlinespace
+Operations Portal & \texttt{dashboard/app.py} & Live telemetry \& token attribution & Day 4 \\
+\addlinespace
+Container Suite & \texttt{docker-compose.yml} & Single-command full-stack launch & Day 4 \\
+\addlinespace
+Project Thesis & \texttt{Final Report (PDF)} & Complete benchmarks \& documentation & Day 4 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\vspace{1.5em}
+
+\noindent
+\textbf{Summary of Milestone Completion:} Upon completion of Day 4, the SecureScript platform satisfies 100\% of the functional requirements (FR-1 through FR-6) and non-functional requirements (NFR-1 through NFR-4) outlined in the HCL internship specification.
+
+\vspace{2.2em}
+\begin{flushright}
+\begin{tabular}{cc}
+\rule{5.0cm}{0.4pt} & \rule{5.0cm}{0.4pt} \\
+\textbf{Student Signature} & \textbf{Project Mentor / Guide Signature} \\
+\footnotesize (Manvendra Singh) & \footnotesize (HCL Internship Program) \\
+\end{tabular}
+\end{flushright}
+
+\end{document}
