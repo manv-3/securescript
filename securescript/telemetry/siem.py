@@ -122,10 +122,11 @@ class SIEMCollector:
         normalized_payload: str,
         latency_ms: float,
         attack_category: str = "Cross-Site Scripting (XSS)",
-        severity: str = "HIGH"
+        severity: str = "HIGH",
+        event_id: Optional[str] = None
     ) -> SecurityIncidentEvent:
         event = SecurityIncidentEvent(
-            event_id=str(uuid.uuid4()),
+            event_id=event_id or f"RAY-{uuid.uuid4().hex[:10].upper()}",
             timestamp=datetime.now(timezone.utc).isoformat(),
             severity=severity,
             action=action,

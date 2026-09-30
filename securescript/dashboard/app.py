@@ -84,7 +84,27 @@ def simulate_inspection(req: SimulateRequest):
 
     total_latency_ms = (time.perf_counter() - t0) * 1000.0
 
+    incident_id = None
+    if action == "BLOCK":
+        import uuid
+        from securescript.telemetry.siem import siem_collector
+        incident_id = f"RAY-{uuid.uuid4().hex[:10].upper()}"
+        siem_collector.record_incident(
+            action="BLOCKED",
+            client_ip="127.0.0.1 (Simulator)",
+            http_method="POST",
+            url_path="/api/dashboard/simulate",
+            detection_stage=verdict_stage,
+            confidence_score=confidence,
+            trigger_tokens=lex.tokens,
+            raw_payload=raw,
+            normalized_payload=norm.normalized,
+            latency_ms=total_latency_ms,
+            event_id=incident_id
+        )
+
     result = {
+        "incident_id": incident_id,
         "raw_payload": raw,
         "normalized_payload": norm.normalized,
         "encodings_detected": norm.encodings_detected,
@@ -108,9 +128,11 @@ def simulate_inspection(req: SimulateRequest):
 @dashboard_router.get("/api/dashboard/stats")
 def get_dashboard_stats():
     """Returns aggregated monitoring statistics."""
-    total = len(audit_logs)
-    blocked = sum(1 for log in audit_logs if log.get("action") == "BLOCK")
-    passed = sum(1 for log in audit_logs if log.get("action") == "PASS")
+    from securescript.telemetry.siem import siem_collector
+    siem_events = siem_collector.get_events(limit=25)
+    total = len(audit_logs) + len(siem_collector.events)
+    blocked = sum(1 for log in audit_logs if log.get("action") == "BLOCK") + sum(1 for e in siem_collector.events if e.action == "BLOCKED")
+    passed = sum(1 for log in audit_logs if log.get("action") == "PASS") + sum(1 for e in siem_collector.events if e.action == "PASSED")
     csp_stats = correlator.get_stats()
 
     return {
@@ -120,7 +142,7 @@ def get_dashboard_stats():
         "fast_path_latency_avg_ms": 0.003,
         "neural_latency_avg_ms": 0.57,
         "csp_telemetry": csp_stats,
-        "recent_incidents": list(reversed(audit_logs[-10:]))
+        "recent_incidents": siem_events if siem_events else list(reversed(audit_logs[-10:]))
     }
 
 
@@ -222,6 +244,40 @@ def render_dashboard_ui():
       </div>
     </div>
 
+    <!-- Live Threat Incidents Stream & Incident IDs -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-base font-semibold text-white flex items-center gap-2">
+            <i class="fa-solid fa-shield-virus text-rose-400"></i> Live Intercepted Attacks & Incident Ray IDs
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">Real-time threat feed showing every intercepted payload, location, and its unique Incident Ray ID.</p>
+        </div>
+        <span class="text-xs text-emerald-400 font-mono flex items-center gap-1.5 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> Live Feed
+        </span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs font-mono">
+          <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+            <tr>
+              <th class="p-3">Incident Ray ID</th>
+              <th class="p-3">Target Location</th>
+              <th class="p-3">Detection Stage</th>
+              <th class="p-3">Offending Payload</th>
+              <th class="p-3">Status</th>
+            </tr>
+          </thead>
+          <tbody id="incidents-table-body" class="divide-y divide-slate-800/80">
+            <tr>
+              <td colspan="5" class="p-4 text-center text-slate-500">Loading live incident telemetry...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- Pipeline Architecture Visualizer -->
     <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm">
       <h2 class="text-base font-semibold text-white mb-4">
@@ -269,10 +325,13 @@ def render_dashboard_ui():
         const data = await resp.json();
 
         const badgeColor = data.action === 'BLOCK' ? 'text-rose-400 bg-rose-500/10 border-rose-500/20' : 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+        const incidentBadge = data.incident_id 
+          ? `<span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold ml-2 font-mono">Incident: ${data.incident_id}</span>` 
+          : '';
 
         resDiv.innerHTML = `
           <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-            <span class="font-bold text-sm">Verdict: <span class="px-2 py-0.5 rounded border ${badgeColor}">${data.action}</span></span>
+            <span class="font-bold text-sm">Verdict: <span class="px-2 py-0.5 rounded border ${badgeColor}">${data.action}</span> ${incidentBadge}</span>
             <span class="text-slate-400">Total Latency: <strong class="text-white">${data.latency_ms} ms</strong></span>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
@@ -287,10 +346,48 @@ def render_dashboard_ui():
             </div>
           </div>
         `;
+
+        // Refresh feed immediately after test
+        fetchLiveIncidents();
       } catch (err) {
         resDiv.innerHTML = `<span class="text-rose-400">Error inspecting payload: ${err}</span>`;
       }
     }
+
+    async function fetchLiveIncidents() {
+      try {
+        const resp = await fetch('/api/v1/siem/events?limit=15');
+        if (!resp.ok) return;
+        const data = await resp.json();
+        const tbody = document.getElementById('incidents-table-body');
+        if (!data.events || data.events.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-500">No security incidents recorded yet. Clean traffic.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = data.events.map(ev => {
+          const isBlocked = ev.action === 'BLOCKED';
+          const badge = isBlocked 
+            ? '<span class="px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20 font-semibold">BLOCKED 403</span>'
+            : '<span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">PASSED</span>';
+          const safePayload = (ev.raw_payload || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').slice(0, 50);
+          return `
+            <tr class="hover:bg-slate-800/40 transition-colors border-b border-slate-800/50">
+              <td class="p-3 font-mono font-bold text-amber-400 tracking-wider">${ev.event_id || 'RAY-N/A'}</td>
+              <td class="p-3 text-slate-300 font-mono">${ev.http_method || 'GET'} ${ev.url_path || '/'}</td>
+              <td class="p-3 text-blue-300 font-sans text-xs">${ev.detection_stage || 'WAF'}</td>
+              <td class="p-3 text-rose-300 font-mono text-xs break-all">${safePayload || 'N/A'}</td>
+              <td class="p-3">${badge}</td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error('Failed to load live incidents:', err);
+      }
+    }
+
+    // Auto-load live incidents on page open and poll every 3 seconds
+    fetchLiveIncidents();
+    setInterval(fetchLiveIncidents, 3000);
   </script>
 </body>
 </html>

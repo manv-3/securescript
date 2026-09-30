@@ -114,6 +114,21 @@ waf_app.include_router(dashboard_router)
 waf_app.include_router(csp_router)
 waf_app.include_router(siem_router)
 
+# Seed an initial baseline incident so the dashboard displays Ray ID structure immediately
+siem_collector.record_incident(
+    action="BLOCKED",
+    client_ip="203.0.113.42",
+    http_method="POST",
+    url_path="/api/submit",
+    detection_stage="Fast-Path Lexical Analyzer",
+    confidence_score=1.0,
+    trigger_tokens=["<script>", "alert("],
+    raw_payload="<script>alert('XSS-Probe')</script>",
+    normalized_payload="<script>alert('XSS-Probe')</script>",
+    latency_ms=0.003,
+    event_id="RAY-9A82F104BC"
+)
+
 
 # ==============================================================================
 # Inspection Logic
@@ -170,7 +185,8 @@ def render_block_response(
         trigger_tokens=violation.get("tokens", []),
         raw_payload=raw_payload,
         normalized_payload=violation["normalized"],
-        latency_ms=0.5
+        latency_ms=0.5,
+        event_id=incident_id
     )
 
     accept = request.headers.get("accept", "").lower()
