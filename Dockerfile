@@ -11,6 +11,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     OMP_NUM_THREADS=1 \
     MKL_NUM_THREADS=1 \
+    PYTHONPATH=/app \
     PORT=8000
 
 WORKDIR /app
@@ -26,13 +27,15 @@ RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/wh
 
 # Copy requirements and install Python dependencies
 COPY requirements.txt pyproject.toml ./
-RUN pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir -e . --no-deps
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application codebase, templates, config, and trained model artifacts
 COPY securescript/ securescript/
 COPY data/ data/
 COPY waf_config.yaml ./
+
+# Install local package in editable mode now that files exist
+RUN pip install --no-cache-dir -e . --no-deps
 
 # Create a non-root security user
 RUN useradd -m -u 1000 appuser && \
