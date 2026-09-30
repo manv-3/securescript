@@ -306,10 +306,11 @@ async def waf_reverse_proxy(request: Request, path: str):
     if request.url.query:
         target_url = f"{target_url}?{request.url.query}"
 
-    # Filter headers to avoid SSL/host conflicts
+    # Filter headers to avoid SSL/host conflicts and raw compression mismatch
     proxy_headers = dict(request.headers)
     proxy_headers.pop("host", None)
     proxy_headers.pop("content-length", None)
+    proxy_headers.pop("accept-encoding", None)
     proxy_headers["x-forwarded-for"] = request.client.host if request.client else "127.0.0.1"
     proxy_headers["x-waf-inspection"] = "passed-securescript"
 
