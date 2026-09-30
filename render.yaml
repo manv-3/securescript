@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: securescript-waf
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: WAF_MODE
+        value: block
+      - key: DL_THRESHOLD
+        value: 0.85
+      - key: UPSTREAM_URL
+        value: https://basic-form-project.vercel.app
+      - key: BACKEND_API_URL
+        value: https://basic-form-project.onrender.com

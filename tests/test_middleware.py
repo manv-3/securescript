@@ -1,5 +1,5 @@
 """
-Integration tests for SecureScript ASGI Interception Middleware.
+Integration tests for SecureScript ASGI Interception Middleware with Hybrid Routing.
 """
 
 import pytest
@@ -60,3 +60,14 @@ class TestXSSInterceptionMiddleware:
         response = self.client.get("/search?q=normal", headers=headers)
         assert response.status_code == 403
         assert "user-agent" in response.json()["details"]["incident_location"]
+
+    def test_csp_reporting_endpoint_integrated(self):
+        """Verifies that the demo application exposes the CSP reporting endpoint."""
+        csp_payload = {
+            "csp-report": {
+                "blocked-uri": "inline",
+                "violated-directive": "script-src"
+            }
+        }
+        resp = self.client.post("/api/v1/csp-report", json=csp_payload)
+        assert resp.status_code == 204

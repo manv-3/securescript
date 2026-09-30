@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>403 Forbidden - Request Blocked by SecureScript WAF</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 25px rgba(239, 68, 68, 0.4); }
+      50% { box-shadow: 0 0 45px rgba(239, 68, 68, 0.75); }
+    }
+    .waf-glow { animation: pulse-glow 3s infinite ease-in-out; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4 font-sans">
+
+  <div class="max-w-2xl w-full bg-slate-900 border border-rose-500/30 rounded-2xl p-8 shadow-2xl relative overflow-hidden waf-glow">
+    
+    <!-- Top accent bar -->
+    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-rose-500 via-amber-500 to-rose-600"></div>
+
+    <div class="flex items-start gap-5">
+      <div class="w-14 h-14 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-500 text-2xl flex-shrink-0">
+        <i class="fa-solid fa-shield-virus"></i>
+      </div>
+      <div class="flex-1">
+        <div class="flex items-center justify-between">
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-rose-500/20 text-rose-400 border border-rose-500/30 uppercase tracking-wider">
+            HTTP 403 Forbidden
+          </span>
+          <span class="text-xs text-slate-400 font-mono">Incident ID: <strong class="text-slate-200">{{ incident_id }}</strong></span>
+        </div>
+        <h1 class="text-2xl font-bold text-white mt-2 tracking-tight">Access Denied by SecureScript WAF</h1>
+        <p class="text-sm text-slate-400 mt-1">
+          The requested action was intercepted and dropped because it contained malicious Cross-Site Scripting (XSS) patterns or active script injection attempts.
+        </p>
+      </div>
+    </div>
+
+    <!-- Incident Diagnostic Grid -->
+    <div class="mt-6 bg-slate-950 border border-slate-800 rounded-xl p-5 text-xs font-mono space-y-2.5">
+      <div class="flex justify-between border-b border-slate-800/80 pb-2">
+        <span class="text-slate-400">Target Protected Website:</span>
+        <span class="text-blue-400 font-semibold">{{ target_website }}</span>
+      </div>
+      <div class="flex justify-between border-b border-slate-800/80 pb-2">
+        <span class="text-slate-400">Detection Pipeline Stage:</span>
+        <span class="text-amber-400 font-semibold">{{ detection_stage }}</span>
+      </div>
+      <div class="flex justify-between border-b border-slate-800/80 pb-2">
+        <span class="text-slate-400">Threat Confidence Score:</span>
+        <span class="text-rose-400 font-semibold">{{ confidence_score }}</span>
+      </div>
+      <div class="flex justify-between border-b border-slate-800/80 pb-2">
+        <span class="text-slate-400">Violation Location:</span>
+        <span class="text-slate-300 font-semibold">{{ incident_location }}</span>
+      </div>
+      <div>
+        <span class="text-slate-400 block mb-1">Normalized Trigger Preview:</span>
+        <div class="bg-slate-900 border border-slate-800 p-2.5 rounded text-rose-300 break-all select-all font-semibold">
+          {{ normalized_payload }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Security Information Footer -->
+    <div class="mt-6 flex items-center justify-between pt-4 border-t border-slate-800 text-xs text-slate-400">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-lock text-emerald-400"></i>
+        <span>Protected by <strong class="text-slate-200">SecureScript Hybrid WAF v0.4.0</strong></span>
+      </div>
+      <a href="/dashboard" class="text-blue-400 hover:text-blue-300 font-medium transition-colors flex items-center gap-1">
+        <span>Security Operations Console</span>
+        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+      </a>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  securescript-waf:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: securescript-waf
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - LOG_LEVEL=info
+      - DL_THRESHOLD=0.85
+      - FAST_PATH_MAX_DEPTH=4
+    volumes:
+      - ./data:/app/data:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1G

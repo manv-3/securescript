@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "securescript"
+version = "0.3.0"
+description = "Intelligent Real-Time Cross-Site Scripting (XSS) Detection Framework"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["securescript*"]

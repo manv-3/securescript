@@ -1,0 +1,30 @@
+# ==============================================================================
+# SecureScript Web Application Firewall (WAF) Configuration
+# ==============================================================================
+
+waf:
+  # Operation Mode: "block" (active mitigation), "audit" (monitor & log only)
+  mode: "block"
+
+  # Target Website to Protect (Origin Server)
+  upstream_url: "https://basic-form-project.vercel.app"
+
+  # Backend Submission API (Render backend)
+  backend_api_url: "https://basic-form-project.onrender.com"
+
+  # Local WAF listener
+  bind_host: "127.0.0.1"
+  bind_port: 8000
+
+  # Deep Learning Threshold (0.0 to 1.0)
+  dl_threshold: 0.85
+
+  # Content Security Policy injection to block client-side inline scripts
+  inject_csp: true
+
+  # Exempted administrative paths (bypassed from blocking)
+  exclude_paths:
+    - "/dashboard"
+    - "/api/dashboard"
+    - "/api/v1/csp-report"
+    - "/api/v1/siem"
