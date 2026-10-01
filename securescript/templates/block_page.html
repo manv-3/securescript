@@ -1,80 +1,137 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>403 Forbidden - Request Blocked by SecureScript WAF</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 25px rgba(239, 68, 68, 0.4); }
-      50% { box-shadow: 0 0 45px rgba(239, 68, 68, 0.75); }
+    body {
+      background-color: #08090d;
+      color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
-    .waf-glow { animation: pulse-glow 3s infinite ease-in-out; }
+    .tavus-grid {
+      background-image: 
+        radial-gradient(circle at 50% 10%, rgba(244, 63, 94, 0.15), transparent 60%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 36px 36px, 36px 36px;
+    }
+    .os-window {
+      background: rgba(15, 17, 24, 0.92);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(244, 63, 94, 0.25);
+      box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.8), 0 0 35px rgba(244, 63, 94, 0.15);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .os-titlebar {
+      background: rgba(24, 18, 24, 0.95);
+      border-bottom: 1px solid rgba(244, 63, 94, 0.2);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .raster-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .os-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5px;
+      width: 36px;
+    }
+    .os-lines span {
+      height: 1px;
+      background: rgba(244, 63, 94, 0.3);
+      width: 100%;
+    }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4 font-sans">
+<body class="min-h-screen tavus-grid flex items-center justify-center p-4">
 
-  <div class="max-w-2xl w-full bg-slate-900 border border-rose-500/30 rounded-2xl p-8 shadow-2xl relative overflow-hidden waf-glow">
+  <div class="max-w-2xl w-full os-window">
     
-    <!-- Top accent bar -->
-    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-rose-500 via-amber-500 to-rose-600"></div>
-
-    <div class="flex items-start gap-5">
-      <div class="w-14 h-14 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-500 text-2xl flex-shrink-0">
-        <i class="fa-solid fa-shield-virus"></i>
+    <!-- Titlebar -->
+    <div class="os-titlebar">
+      <div class="flex items-center gap-2.5">
+        <div class="w-2.5 h-2.5 bg-rose-500 rounded-sm"></div>
+        <span class="raster-tag text-rose-300">THREAT INTERCEPTOR // REAL-TIME DROP</span>
       </div>
-      <div class="flex-1">
-        <div class="flex items-center justify-between">
-          <span class="px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-rose-500/20 text-rose-400 border border-rose-500/30 uppercase tracking-wider">
-            HTTP 403 Forbidden
-          </span>
-          <span class="text-xs text-slate-400 font-mono">Incident ID: <strong class="text-slate-200">{{ incident_id }}</strong></span>
-        </div>
-        <h1 class="text-2xl font-bold text-white mt-2 tracking-tight">Access Denied by SecureScript WAF</h1>
-        <p class="text-sm text-slate-400 mt-1">
-          The requested action was intercepted and dropped because it contained malicious Cross-Site Scripting (XSS) patterns or active script injection attempts.
-        </p>
+      <div class="os-lines">
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
+      <span class="text-[10px] font-mono text-rose-400 font-bold">STATUS 403</span>
     </div>
 
-    <!-- Incident Diagnostic Grid -->
-    <div class="mt-6 bg-slate-950 border border-slate-800 rounded-xl p-5 text-xs font-mono space-y-2.5">
-      <div class="flex justify-between border-b border-slate-800/80 pb-2">
-        <span class="text-slate-400">Target Protected Website:</span>
-        <span class="text-blue-400 font-semibold">{{ target_website }}</span>
-      </div>
-      <div class="flex justify-between border-b border-slate-800/80 pb-2">
-        <span class="text-slate-400">Detection Pipeline Stage:</span>
-        <span class="text-amber-400 font-semibold">{{ detection_stage }}</span>
-      </div>
-      <div class="flex justify-between border-b border-slate-800/80 pb-2">
-        <span class="text-slate-400">Threat Confidence Score:</span>
-        <span class="text-rose-400 font-semibold">{{ confidence_score }}</span>
-      </div>
-      <div class="flex justify-between border-b border-slate-800/80 pb-2">
-        <span class="text-slate-400">Violation Location:</span>
-        <span class="text-slate-300 font-semibold">{{ incident_location }}</span>
-      </div>
-      <div>
-        <span class="text-slate-400 block mb-1">Normalized Trigger Preview:</span>
-        <div class="bg-slate-900 border border-slate-800 p-2.5 rounded text-rose-300 break-all select-all font-semibold">
-          {{ normalized_payload }}
+    <div class="p-6 sm:p-8">
+      <div class="flex items-start gap-5">
+        <div class="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 text-2xl flex-shrink-0">
+          <i class="fa-solid fa-shield-virus"></i>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between mb-1">
+            <span class="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30 uppercase tracking-wider">
+              HTTP 403 Forbidden
+            </span>
+            <span class="text-xs text-slate-400 font-mono">Incident ID: <strong class="text-orange-400">{{ incident_id }}</strong></span>
+          </div>
+          <h1 class="text-2xl font-bold text-white tracking-tight mt-1">Access Denied by SecureScript WAF</h1>
+          <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+            The requested HTTP stream was intercepted and dropped because it contained active Cross-Site Scripting (XSS) patterns or dangerous payload injections.
+          </p>
         </div>
       </div>
-    </div>
 
-    <!-- Security Information Footer -->
-    <div class="mt-6 flex items-center justify-between pt-4 border-t border-slate-800 text-xs text-slate-400">
-      <div class="flex items-center gap-2">
-        <i class="fa-solid fa-lock text-emerald-400"></i>
-        <span>Protected by <strong class="text-slate-200">SecureScript Hybrid WAF v0.4.0</strong></span>
+      <!-- Diagnostic Grid -->
+      <div class="mt-6 bg-[#090b10] border border-white/[0.08] rounded-xl p-5 text-xs font-mono space-y-2.5">
+        <div class="flex justify-between border-b border-white/[0.06] pb-2">
+          <span class="text-slate-500">Target Protected Website:</span>
+          <span class="text-sky-400 font-semibold">{{ target_website }}</span>
+        </div>
+        <div class="flex justify-between border-b border-white/[0.06] pb-2">
+          <span class="text-slate-500">Detection Pipeline Stage:</span>
+          <span class="text-amber-400 font-semibold">{{ detection_stage }}</span>
+        </div>
+        <div class="flex justify-between border-b border-white/[0.06] pb-2">
+          <span class="text-slate-500">Threat Confidence Score:</span>
+          <span class="text-rose-400 font-semibold">{{ confidence_score }}</span>
+        </div>
+        <div class="flex justify-between border-b border-white/[0.06] pb-2">
+          <span class="text-slate-500">Violation Location:</span>
+          <span class="text-slate-300 font-semibold">{{ incident_location }}</span>
+        </div>
+        <div class="pt-1">
+          <span class="text-slate-500 block mb-1">Normalized Trigger Preview:</span>
+          <div class="bg-[#0f1118] border border-rose-500/20 p-2.5 rounded text-rose-300 break-all select-all font-semibold text-[11px]">
+            {{ normalized_payload }}
+          </div>
+        </div>
       </div>
-      <a href="/dashboard" class="text-blue-400 hover:text-blue-300 font-medium transition-colors flex items-center gap-1">
-        <span>Security Operations Console</span>
-        <i class="fa-solid fa-arrow-right text-[10px]"></i>
-      </a>
+
+      <!-- Footer Info -->
+      <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-white/[0.08] text-xs font-mono text-slate-400">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-lock text-emerald-400"></i>
+          <span>Protected by <strong class="text-slate-200">SecureScript Hybrid WAF</strong></span>
+        </div>
+        <a href="/dashboard" target="_blank" class="text-orange-400 hover:text-orange-300 font-medium transition flex items-center gap-1.5">
+          <span>Security Operations Console</span>
+          <i class="fa-solid fa-arrow-right text-[10px]"></i>
+        </a>
+      </div>
     </div>
 
   </div>

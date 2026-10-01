@@ -1,124 +1,259 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SecureScript — Dashboard</title>
+  <title>SecureScript — Security Operations Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-950 text-slate-100 min-h-screen">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <!-- Nav -->
-  <nav class="border-b border-slate-800 px-6 py-4 flex items-center justify-between max-w-7xl mx-auto">
-    <div class="flex items-center gap-3">
-      <a href="/app/projects" class="text-slate-400 hover:text-white transition text-sm">← Projects</a>
-      <span class="text-slate-700">|</span>
-      <div class="flex items-center gap-2">
-        <span>🛡️</span>
-        <span class="font-bold text-white">SecureScript</span>
+  <style>
+    body {
+      background-color: #08090d;
+      color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .tavus-grid {
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(255, 92, 53, 0.1), transparent 50%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 36px 36px, 36px 36px;
+    }
+    .os-window {
+      background: rgba(15, 17, 24, 0.88);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.7);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .os-titlebar {
+      background: rgba(20, 23, 33, 0.95);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .raster-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .os-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5px;
+      width: 36px;
+    }
+    .os-lines span {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.15);
+      width: 100%;
+    }
+    @keyframes subtlePulse {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+    .status-dot {
+      animation: subtlePulse 2.5s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen tavus-grid">
+
+  <!-- Nav Header -->
+  <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#08090d]/85 border-b border-white/[0.08]">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <a href="/app/projects" class="text-xs font-mono text-slate-400 hover:text-white transition flex items-center gap-1.5">
+          <i class="fa-solid fa-arrow-left text-[10px]"></i>
+          <span>PROJECTS</span>
+        </a>
+        <span class="text-slate-700">/</span>
+        <span id="project-name-nav" class="raster-tag text-slate-300 font-bold truncate max-w-xs">Loading…</span>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="hidden sm:flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full font-mono text-xs text-slate-400">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 status-dot"></span>
+          <span>WAF SENSOR LIVE</span>
+        </div>
+        <button onclick="logout()" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 rounded-lg text-xs font-mono transition">
+          LOGOUT
+        </button>
       </div>
     </div>
-    <div class="flex items-center gap-4">
-      <span id="project-name-nav" class="text-sm text-slate-400"></span>
-      <button onclick="logout()" class="text-sm text-slate-400 hover:text-white transition">Logout</button>
-    </div>
-  </nav>
+  </header>
 
   <main class="max-w-7xl mx-auto px-6 py-8">
-
-    <!-- Project Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+    
+    <!-- Top Bar with Project Info & Actions -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 pb-6 border-b border-white/[0.08]">
       <div>
-        <h1 id="project-title" class="text-2xl font-bold text-white">Loading…</h1>
-        <div class="flex items-center gap-3 mt-2">
-          <code id="proxy-path-display" class="text-sky-400 text-sm"></code>
-          <button onclick="copyProxy()" class="text-xs text-slate-500 hover:text-slate-300 transition">📋 Copy</button>
+        <div class="flex items-center gap-2.5 mb-1.5">
+          <h1 id="project-title" class="text-3xl font-bold tracking-tight text-white">Loading…</h1>
+          <span class="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 uppercase">
+            PROTECTION ARMED
+          </span>
+        </div>
+        
+        <div class="flex flex-wrap items-center gap-3 font-mono text-xs text-slate-400">
+          <span class="text-slate-500">INLINE ROUTE:</span>
+          <code id="proxy-path-display" class="text-orange-400 select-all font-semibold"></code>
+          <button onclick="copyProxy()" class="px-2 py-0.5 bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 rounded transition text-[11px]">
+            <i class="fa-regular fa-copy text-[10px]"></i> Copy
+          </button>
         </div>
       </div>
-      <div class="flex gap-2">
-        <button onclick="downloadReport()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-sm rounded-lg transition border border-slate-700">
-          ⬇ Download Report
+
+      <div class="flex items-center gap-3">
+        <button onclick="downloadReport()" 
+          class="px-4 py-2 bg-white/5 hover:bg-white/10 text-slate-200 hover:text-white border border-white/10 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2">
+          <i class="fa-solid fa-download text-xs text-orange-400"></i>
+          <span>EXPORT REPORT</span>
         </button>
-        <span id="live-badge" class="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-400 text-xs font-medium">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>Live
-        </span>
+        <a id="test-proxy-btn" href="#" target="_blank"
+          class="px-4 py-2 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-xl text-xs font-mono font-semibold transition flex items-center gap-2">
+          <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+          <span>TEST ORIGIN</span>
+        </a>
       </div>
     </div>
 
-    <!-- Stats Cards -->
+    <!-- Telemetry Statistics Gauges -->
     <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-        <div class="text-xs text-slate-500 uppercase tracking-wide mb-1">Total Inspected</div>
-        <div id="stat-total" class="text-3xl font-bold text-white">—</div>
+      
+      <!-- Total -->
+      <div class="os-window p-5">
+        <div class="text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-1">TOTAL INSPECTED</div>
+        <div id="stat-total" class="text-3xl font-bold text-white font-mono">—</div>
+        <div class="text-[11px] font-mono text-slate-500 mt-1">Global Requests</div>
       </div>
-      <div class="bg-slate-900 border border-red-900/30 rounded-xl p-5">
-        <div class="text-xs text-slate-500 uppercase tracking-wide mb-1">Blocked</div>
-        <div id="stat-blocked" class="text-3xl font-bold text-red-400">—</div>
+
+      <!-- Blocked -->
+      <div class="os-window p-5 border-rose-500/20">
+        <div class="text-[10px] font-mono text-rose-400 uppercase tracking-wider mb-1">NEUTRALIZED</div>
+        <div id="stat-blocked" class="text-3xl font-bold text-rose-400 font-mono">—</div>
+        <div class="text-[11px] font-mono text-slate-500 mt-1">HTTP 403 Dropped</div>
       </div>
-      <div class="bg-slate-900 border border-emerald-900/30 rounded-xl p-5">
-        <div class="text-xs text-slate-500 uppercase tracking-wide mb-1">Passed</div>
-        <div id="stat-passed" class="text-3xl font-bold text-emerald-400">—</div>
+
+      <!-- Passed -->
+      <div class="os-window p-5 border-emerald-500/20">
+        <div class="text-[10px] font-mono text-emerald-400 uppercase tracking-wider mb-1">CLEAN TRAFFIC</div>
+        <div id="stat-passed" class="text-3xl font-bold text-emerald-400 font-mono">—</div>
+        <div class="text-[11px] font-mono text-slate-500 mt-1">Proxied to Origin</div>
       </div>
-      <div class="bg-slate-900 border border-orange-900/30 rounded-xl p-5">
-        <div class="text-xs text-slate-500 uppercase tracking-wide mb-1">Block Rate</div>
-        <div id="stat-blockrate" class="text-3xl font-bold text-orange-400">—</div>
+
+      <!-- Block Rate -->
+      <div class="os-window p-5">
+        <div class="text-[10px] font-mono text-orange-400 uppercase tracking-wider mb-1">THREAT DENSITY</div>
+        <div id="stat-blockrate" class="text-3xl font-bold text-orange-400 font-mono">—</div>
+        <div class="text-[11px] font-mono text-slate-500 mt-1">Attack Ratio %</div>
       </div>
-      <div class="bg-slate-900 border border-sky-900/30 rounded-xl p-5">
-        <div class="text-xs text-slate-500 uppercase tracking-wide mb-1">Avg Confidence</div>
-        <div id="stat-confidence" class="text-3xl font-bold text-sky-400">—</div>
+
+      <!-- Avg Confidence -->
+      <div class="os-window p-5">
+        <div class="text-[10px] font-mono text-sky-400 uppercase tracking-wider mb-1">CONFIDENCE SLA</div>
+        <div id="stat-confidence" class="text-3xl font-bold text-sky-400 font-mono">—</div>
+        <div class="text-[11px] font-mono text-slate-500 mt-1">Neural / Lexer Score</div>
       </div>
+
     </div>
 
+    <!-- Section: Top Attacked Paths & Alert Configuration -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-
-      <!-- Top Attacked Paths -->
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-        <h3 class="font-semibold text-white mb-4">🔴 Top Attacked Paths</h3>
-        <div id="top-paths">
-          <div class="text-slate-500 text-sm">No data yet.</div>
+      
+      <!-- Top Attacked Paths Window -->
+      <div class="os-window">
+        <div class="os-titlebar">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-sm bg-rose-500"></span>
+            <span class="raster-tag text-slate-300">ATTACK VECTOR DISTRIBUTION</span>
+          </div>
+          <span class="text-[10px] font-mono text-rose-400">FREQUENT TARGETS</span>
+        </div>
+        
+        <div class="p-5">
+          <div id="top-paths" class="space-y-2">
+            <div class="text-slate-500 text-xs font-mono">No attacks recorded yet.</div>
+          </div>
         </div>
       </div>
 
-      <!-- Alert Config -->
-      <div class="md:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-5">
-        <h3 class="font-semibold text-white mb-4">🔔 Alert Configuration</h3>
-        <div id="alert-success" class="hidden mb-3 p-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-400 text-sm">Saved!</div>
-        <form onsubmit="saveAlerts(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm text-slate-300 mb-2">Webhook URL</label>
-            <input type="url" id="alert-webhook" placeholder="https://hooks.slack.com/…"
-              class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 transition">
-            <p class="mt-1 text-xs text-slate-500">Slack, Discord, webhook.site, or any HTTPS endpoint</p>
+      <!-- Alert Dispatcher Window -->
+      <div class="md:col-span-2 os-window">
+        <div class="os-titlebar">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-sm bg-orange-500"></span>
+            <span class="raster-tag text-slate-300">INCIDENT DISPATCHER CONFIGURATION</span>
           </div>
-          <div>
-            <label class="block text-sm text-slate-300 mb-2">Alert Email</label>
-            <input type="email" id="alert-email" placeholder="you@example.com"
-              class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 transition">
-            <p class="mt-1 text-xs text-slate-500">Receive HTML email on each blocked attack</p>
+          <div class="os-lines">
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
-          <div class="md:col-span-2">
-            <button type="submit" class="px-6 py-2 bg-sky-500 hover:bg-sky-400 text-white text-sm font-medium rounded-lg transition">
-              Save Alert Config
-            </button>
+          <span class="text-[10px] font-mono text-orange-400">ASYNC DISPATCH</span>
+        </div>
+
+        <div class="p-5 sm:p-6">
+          <div id="alert-success" class="hidden mb-4 p-3 bg-emerald-500/10 border border-emerald-500/25 rounded-lg text-emerald-400 text-xs font-mono">
+            &check; Alert notification configuration saved successfully!
           </div>
-        </form>
+
+          <form onsubmit="saveAlerts(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-mono text-slate-300 mb-1.5 uppercase tracking-wider">Webhook Endpoint URL</label>
+              <input type="url" id="alert-webhook" placeholder="https://hooks.slack.com/services/…"
+                class="w-full px-3.5 py-2.5 bg-[#0a0c12] border border-white/10 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition font-mono">
+              <p class="mt-1 text-[11px] text-slate-500 font-mono">Slack, Discord, PagerDuty, or custom webhook</p>
+            </div>
+
+            <div>
+              <label class="block text-xs font-mono text-slate-300 mb-1.5 uppercase tracking-wider">SOC Alert Email</label>
+              <input type="email" id="alert-email" placeholder="security-alerts@company.com"
+                class="w-full px-3.5 py-2.5 bg-[#0a0c12] border border-white/10 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition font-mono">
+              <p class="mt-1 text-[11px] text-slate-500 font-mono">Dispatches forensic email with full incident payload</p>
+            </div>
+
+            <div class="md:col-span-2 pt-2">
+              <button type="submit" 
+                class="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-mono text-xs font-semibold rounded-lg shadow-lg shadow-orange-500/20 transition flex items-center gap-2">
+                <i class="fa-solid fa-floppy-disk text-xs"></i>
+                <span>SAVE DISPATCH CHANNELS</span>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
+
     </div>
 
-    <!-- Incident Log -->
-    <div class="bg-slate-900 border border-slate-800 rounded-xl">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800">
-        <h3 class="font-semibold text-white">📋 Incident Log</h3>
-        <div class="flex gap-2 text-xs">
+    <!-- Forensic Incident Audit Log -->
+    <div class="os-window">
+      <div class="os-titlebar">
+        <div class="flex items-center gap-3">
+          <div class="w-2 h-2 bg-purple-500 rounded-sm"></div>
+          <span class="raster-tag text-slate-300">FORENSIC INCIDENT AUDIT TRAIL</span>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="flex items-center gap-2 text-xs font-mono">
           <select id="filter-action" onchange="loadIncidents()"
-            class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-slate-300 text-xs focus:outline-none">
+            class="bg-[#0a0c12] border border-white/10 rounded px-2.5 py-1 text-slate-300 text-xs focus:outline-none focus:border-orange-500">
             <option value="">All Actions</option>
             <option value="BLOCKED">Blocked</option>
             <option value="PASSED">Passed</option>
             <option value="AUDITED">Audited</option>
           </select>
           <select id="filter-severity" onchange="loadIncidents()"
-            class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-slate-300 text-xs focus:outline-none">
+            class="bg-[#0a0c12] border border-white/10 rounded px-2.5 py-1 text-slate-300 text-xs focus:outline-none focus:border-orange-500">
             <option value="">All Severities</option>
             <option value="CRITICAL">Critical</option>
             <option value="HIGH">High</option>
@@ -127,41 +262,48 @@
           </select>
         </div>
       </div>
+
+      <!-- Incident Table -->
       <div class="overflow-x-auto">
-        <table class="w-full text-sm">
+        <table class="w-full text-left font-mono text-xs">
           <thead>
-            <tr class="text-slate-500 text-xs border-b border-slate-800">
-              <th class="px-4 py-3 text-left">Event ID</th>
-              <th class="px-4 py-3 text-left">Time</th>
-              <th class="px-4 py-3 text-left">Action</th>
-              <th class="px-4 py-3 text-left">Severity</th>
-              <th class="px-4 py-3 text-left">Path</th>
-              <th class="px-4 py-3 text-left">Client IP</th>
-              <th class="px-4 py-3 text-left">Detection Stage</th>
-              <th class="px-4 py-3 text-left">Confidence</th>
+            <tr class="text-slate-400 bg-white/[0.02] border-b border-white/[0.08] text-[11px] uppercase tracking-wider">
+              <th class="px-4 py-3">Ray Event ID</th>
+              <th class="px-4 py-3">Timestamp (UTC)</th>
+              <th class="px-4 py-3">Action</th>
+              <th class="px-4 py-3">Severity</th>
+              <th class="px-4 py-3">Intercepted Path</th>
+              <th class="px-4 py-3">Client IP</th>
+              <th class="px-4 py-3">Detection Pipeline Stage</th>
+              <th class="px-4 py-3">Confidence</th>
             </tr>
           </thead>
           <tbody id="incidents-tbody">
-            <tr><td colspan="8" class="px-4 py-8 text-center text-slate-500">Loading incidents…</td></tr>
+            <tr><td colspan="8" class="px-4 py-12 text-center text-slate-500">Loading forensic telemetry stream…</td></tr>
           </tbody>
         </table>
       </div>
-      <!-- Pagination -->
-      <div class="flex items-center justify-between px-6 py-4 border-t border-slate-800">
-        <span id="page-info" class="text-xs text-slate-500"></span>
+
+      <!-- Pagination Footer -->
+      <div class="flex items-center justify-between px-6 py-3.5 bg-[#090b10] border-t border-white/[0.08] text-xs font-mono text-slate-500">
+        <span id="page-info">0 Total Incidents</span>
         <div class="flex gap-2">
-          <button onclick="prevPage()" id="btn-prev" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg transition disabled:opacity-40">← Prev</button>
-          <button onclick="nextPage()" id="btn-next" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg transition disabled:opacity-40">Next →</button>
+          <button onclick="prevPage()" id="btn-prev" class="px-3 py-1 bg-white/5 hover:bg-white/10 text-slate-300 rounded border border-white/10 transition disabled:opacity-30">
+            &larr; Prev
+          </button>
+          <button onclick="nextPage()" id="btn-next" class="px-3 py-1 bg-white/5 hover:bg-white/10 text-slate-300 rounded border border-white/10 transition disabled:opacity-30">
+            Next &rarr;
+          </button>
         </div>
       </div>
     </div>
+
   </main>
 
   <script>
     const token = localStorage.getItem('ss_token');
     if (!token) window.location.href = '/login';
 
-    // Extract project ID from URL: /app/projects/{id}
     const projectId = window.location.pathname.split('/').pop();
     let currentPage = 1;
     const PAGE_SIZE = 20;
@@ -179,21 +321,30 @@
     }
 
     function copyProxy() {
-      navigator.clipboard.writeText(window.location.origin + proxyPath).then(() => alert('Proxy path copied!'));
+      navigator.clipboard.writeText(window.location.origin + proxyPath).then(() => alert('WAF Proxy Path copied!'));
     }
 
     function severityColor(s) {
-      return { CRITICAL: 'text-red-400', HIGH: 'text-orange-400', MEDIUM: 'text-yellow-400', LOW: 'text-green-400' }[s] || 'text-slate-400';
+      return { 
+        CRITICAL: 'text-rose-400 font-bold', 
+        HIGH: 'text-orange-400 font-semibold', 
+        MEDIUM: 'text-amber-400', 
+        LOW: 'text-emerald-400' 
+      }[s] || 'text-slate-400';
     }
 
     function actionBadge(a) {
-      const m = { BLOCKED: 'bg-red-500/10 text-red-400 border-red-500/20', PASSED: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', AUDITED: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' };
-      const cls = m[a] || 'bg-slate-700 text-slate-400';
-      return `<span class="px-2 py-0.5 text-xs border rounded-full ${cls}">${a}</span>`;
+      const m = { 
+        BLOCKED: 'bg-rose-500/10 text-rose-400 border border-rose-500/30 font-bold', 
+        PASSED: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30', 
+        AUDITED: 'bg-amber-500/10 text-amber-400 border border-amber-500/30' 
+      };
+      const cls = m[a] || 'bg-slate-800 text-slate-400';
+      return `<span class="px-2 py-0.5 text-[10px] rounded ${cls}">${a}</span>`;
     }
 
     function escHtml(str) {
-      return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
     async function loadStats() {
@@ -203,22 +354,22 @@
         if (!res.ok) return;
         const stats = await res.json();
 
-        document.getElementById('stat-total').textContent = stats.total_inspected;
-        document.getElementById('stat-blocked').textContent = stats.blocked;
-        document.getElementById('stat-passed').textContent = stats.passed;
-        document.getElementById('stat-blockrate').textContent = stats.block_rate_pct + '%';
-        document.getElementById('stat-confidence').textContent = (stats.avg_confidence * 100).toFixed(0) + '%';
+        document.getElementById('stat-total').textContent = stats.total_inspected || 0;
+        document.getElementById('stat-blocked').textContent = stats.blocked || 0;
+        document.getElementById('stat-passed').textContent = stats.passed || 0;
+        document.getElementById('stat-blockrate').textContent = (stats.block_rate_pct || 0) + '%';
+        document.getElementById('stat-confidence').textContent = ((stats.avg_confidence || 0) * 100).toFixed(0) + '%';
 
         const topEl = document.getElementById('top-paths');
-        if (stats.top_attacked_paths.length) {
+        if (stats.top_attacked_paths && stats.top_attacked_paths.length) {
           topEl.innerHTML = stats.top_attacked_paths.map(p =>
-            `<div class="flex items-center justify-between py-1.5 text-sm">
+            `<div class="flex items-center justify-between py-1.5 border-b border-white/[0.04] text-xs font-mono">
                <code class="text-slate-300 truncate flex-1">${escHtml(p.path)}</code>
-               <span class="ml-3 px-2 py-0.5 bg-red-500/10 text-red-400 text-xs rounded-full">${p.count}</span>
+               <span class="ml-3 px-2 py-0.5 bg-rose-500/10 text-rose-400 text-[10px] rounded font-bold">${p.count} hits</span>
              </div>`
           ).join('');
         } else {
-          topEl.innerHTML = '<div class="text-slate-500 text-sm">No attacks recorded yet.</div>';
+          topEl.innerHTML = '<div class="text-slate-500 text-xs font-mono">No attacks recorded yet.</div>';
         }
       } catch {}
     }
@@ -232,6 +383,7 @@
         document.getElementById('project-title').textContent = projectData.name;
         document.getElementById('project-name-nav').textContent = projectData.name;
         document.getElementById('proxy-path-display').textContent = window.location.origin + proxyPath;
+        document.getElementById('test-proxy-btn').href = proxyPath;
         document.title = `SecureScript — ${projectData.name}`;
         if (projectData.webhook_url) document.getElementById('alert-webhook').value = projectData.webhook_url;
         if (projectData.alert_email) document.getElementById('alert-email').value = projectData.alert_email;
@@ -252,25 +404,25 @@
         totalIncidents = data.total;
 
         const tbody = document.getElementById('incidents-tbody');
-        if (!data.incidents.length) {
-          tbody.innerHTML = '<tr><td colspan="8" class="px-4 py-8 text-center text-slate-500">No incidents found.</td></tr>';
+        if (!data.incidents || !data.incidents.length) {
+          tbody.innerHTML = '<tr><td colspan="8" class="px-4 py-8 text-center text-slate-500 font-mono text-xs">No incidents recorded for this filter.</td></tr>';
         } else {
           tbody.innerHTML = data.incidents.map(i => `
-            <tr class="border-b border-slate-800/50 hover:bg-slate-800/30 transition">
-              <td class="px-4 py-3 font-mono text-xs text-slate-400">${escHtml(i.event_id)}</td>
-              <td class="px-4 py-3 text-xs text-slate-400 whitespace-nowrap">${new Date(i.timestamp).toLocaleString()}</td>
+            <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition font-mono">
+              <td class="px-4 py-3 text-orange-400 font-bold">${escHtml(i.event_id)}</td>
+              <td class="px-4 py-3 text-slate-400 whitespace-nowrap">${new Date(i.timestamp).toLocaleTimeString()}</td>
               <td class="px-4 py-3">${actionBadge(i.action)}</td>
-              <td class="px-4 py-3 text-xs font-medium ${severityColor(i.severity)}">${i.severity}</td>
-              <td class="px-4 py-3 font-mono text-xs text-slate-300 max-w-xs truncate">${escHtml(i.url_path)}</td>
-              <td class="px-4 py-3 font-mono text-xs text-slate-400">${escHtml(i.client_ip)}</td>
-              <td class="px-4 py-3 text-xs text-slate-400">${escHtml(i.detection_stage)}</td>
-              <td class="px-4 py-3 text-xs font-semibold ${i.confidence_score >= 0.9 ? 'text-red-400' : 'text-orange-400'}">${(i.confidence_score*100).toFixed(0)}%</td>
+              <td class="px-4 py-3 ${severityColor(i.severity)}">${i.severity}</td>
+              <td class="px-4 py-3 text-slate-300 max-w-xs truncate">${escHtml(i.url_path)}</td>
+              <td class="px-4 py-3 text-slate-400">${escHtml(i.client_ip)}</td>
+              <td class="px-4 py-3 text-slate-400">${escHtml(i.detection_stage)}</td>
+              <td class="px-4 py-3 font-bold ${i.confidence_score >= 0.85 ? 'text-rose-400' : 'text-slate-400'}">${(i.confidence_score * 100).toFixed(0)}%</td>
             </tr>
           `).join('');
         }
 
         const totalPages = Math.ceil(totalIncidents / PAGE_SIZE);
-        document.getElementById('page-info').textContent = `${totalIncidents} total · Page ${currentPage} of ${Math.max(1, totalPages)}`;
+        document.getElementById('page-info').textContent = `${totalIncidents} Total Incidents · Page ${currentPage} of ${Math.max(1, totalPages)}`;
         document.getElementById('btn-prev').disabled = currentPage <= 1;
         document.getElementById('btn-next').disabled = currentPage >= totalPages;
       } catch {}
@@ -289,7 +441,7 @@
         if (res.ok) {
           const ok = document.getElementById('alert-success');
           ok.classList.remove('hidden');
-          setTimeout(() => ok.classList.add('hidden'), 3000);
+          setTimeout(() => ok.classList.add('hidden'), 3500);
         }
       } catch {}
     }
@@ -301,7 +453,7 @@
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `securescript-report-${projectId}.json`;
+        a.download = `securescript-audit-${projectId}.json`;
         a.click();
       } catch {}
     }
@@ -309,14 +461,12 @@
     function prevPage() { if (currentPage > 1) { currentPage--; loadIncidents(); } }
     function nextPage() { const total = Math.ceil(totalIncidents / PAGE_SIZE); if (currentPage < total) { currentPage++; loadIncidents(); } }
 
-    // Initial load
     loadProject().then(() => {
       loadStats();
       loadIncidents();
     });
 
-    // Auto-refresh stats every 10 seconds
-    setInterval(() => { loadStats(); loadIncidents(); }, 10000);
+    setInterval(() => { loadStats(); loadIncidents(); }, 8000);
   </script>
 </body>
 </html>

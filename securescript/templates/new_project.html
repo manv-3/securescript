@@ -1,108 +1,196 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SecureScript — Connect New Site</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-950 text-slate-100 min-h-screen">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <!-- Nav -->
-  <nav class="border-b border-slate-800 px-6 py-4 flex items-center justify-between max-w-7xl mx-auto">
-    <div class="flex items-center gap-3">
-      <a href="/app/projects" class="text-slate-400 hover:text-white transition text-sm">← My Projects</a>
-      <span class="text-slate-700">|</span>
-      <div class="flex items-center gap-2">
-        <span>🛡️</span>
-        <span class="font-bold text-white">SecureScript</span>
+  <style>
+    body {
+      background-color: #08090d;
+      color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .tavus-grid {
+      background-image: 
+        radial-gradient(circle at 50% 10%, rgba(255, 92, 53, 0.12), transparent 60%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 36px 36px, 36px 36px;
+    }
+    .os-window {
+      background: rgba(15, 17, 24, 0.88);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.75);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .os-titlebar {
+      background: rgba(20, 23, 33, 0.95);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .raster-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .os-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5px;
+      width: 36px;
+    }
+    .os-lines span {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.15);
+      width: 100%;
+    }
+  </style>
+</head>
+<body class="min-h-screen tavus-grid">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#08090d]/85 border-b border-white/[0.08]">
+    <div class="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <a href="/app/projects" class="text-xs font-mono text-slate-400 hover:text-white transition flex items-center gap-1.5">
+          <i class="fa-solid fa-arrow-left text-[10px]"></i>
+          <span>PROJECTS</span>
+        </a>
+        <span class="text-slate-700">/</span>
+        <span class="raster-tag text-slate-300">CONNECT APPLICATION</span>
       </div>
+
+      <button onclick="logout()" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 rounded-lg text-xs font-mono transition">
+        LOGOUT
+      </button>
     </div>
-    <button onclick="logout()" class="text-sm text-slate-400 hover:text-white transition">Logout</button>
-  </nav>
+  </header>
 
   <main class="max-w-2xl mx-auto px-6 py-12">
-    <!-- Header -->
-    <div class="mb-8">
-      <h1 class="text-2xl font-bold text-white mb-2">Connect a New Website</h1>
-      <p class="text-slate-400">Enter your deployed frontend and backend URLs. SecureScript will generate a unique proxy path that becomes your WAF layer.</p>
+    
+    <!-- Title Area -->
+    <div class="mb-8 text-center sm:text-left">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 raster-tag mb-3">
+        <span class="w-1.5 h-1.5 bg-orange-400 rounded-sm"></span>
+        ZERO CODE INTEGRATION
+      </div>
+      <h1 class="text-3xl font-bold tracking-tight text-white">Connect Web Application</h1>
+      <p class="text-sm text-slate-400 mt-1">
+        Provide your deployed frontend and backend target URLs. SecureScript generates a dedicated reverse proxy path with automatic 3-tier inspection.
+      </p>
     </div>
 
-    <!-- Success Card (hidden until submit) -->
-    <div id="success-card" class="hidden mb-8 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-6">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="text-3xl">✅</span>
-        <div>
-          <h3 class="font-semibold text-emerald-400 text-lg">Site Connected Successfully!</h3>
-          <p class="text-slate-400 text-sm">Your WAF proxy is live immediately.</p>
+    <!-- Success Card Window (hidden until submit) -->
+    <div id="success-card" class="hidden mb-8 os-window border-emerald-500/40">
+      <div class="os-titlebar bg-emerald-950/40 border-b border-emerald-500/30">
+        <div class="flex items-center gap-2.5">
+          <span class="w-2 h-2 rounded-sm bg-emerald-400"></span>
+          <span class="raster-tag text-emerald-400">ROUTING FABRIC PROVISIONED</span>
         </div>
+        <span class="text-[10px] font-mono text-emerald-400">HTTP 200 READY</span>
       </div>
-      <div class="bg-slate-900 rounded-xl p-4 mb-4">
-        <div class="text-xs text-slate-500 mb-1 uppercase tracking-wide">Your Proxy Path</div>
-        <div class="flex items-center gap-3">
-          <code id="proxy-path-value" class="text-sky-400 text-lg font-mono flex-1"></code>
-          <button onclick="copyProxyPath()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-sm rounded-lg transition">Copy</button>
+
+      <div class="p-6">
+        <h3 class="text-lg font-bold text-white mb-1">Protection Layer Active!</h3>
+        <p class="text-xs text-slate-400 mb-5">Your site is now guarded by the hybrid WAF.</p>
+
+        <!-- Proxy URL box -->
+        <div class="p-3.5 bg-[#090b10] border border-white/10 rounded-xl mb-4">
+          <div class="text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-1">Your Protected WAF Proxy URL</div>
+          <div class="flex items-center gap-2">
+            <code id="proxy-path-value" class="text-orange-400 text-sm font-mono flex-1 break-all select-all font-semibold"></code>
+            <button onclick="copyProxyPath()" class="px-3 py-1 bg-white/10 hover:bg-white/20 text-white rounded text-xs font-mono transition">
+              Copy
+            </button>
+          </div>
         </div>
-      </div>
-      <div class="text-sm text-slate-400 mb-4">
-        <strong class="text-slate-200">How to use it:</strong><br>
-        Replace your backend URL in your frontend code with the proxy path above. Example:<br>
-        <code class="text-slate-400 text-xs">
-          Before: <span class="text-red-400">https://my-app.onrender.com/api/submit</span><br>
-          After: &nbsp;<span class="text-emerald-400" id="example-proxy"></span>
-        </code>
-      </div>
-      <div class="flex gap-3">
-        <a id="dashboard-link" href="#" class="flex-1 text-center py-2.5 bg-sky-500 hover:bg-sky-400 text-white font-medium rounded-lg transition text-sm">
-          View Dashboard →
-        </a>
-        <a href="/app/projects/new" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-sm font-medium rounded-lg transition">
-          Connect Another
-        </a>
+
+        <div class="p-3.5 bg-white/[0.02] border border-white/[0.06] rounded-xl text-xs font-mono text-slate-400 mb-6 space-y-1.5">
+          <div class="text-slate-300 font-semibold mb-1">Next Step:</div>
+          <div>Point your form submissions or API calls to:</div>
+          <div class="text-emerald-400 break-all" id="example-proxy"></div>
+        </div>
+
+        <div class="flex gap-3">
+          <a id="dashboard-link" href="#" class="flex-1 py-2.5 text-center bg-orange-500 hover:bg-orange-600 text-white font-mono text-xs font-semibold rounded-lg shadow-lg shadow-orange-500/25 transition">
+            OPEN PROJECT DASHBOARD &rarr;
+          </a>
+          <a href="/app/projects/new" class="px-4 py-2.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg text-xs font-mono transition">
+            Connect Another
+          </a>
+        </div>
       </div>
     </div>
 
-    <!-- Form -->
-    <div id="form-card" class="bg-slate-900 border border-slate-800 rounded-2xl p-8">
-      <div id="form-error" class="hidden mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm"></div>
-
-      <form id="project-form" onsubmit="handleSubmit(event)">
-        <div class="mb-5">
-          <label class="block text-sm font-medium text-slate-300 mb-2">Project Name</label>
-          <input type="text" id="proj-name" required placeholder="e.g. My Portfolio, E-commerce API"
-            class="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 transition">
-          <p class="mt-1 text-xs text-slate-500">Used to generate your proxy slug (e.g. my-portfolio-a3f2)</p>
+    <!-- Form Window -->
+    <div id="form-card" class="os-window">
+      <div class="os-titlebar">
+        <div class="flex items-center gap-2.5">
+          <div class="w-2 h-2 bg-orange-500 rounded-sm"></div>
+          <span class="raster-tag text-slate-300">SITE CONFIGURATION</span>
         </div>
-
-        <div class="mb-5">
-          <label class="block text-sm font-medium text-slate-300 mb-2">Frontend URL</label>
-          <input type="url" id="proj-frontend" required placeholder="https://my-app.vercel.app"
-            class="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 transition">
-          <p class="mt-1 text-xs text-slate-500">The deployed frontend (Vercel, Netlify, GitHub Pages, etc.)</p>
+        <div class="os-lines">
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
+        <span class="text-[10px] font-mono text-slate-500">STEP 1 OF 1</span>
+      </div>
 
-        <div class="mb-6">
-          <label class="block text-sm font-medium text-slate-300 mb-2">Backend API URL</label>
-          <input type="url" id="proj-backend" required placeholder="https://my-app.onrender.com"
-            class="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 transition">
-          <p class="mt-1 text-xs text-slate-500">The deployed backend API (Render, Railway, Fly.io, etc.)</p>
-        </div>
+      <div class="p-6 sm:p-8">
+        <div id="form-error" class="hidden mb-5 p-3.5 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-400 text-xs font-mono"></div>
 
-        <div class="bg-slate-800/50 rounded-xl p-4 mb-6 text-sm text-slate-400">
-          <strong class="text-slate-300">What happens next:</strong>
-          <ul class="mt-2 space-y-1 list-disc list-inside">
-            <li>A unique proxy path is generated instantly</li>
-            <li>SecureScript pings both URLs to verify reachability</li>
-            <li>The WAF is live immediately — no restarts needed</li>
-          </ul>
-        </div>
+        <form id="project-form" onsubmit="handleSubmit(event)" class="space-y-5">
+          <div>
+            <label class="block text-xs font-mono text-slate-300 mb-1.5 uppercase tracking-wider">Project Display Name</label>
+            <input type="text" id="proj-name" required placeholder="e.g. Acme Production, Contact Form Portal"
+              class="w-full px-3.5 py-2.5 bg-[#0a0c12] border border-white/10 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition font-mono">
+            <p class="text-[11px] text-slate-500 font-mono mt-1">Generates unique slug identifier (e.g. acme-production-4c2b)</p>
+          </div>
 
-        <button type="submit" id="submit-btn"
-          class="w-full py-3 bg-sky-500 hover:bg-sky-400 text-white font-semibold rounded-lg transition shadow-lg shadow-sky-500/20">
-          Connect Site & Generate Proxy Path →
-        </button>
-      </form>
+          <div>
+            <label class="block text-xs font-mono text-slate-300 mb-1.5 uppercase tracking-wider">Frontend Deployed URL</label>
+            <input type="url" id="proj-frontend" required placeholder="https://basic-form-project.vercel.app"
+              class="w-full px-3.5 py-2.5 bg-[#0a0c12] border border-white/10 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition font-mono">
+            <p class="text-[11px] text-slate-500 font-mono mt-1">Target origin for HTML pages, client scripts, and static assets</p>
+          </div>
+
+          <div>
+            <label class="block text-xs font-mono text-slate-300 mb-1.5 uppercase tracking-wider">Backend API Target URL</label>
+            <input type="url" id="proj-backend" required placeholder="https://basic-form-project.onrender.com"
+              class="w-full px-3.5 py-2.5 bg-[#0a0c12] border border-white/10 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition font-mono">
+            <p class="text-[11px] text-slate-500 font-mono mt-1">Target origin for form endpoints (`/api/...`), POST, and REST APIs</p>
+          </div>
+
+          <div class="p-4 bg-[#0a0c12] border border-white/5 rounded-xl font-mono text-xs text-slate-400 space-y-1">
+            <div class="text-slate-300 font-semibold mb-1">Automatic SLA Provisions:</div>
+            <div>&bull; LRU Slug Cached (60s invalidation TTL)</div>
+            <div>&bull; 3-Tier Normalization &amp; Fast-Path Lexer &lt; 2ms SLA</div>
+            <div>&bull; Automatic Backend Fallback Ingestion on 502/503/504</div>
+          </div>
+
+          <button type="submit" id="submit-btn"
+            class="w-full py-3.5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2">
+            <span>Provision Proxy &amp; Activate WAF</span>
+            <i class="fa-solid fa-arrow-right text-xs"></i>
+          </button>
+        </form>
+      </div>
     </div>
+
   </main>
 
   <script>
@@ -114,13 +202,11 @@
       window.location.href = '/login';
     }
 
-    let createdProjectId = null;
-
     async function handleSubmit(e) {
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
       const errEl = document.getElementById('form-error');
-      btn.textContent = 'Connecting…';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i><span>Provisioning Proxy Fabric…</span>';
       btn.disabled = true;
       errEl.classList.add('hidden');
 
@@ -138,7 +224,6 @@
         const data = await res.json();
 
         if (res.ok) {
-          createdProjectId = data.id;
           const origin = window.location.origin;
           document.getElementById('proxy-path-value').textContent = origin + data.proxy_path;
           document.getElementById('example-proxy').textContent = origin + data.proxy_path + 'api/submit';
@@ -146,23 +231,24 @@
           document.getElementById('form-card').classList.add('hidden');
           document.getElementById('success-card').classList.remove('hidden');
         } else {
-          errEl.textContent = data.detail || 'Failed to create project. Please try again.';
+          errEl.textContent = data.detail || 'Failed to create project. Please verify inputs and try again.';
           errEl.classList.remove('hidden');
-          btn.textContent = 'Connect Site & Generate Proxy Path →';
+          btn.innerHTML = '<span>Provision Proxy &amp; Activate WAF</span><i class="fa-solid fa-arrow-right text-xs"></i>';
           btn.disabled = false;
         }
       } catch {
-        errEl.textContent = 'Network error. Please try again.';
+        errEl.textContent = 'Network communication error. Please try again.';
         errEl.classList.remove('hidden');
-        btn.textContent = 'Connect Site & Generate Proxy Path →';
+        btn.innerHTML = '<span>Provision Proxy &amp; Activate WAF</span><i class="fa-solid fa-arrow-right text-xs"></i>';
         btn.disabled = false;
       }
     }
 
     function copyProxyPath() {
       const val = document.getElementById('proxy-path-value').textContent;
-      navigator.clipboard.writeText(val).then(() => alert('Proxy path copied to clipboard!'));
+      navigator.clipboard.writeText(val).then(() => alert('WAF Proxy Path copied!'));
     }
   </script>
+
 </body>
 </html>
