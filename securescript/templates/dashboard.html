@@ -1,91 +1,257 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SecureScript — Security Operations Console</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+  
+  <!-- Exact Tavus.io Fonts from Production Webflow CDN -->
   <style>
+    @font-face {
+      font-family: 'Suisse Intl';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a38_SuisseIntl-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Suisse Intl';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a27_SuisseIntl-Medium.woff2') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Suisse Intl';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a26_SuisseIntl-Light.woff2') format('woff2');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Perfectlynineties';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a22_PerfectlyNineties-Italic.woff') format('woff');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Perfectlynineties';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a23_PerfectlyNineties-Regular.woff') format('woff');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Fk Raster Grotesk Compact Blended';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a21_FK%20Raster%20Grotesk%20Compact%20Blended.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* Exact Tavus.io CSS Variables & Color Primitives */
+    :root {
+      --primatives--pc-plastic-1: #f7f4ef;
+      --primatives--pc-plastic-2: #eae5de;
+      --primatives--pc-plastic-3: #e4ddd2;
+      --primatives--pc-plastic-4: #d9d0c2;
+      --primatives--terminal-black: #140206;
+      --primatives--hardware-gray-9: #28292a;
+      --primatives--hardware-gray-8: #484748;
+      --primatives--static-white: #ffffff;
+      
+      --primatives--atomic-glow-4: #ff6810;  /* Tavus Orange */
+      --primatives--atomic-glow-1: #ffb835;  /* Tavus Amber */
+      --primatives--atomic-glow-5: #ffe8bc;
+      --primatives--bubbletech-4: #ff6183;   /* Tavus Coral Pink */
+      --primatives--bubbletech-1: #ffb4c5;
+      --primatives--neon-field-4: #0cb531;   /* Tavus Green */
+      --primatives--neon-field-2: #38f261;
+      --primatives--floppy-fog-1: #e4e0f2;   /* Tavus Lavender */
+      --primatives--frost-5: #b8deff;        /* Tavus Cyan */
+
+      --themes--background: var(--primatives--pc-plastic-1);
+      --themes--background-2: var(--primatives--pc-plastic-2);
+      --themes--text: var(--primatives--hardware-gray-9);
+      --themes--border: var(--primatives--terminal-black);
+
+      --_typography---primary-font-family: 'Suisse Intl', Arial, sans-serif;
+      --_typography---secondary-font-family: 'Perfectlynineties', Georgia, serif;
+      --_typography---tertiary-font-family: 'Fk Raster Grotesk Compact Blended', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      background-color: #08090d;
-      color: #f1f5f9;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      border: 10px solid var(--primatives--pc-plastic-2);
+      background-color: var(--themes--background);
+      color: var(--themes--text);
+      font-family: var(--_typography---primary-font-family);
+      font-size: 1rem;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
     }
-    .tavus-grid {
-      background-image: 
-        radial-gradient(circle at 50% 0%, rgba(255, 92, 53, 0.1), transparent 50%),
-        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 100% 100%, 36px 36px, 36px 36px;
+
+    .font-serif-italic {
+      font-family: var(--_typography---secondary-font-family);
+      font-style: italic;
+      font-weight: 400;
     }
-    .os-window {
-      background: rgba(15, 17, 24, 0.88);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.7);
-      border-radius: 14px;
-      overflow: hidden;
+
+    .text-type-raster {
+      font-family: var(--_typography---tertiary-font-family);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      font-weight: 400;
     }
-    .os-titlebar {
-      background: rgba(20, 23, 33, 0.95);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 10px 16px;
+
+    /* Tavus retro neo-brutalist buttons */
+    .tavus-btn-primary {
+      background-color: var(--primatives--atomic-glow-4);
+      color: #ffffff;
+      border: 1px solid var(--themes--border);
+      box-shadow: 3px 3px 0 0 var(--themes--border);
+      font-family: var(--_typography---primary-font-family);
+      font-weight: 500;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tavus-btn-primary:hover {
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0 0 var(--themes--border);
+    }
+    .tavus-btn-primary:active {
+      transform: translate(3px, 3px);
+      box-shadow: 0 0 0 0 var(--themes--border);
+    }
+
+    .tavus-btn-secondary {
+      background-color: var(--primatives--pc-plastic-2);
+      color: var(--themes--text);
+      border: 1px solid var(--themes--border);
+      box-shadow: 3px 3px 0 0 var(--themes--border);
+      font-family: var(--_typography---primary-font-family);
+      font-weight: 500;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tavus-btn-secondary:hover {
+      background-color: var(--primatives--static-white);
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0 0 var(--themes--border);
+    }
+    .tavus-btn-secondary:active {
+      transform: translate(3px, 3px);
+      box-shadow: 0 0 0 0 var(--themes--border);
+    }
+
+    /* Tavus Window Box */
+    .tavus-window {
+      background-color: var(--primatives--static-white);
+      border: 1px solid var(--themes--border);
+      box-shadow: 4px 4px 0 0 var(--themes--border);
+      position: relative;
+    }
+
+    .tavus-win-title {
+      background-color: var(--primatives--pc-plastic-2);
+      border-bottom: 1px solid var(--themes--border);
+      padding: 8px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .raster-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-    .os-lines {
+
+    .tavus-os-lines {
       display: flex;
       flex-direction: column;
       gap: 2.5px;
-      width: 36px;
+      width: 32px;
     }
-    .os-lines span {
+    .tavus-os-lines span {
       height: 1px;
-      background: rgba(255, 255, 255, 0.15);
+      background: var(--themes--border);
       width: 100%;
     }
-    @keyframes subtlePulse {
-      0%, 100% { opacity: 0.8; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.05); }
+
+    .win-dot-square {
+      width: 8px;
+      height: 8px;
+      border: 1px solid var(--themes--border);
+      display: inline-block;
+      flex-shrink: 0;
     }
-    .status-dot {
-      animation: subtlePulse 2.5s infinite ease-in-out;
+
+    .tavus-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border: 1px solid var(--themes--border);
+      background-color: var(--primatives--pc-plastic-2);
+      box-shadow: 2px 2px 0 0 var(--themes--border);
+      font-family: var(--_typography---tertiary-font-family);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--themes--text);
+    }
+
+    .tavus-input {
+      background-color: var(--primatives--static-white);
+      border: 1px solid var(--themes--border);
+      box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.06);
+      color: var(--themes--text);
+      font-family: var(--_typography---primary-font-family);
+      font-size: 0.875rem;
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+    .tavus-input:focus {
+      border-color: var(--primatives--atomic-glow-4);
+      box-shadow: 0 0 0 1px var(--primatives--atomic-glow-4);
     }
   </style>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body class="min-h-screen tavus-grid">
+<body>
 
   <!-- Nav Header -->
-  <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#08090d]/85 border-b border-white/[0.08]">
+  <header style="background-color: var(--primatives--pc-plastic-1); border-bottom: 1px solid var(--themes--border);" class="sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
       <div class="flex items-center gap-4">
-        <a href="/app/projects" class="text-xs font-mono text-slate-400 hover:text-white transition flex items-center gap-1.5">
+        <a href="/app/projects" class="tavus-label no-underline hover:bg-[#ffffff] transition">
           <i class="fa-solid fa-arrow-left text-[10px]"></i>
           <span>PROJECTS</span>
         </a>
-        <span class="text-slate-700">/</span>
-        <span id="project-name-nav" class="raster-tag text-slate-300 font-bold truncate max-w-xs">Loading…</span>
+        <span class="text-[#d9d0c2]">/</span>
+        <span id="project-name-nav" class="text-type-raster text-[#140206] font-medium truncate max-w-xs">Loading…</span>
       </div>
 
-      <div class="flex items-center gap-4">
-        <div class="hidden sm:flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full font-mono text-xs text-slate-400">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 status-dot"></span>
+      <div class="flex items-center gap-3">
+        <div class="tavus-label hidden sm:inline-flex">
+          <span class="win-dot-square" style="background-color: var(--primatives--neon-field-4);"></span>
           <span>WAF SENSOR LIVE</span>
         </div>
-        <button onclick="logout()" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 rounded-lg text-xs font-mono transition">
+        <button onclick="logout()" class="tavus-btn-secondary px-3.5 py-1.5 text-xs text-type-raster">
           LOGOUT
         </button>
       </div>
@@ -95,34 +261,37 @@
   <main class="max-w-7xl mx-auto px-6 py-8">
     
     <!-- Top Bar with Project Info & Actions -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 pb-6 border-b border-white/[0.08]">
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 pb-6 border-b border-[#140206]">
       <div>
-        <div class="flex items-center gap-2.5 mb-1.5">
-          <h1 id="project-title" class="text-3xl font-bold tracking-tight text-white">Loading…</h1>
-          <span class="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 uppercase">
-            PROTECTION ARMED
+        <div class="flex items-center gap-3 mb-1.5">
+          <h1 id="project-title" style="font-family: 'Suisse Intl', sans-serif; font-size: 2.25rem; font-weight: 400; letter-spacing: -0.03em; color: var(--primatives--terminal-black);">
+            Loading…
+          </h1>
+          <span class="tavus-label">
+            <span class="win-dot-square" style="background-color: var(--primatives--neon-field-4);"></span>
+            <span>PROTECTION ARMED</span>
           </span>
         </div>
         
-        <div class="flex flex-wrap items-center gap-3 font-mono text-xs text-slate-400">
-          <span class="text-slate-500">INLINE ROUTE:</span>
-          <code id="proxy-path-display" class="text-orange-400 select-all font-semibold"></code>
-          <button onclick="copyProxy()" class="px-2 py-0.5 bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 rounded transition text-[11px]">
-            <i class="fa-regular fa-copy text-[10px]"></i> Copy
+        <div class="flex flex-wrap items-center gap-3 font-mono text-xs text-[#484748]">
+          <span class="text-type-raster text-[#484748]">INLINE ROUTE:</span>
+          <code id="proxy-path-display" class="text-[#ff6810] select-all font-semibold bg-[#eae5de] px-2 py-0.5 border border-[#140206]"></code>
+          <button onclick="copyProxy()" class="tavus-btn-secondary px-2 py-0.5 text-[11px] text-type-raster">
+            <i class="fa-regular fa-copy text-[10px] mr-1"></i> Copy
           </button>
         </div>
       </div>
 
       <div class="flex items-center gap-3">
         <button onclick="downloadReport()" 
-          class="px-4 py-2 bg-white/5 hover:bg-white/10 text-slate-200 hover:text-white border border-white/10 rounded-xl text-xs font-mono font-medium transition flex items-center gap-2">
-          <i class="fa-solid fa-download text-xs text-orange-400"></i>
+          class="tavus-btn-secondary px-4 py-2 text-xs text-type-raster gap-2">
+          <i class="fa-solid fa-download text-xs text-[#ff6810]"></i>
           <span>EXPORT REPORT</span>
         </button>
         <a id="test-proxy-btn" href="#" target="_blank"
-          class="px-4 py-2 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-xl text-xs font-mono font-semibold transition flex items-center gap-2">
+          class="tavus-btn-primary px-4 py-2 text-xs text-type-raster gap-2">
           <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-          <span>TEST ORIGIN</span>
+          <span>TEST ORIGIN &rarr;</span>
         </a>
       </div>
     </div>
@@ -131,38 +300,38 @@
     <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
       
       <!-- Total -->
-      <div class="os-window p-5">
-        <div class="text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-1">TOTAL INSPECTED</div>
-        <div id="stat-total" class="text-3xl font-bold text-white font-mono">—</div>
-        <div class="text-[11px] font-mono text-slate-500 mt-1">Global Requests</div>
+      <div class="tavus-window p-5">
+        <div class="text-type-raster text-[#484748] mb-1">TOTAL INSPECTED</div>
+        <div id="stat-total" style="font-family: 'Suisse Intl', monospace; font-size: 2.25rem; font-weight: 500; color: var(--primatives--terminal-black);">—</div>
+        <div class="text-[11px] text-type-raster text-[#484748] mt-1">Global Requests</div>
       </div>
 
       <!-- Blocked -->
-      <div class="os-window p-5 border-rose-500/20">
-        <div class="text-[10px] font-mono text-rose-400 uppercase tracking-wider mb-1">NEUTRALIZED</div>
-        <div id="stat-blocked" class="text-3xl font-bold text-rose-400 font-mono">—</div>
-        <div class="text-[11px] font-mono text-slate-500 mt-1">HTTP 403 Dropped</div>
+      <div class="tavus-window p-5">
+        <div class="text-type-raster text-[#ff6183] mb-1">NEUTRALIZED</div>
+        <div id="stat-blocked" style="font-family: 'Suisse Intl', monospace; font-size: 2.25rem; font-weight: 500; color: var(--primatives--bubbletech-4);">—</div>
+        <div class="text-[11px] text-type-raster text-[#484748] mt-1">HTTP 403 Dropped</div>
       </div>
 
       <!-- Passed -->
-      <div class="os-window p-5 border-emerald-500/20">
-        <div class="text-[10px] font-mono text-emerald-400 uppercase tracking-wider mb-1">CLEAN TRAFFIC</div>
-        <div id="stat-passed" class="text-3xl font-bold text-emerald-400 font-mono">—</div>
-        <div class="text-[11px] font-mono text-slate-500 mt-1">Proxied to Origin</div>
+      <div class="tavus-window p-5">
+        <div class="text-type-raster text-[#0cb531] mb-1">CLEAN TRAFFIC</div>
+        <div id="stat-passed" style="font-family: 'Suisse Intl', monospace; font-size: 2.25rem; font-weight: 500; color: var(--primatives--neon-field-4);">—</div>
+        <div class="text-[11px] text-type-raster text-[#484748] mt-1">Proxied to Origin</div>
       </div>
 
       <!-- Block Rate -->
-      <div class="os-window p-5">
-        <div class="text-[10px] font-mono text-orange-400 uppercase tracking-wider mb-1">THREAT DENSITY</div>
-        <div id="stat-blockrate" class="text-3xl font-bold text-orange-400 font-mono">—</div>
-        <div class="text-[11px] font-mono text-slate-500 mt-1">Attack Ratio %</div>
+      <div class="tavus-window p-5">
+        <div class="text-type-raster text-[#ff6810] mb-1">THREAT DENSITY</div>
+        <div id="stat-blockrate" style="font-family: 'Suisse Intl', monospace; font-size: 2.25rem; font-weight: 500; color: var(--primatives--atomic-glow-4);">—</div>
+        <div class="text-[11px] text-type-raster text-[#484748] mt-1">Attack Ratio %</div>
       </div>
 
       <!-- Avg Confidence -->
-      <div class="os-window p-5">
-        <div class="text-[10px] font-mono text-sky-400 uppercase tracking-wider mb-1">CONFIDENCE SLA</div>
-        <div id="stat-confidence" class="text-3xl font-bold text-sky-400 font-mono">—</div>
-        <div class="text-[11px] font-mono text-slate-500 mt-1">Neural / Lexer Score</div>
+      <div class="tavus-window p-5">
+        <div class="text-type-raster text-[#28292a] mb-1">CONFIDENCE SLA</div>
+        <div id="stat-confidence" style="font-family: 'Suisse Intl', monospace; font-size: 2.25rem; font-weight: 500; color: var(--primatives--terminal-black);">—</div>
+        <div class="text-[11px] text-type-raster text-[#484748] mt-1">Neural / Lexer Score</div>
       </div>
 
     </div>
@@ -171,62 +340,61 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       
       <!-- Top Attacked Paths Window -->
-      <div class="os-window">
-        <div class="os-titlebar">
+      <div class="tavus-window">
+        <div class="tavus-win-title">
           <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-sm bg-rose-500"></span>
-            <span class="raster-tag text-slate-300">ATTACK VECTOR DISTRIBUTION</span>
+            <span class="win-dot-square" style="background-color: var(--primatives--bubbletech-4);"></span>
+            <span class="text-type-raster text-[#140206]">ATTACK VECTOR DISTRIBUTION</span>
           </div>
-          <span class="text-[10px] font-mono text-rose-400">FREQUENT TARGETS</span>
+          <span class="text-type-raster text-[#ff6183]">FREQUENT TARGETS</span>
         </div>
         
         <div class="p-5">
           <div id="top-paths" class="space-y-2">
-            <div class="text-slate-500 text-xs font-mono">No attacks recorded yet.</div>
+            <div class="text-[#484748] text-xs font-mono">No attacks recorded yet.</div>
           </div>
         </div>
       </div>
 
       <!-- Alert Dispatcher Window -->
-      <div class="md:col-span-2 os-window">
-        <div class="os-titlebar">
+      <div class="md:col-span-2 tavus-window">
+        <div class="tavus-win-title">
           <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-sm bg-orange-500"></span>
-            <span class="raster-tag text-slate-300">INCIDENT DISPATCHER CONFIGURATION</span>
+            <span class="win-dot-square" style="background-color: var(--primatives--atomic-glow-4);"></span>
+            <span class="text-type-raster text-[#140206]">INCIDENT DISPATCHER CONFIGURATION</span>
           </div>
-          <div class="os-lines">
+          <div class="tavus-os-lines">
             <span></span>
             <span></span>
             <span></span>
           </div>
-          <span class="text-[10px] font-mono text-orange-400">ASYNC DISPATCH</span>
+          <span class="text-type-raster text-[#ff6810]">ASYNC DISPATCH</span>
         </div>
 
         <div class="p-5 sm:p-6">
-          <div id="alert-success" class="hidden mb-4 p-3 bg-emerald-500/10 border border-emerald-500/25 rounded-lg text-emerald-400 text-xs font-mono">
+          <div id="alert-success" class="hidden mb-4 p-3 bg-[#e4e0f2] border border-[#140206] text-[#140206] text-xs font-mono">
             &check; Alert notification configuration saved successfully!
           </div>
 
           <form onsubmit="saveAlerts(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-mono text-slate-300 mb-1.5 uppercase tracking-wider">Webhook Endpoint URL</label>
+              <label class="block text-type-raster text-[#28292a] mb-1.5">Webhook Endpoint URL</label>
               <input type="url" id="alert-webhook" placeholder="https://hooks.slack.com/services/…"
-                class="w-full px-3.5 py-2.5 bg-[#0a0c12] border border-white/10 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition font-mono">
-              <p class="mt-1 text-[11px] text-slate-500 font-mono">Slack, Discord, PagerDuty, or custom webhook</p>
+                class="tavus-input font-mono w-full">
+              <p class="mt-1 text-[10px] text-type-raster text-[#484748]">Slack, Discord, PagerDuty, or custom webhook</p>
             </div>
 
             <div>
-              <label class="block text-xs font-mono text-slate-300 mb-1.5 uppercase tracking-wider">SOC Alert Email</label>
+              <label class="block text-type-raster text-[#28292a] mb-1.5">SOC Alert Email</label>
               <input type="email" id="alert-email" placeholder="security-alerts@company.com"
-                class="w-full px-3.5 py-2.5 bg-[#0a0c12] border border-white/10 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition font-mono">
-              <p class="mt-1 text-[11px] text-slate-500 font-mono">Dispatches forensic email with full incident payload</p>
+                class="tavus-input font-mono w-full">
+              <p class="mt-1 text-[10px] text-type-raster text-[#484748]">Dispatches forensic email with full incident payload</p>
             </div>
 
             <div class="md:col-span-2 pt-2">
-              <button type="submit" 
-                class="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-mono text-xs font-semibold rounded-lg shadow-lg shadow-orange-500/20 transition flex items-center gap-2">
+              <button type="submit" class="tavus-btn-primary px-5 py-2.5 text-xs text-type-raster gap-2">
                 <i class="fa-solid fa-floppy-disk text-xs"></i>
-                <span>SAVE DISPATCH CHANNELS</span>
+                <span>SAVE DISPATCH CHANNELS &rarr;</span>
               </button>
             </div>
           </form>
@@ -236,24 +404,24 @@
     </div>
 
     <!-- Forensic Incident Audit Log -->
-    <div class="os-window">
-      <div class="os-titlebar">
+    <div class="tavus-window">
+      <div class="tavus-win-title">
         <div class="flex items-center gap-3">
-          <div class="w-2 h-2 bg-purple-500 rounded-sm"></div>
-          <span class="raster-tag text-slate-300">FORENSIC INCIDENT AUDIT TRAIL</span>
+          <span class="win-dot-square" style="background-color: var(--primatives--atomic-glow-1);"></span>
+          <span class="text-type-raster text-[#140206]">FORENSIC INCIDENT AUDIT TRAIL</span>
         </div>
 
         <!-- Filter Controls -->
         <div class="flex items-center gap-2 text-xs font-mono">
           <select id="filter-action" onchange="loadIncidents()"
-            class="bg-[#0a0c12] border border-white/10 rounded px-2.5 py-1 text-slate-300 text-xs focus:outline-none focus:border-orange-500">
+            class="bg-[#ffffff] border border-[#140206] px-2.5 py-1 text-[#28292a] text-xs font-mono outline-none shadow-[1px_1px_0_0_#140206]">
             <option value="">All Actions</option>
             <option value="BLOCKED">Blocked</option>
             <option value="PASSED">Passed</option>
             <option value="AUDITED">Audited</option>
           </select>
           <select id="filter-severity" onchange="loadIncidents()"
-            class="bg-[#0a0c12] border border-white/10 rounded px-2.5 py-1 text-slate-300 text-xs focus:outline-none focus:border-orange-500">
+            class="bg-[#ffffff] border border-[#140206] px-2.5 py-1 text-[#28292a] text-xs font-mono outline-none shadow-[1px_1px_0_0_#140206]">
             <option value="">All Severities</option>
             <option value="CRITICAL">Critical</option>
             <option value="HIGH">High</option>
@@ -267,7 +435,7 @@
       <div class="overflow-x-auto">
         <table class="w-full text-left font-mono text-xs">
           <thead>
-            <tr class="text-slate-400 bg-white/[0.02] border-b border-white/[0.08] text-[11px] uppercase tracking-wider">
+            <tr class="text-[#140206] bg-[#eae5de] border-b border-[#140206] text-[11px] text-type-raster">
               <th class="px-4 py-3">Ray Event ID</th>
               <th class="px-4 py-3">Timestamp (UTC)</th>
               <th class="px-4 py-3">Action</th>
@@ -279,19 +447,19 @@
             </tr>
           </thead>
           <tbody id="incidents-tbody">
-            <tr><td colspan="8" class="px-4 py-12 text-center text-slate-500">Loading forensic telemetry stream…</td></tr>
+            <tr><td colspan="8" class="px-4 py-12 text-center text-[#484748] text-type-raster">Loading forensic telemetry stream…</td></tr>
           </tbody>
         </table>
       </div>
 
       <!-- Pagination Footer -->
-      <div class="flex items-center justify-between px-6 py-3.5 bg-[#090b10] border-t border-white/[0.08] text-xs font-mono text-slate-500">
-        <span id="page-info">0 Total Incidents</span>
+      <div class="flex items-center justify-between px-6 py-3.5 bg-[#eae5de] border-t border-[#140206] text-xs font-mono text-[#484748]">
+        <span id="page-info" class="text-type-raster">0 Total Incidents</span>
         <div class="flex gap-2">
-          <button onclick="prevPage()" id="btn-prev" class="px-3 py-1 bg-white/5 hover:bg-white/10 text-slate-300 rounded border border-white/10 transition disabled:opacity-30">
+          <button onclick="prevPage()" id="btn-prev" class="tavus-btn-secondary px-3 py-1 text-xs text-type-raster disabled:opacity-30">
             &larr; Prev
           </button>
-          <button onclick="nextPage()" id="btn-next" class="px-3 py-1 bg-white/5 hover:bg-white/10 text-slate-300 rounded border border-white/10 transition disabled:opacity-30">
+          <button onclick="nextPage()" id="btn-next" class="tavus-btn-secondary px-3 py-1 text-xs text-type-raster disabled:opacity-30">
             Next &rarr;
           </button>
         </div>
@@ -326,21 +494,21 @@
 
     function severityColor(s) {
       return { 
-        CRITICAL: 'text-rose-400 font-bold', 
-        HIGH: 'text-orange-400 font-semibold', 
-        MEDIUM: 'text-amber-400', 
-        LOW: 'text-emerald-400' 
-      }[s] || 'text-slate-400';
+        CRITICAL: 'text-[#ff6183] font-bold', 
+        HIGH: 'text-[#ff6810] font-semibold', 
+        MEDIUM: 'text-[#ffb835] font-semibold', 
+        LOW: 'text-[#0cb531] font-semibold' 
+      }[s] || 'text-[#484748]';
     }
 
     function actionBadge(a) {
       const m = { 
-        BLOCKED: 'bg-rose-500/10 text-rose-400 border border-rose-500/30 font-bold', 
-        PASSED: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30', 
-        AUDITED: 'bg-amber-500/10 text-amber-400 border border-amber-500/30' 
+        BLOCKED: 'bg-[#ff6183] text-white border border-[#140206] shadow-[1px_1px_0_0_#140206] font-bold', 
+        PASSED: 'bg-[#b8deff] text-[#140206] border border-[#140206]', 
+        AUDITED: 'bg-[#ffe8bc] text-[#140206] border border-[#140206]' 
       };
-      const cls = m[a] || 'bg-slate-800 text-slate-400';
-      return `<span class="px-2 py-0.5 text-[10px] rounded ${cls}">${a}</span>`;
+      const cls = m[a] || 'bg-[#eae5de] text-[#484748] border border-[#140206]';
+      return `<span class="px-2 py-0.5 text-[10px] text-type-raster ${cls}">${a}</span>`;
     }
 
     function escHtml(str) {
@@ -363,13 +531,13 @@
         const topEl = document.getElementById('top-paths');
         if (stats.top_attacked_paths && stats.top_attacked_paths.length) {
           topEl.innerHTML = stats.top_attacked_paths.map(p =>
-            `<div class="flex items-center justify-between py-1.5 border-b border-white/[0.04] text-xs font-mono">
-               <code class="text-slate-300 truncate flex-1">${escHtml(p.path)}</code>
-               <span class="ml-3 px-2 py-0.5 bg-rose-500/10 text-rose-400 text-[10px] rounded font-bold">${p.count} hits</span>
+            `<div class="flex items-center justify-between py-1.5 border-b border-[#140206] text-xs font-mono">
+               <code class="text-[#28292a] truncate flex-1">${escHtml(p.path)}</code>
+               <span class="ml-3 px-2 py-0.5 bg-[#ffb4c5] border border-[#140206] text-[#140206] text-[10px] text-type-raster font-bold">${p.count} hits</span>
              </div>`
           ).join('');
         } else {
-          topEl.innerHTML = '<div class="text-slate-500 text-xs font-mono">No attacks recorded yet.</div>';
+          topEl.innerHTML = '<div class="text-[#484748] text-xs font-mono">No attacks recorded yet.</div>';
         }
       } catch {}
     }
@@ -405,18 +573,18 @@
 
         const tbody = document.getElementById('incidents-tbody');
         if (!data.incidents || !data.incidents.length) {
-          tbody.innerHTML = '<tr><td colspan="8" class="px-4 py-8 text-center text-slate-500 font-mono text-xs">No incidents recorded for this filter.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="8" class="px-4 py-8 text-center text-[#484748] text-type-raster text-xs">No incidents recorded for this filter.</td></tr>';
         } else {
           tbody.innerHTML = data.incidents.map(i => `
-            <tr class="border-b border-white/[0.04] hover:bg-white/[0.02] transition font-mono">
-              <td class="px-4 py-3 text-orange-400 font-bold">${escHtml(i.event_id)}</td>
-              <td class="px-4 py-3 text-slate-400 whitespace-nowrap">${new Date(i.timestamp).toLocaleTimeString()}</td>
+            <tr class="border-b border-[#140206] hover:bg-[#eae5de]/40 transition font-mono">
+              <td class="px-4 py-3 text-[#ff6810] font-bold">${escHtml(i.event_id)}</td>
+              <td class="px-4 py-3 text-[#484748] whitespace-nowrap">${new Date(i.timestamp).toLocaleTimeString()}</td>
               <td class="px-4 py-3">${actionBadge(i.action)}</td>
-              <td class="px-4 py-3 ${severityColor(i.severity)}">${i.severity}</td>
-              <td class="px-4 py-3 text-slate-300 max-w-xs truncate">${escHtml(i.url_path)}</td>
-              <td class="px-4 py-3 text-slate-400">${escHtml(i.client_ip)}</td>
-              <td class="px-4 py-3 text-slate-400">${escHtml(i.detection_stage)}</td>
-              <td class="px-4 py-3 font-bold ${i.confidence_score >= 0.85 ? 'text-rose-400' : 'text-slate-400'}">${(i.confidence_score * 100).toFixed(0)}%</td>
+              <td class="px-4 py-3 ${severityColor(i.severity)} text-type-raster">${i.severity}</td>
+              <td class="px-4 py-3 text-[#28292a] max-w-xs truncate font-medium">${escHtml(i.url_path)}</td>
+              <td class="px-4 py-3 text-[#484748]">${escHtml(i.client_ip)}</td>
+              <td class="px-4 py-3 text-[#484748] text-type-raster">${escHtml(i.detection_stage)}</td>
+              <td class="px-4 py-3 font-bold ${i.confidence_score >= 0.85 ? 'text-[#ff6183]' : 'text-[#28292a]'}">${(i.confidence_score * 100).toFixed(0)}%</td>
             </tr>
           `).join('');
         }

@@ -1,79 +1,251 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SecureScript — Connect New Site</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+  
+  <!-- Exact Tavus.io Fonts from Production Webflow CDN -->
   <style>
+    @font-face {
+      font-family: 'Suisse Intl';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a38_SuisseIntl-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Suisse Intl';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a27_SuisseIntl-Medium.woff2') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Suisse Intl';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a26_SuisseIntl-Light.woff2') format('woff2');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Perfectlynineties';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a22_PerfectlyNineties-Italic.woff') format('woff');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Perfectlynineties';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a23_PerfectlyNineties-Regular.woff') format('woff');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Fk Raster Grotesk Compact Blended';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a21_FK%20Raster%20Grotesk%20Compact%20Blended.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* Exact Tavus.io CSS Variables & Color Primitives */
+    :root {
+      --primatives--pc-plastic-1: #f7f4ef;
+      --primatives--pc-plastic-2: #eae5de;
+      --primatives--pc-plastic-3: #e4ddd2;
+      --primatives--pc-plastic-4: #d9d0c2;
+      --primatives--terminal-black: #140206;
+      --primatives--hardware-gray-9: #28292a;
+      --primatives--hardware-gray-8: #484748;
+      --primatives--static-white: #ffffff;
+      
+      --primatives--atomic-glow-4: #ff6810;  /* Tavus Orange */
+      --primatives--atomic-glow-1: #ffb835;  /* Tavus Amber */
+      --primatives--bubbletech-4: #ff6183;   /* Tavus Coral Pink */
+      --primatives--neon-field-4: #0cb531;   /* Tavus Green */
+      --primatives--neon-field-2: #38f261;
+      --primatives--floppy-fog-1: #e4e0f2;   /* Tavus Lavender */
+      --primatives--frost-5: #b8deff;        /* Tavus Cyan */
+
+      --themes--background: var(--primatives--pc-plastic-1);
+      --themes--background-2: var(--primatives--pc-plastic-2);
+      --themes--text: var(--primatives--hardware-gray-9);
+      --themes--border: var(--primatives--terminal-black);
+
+      --_typography---primary-font-family: 'Suisse Intl', Arial, sans-serif;
+      --_typography---secondary-font-family: 'Perfectlynineties', Georgia, serif;
+      --_typography---tertiary-font-family: 'Fk Raster Grotesk Compact Blended', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      background-color: #08090d;
-      color: #f1f5f9;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      border: 10px solid var(--primatives--pc-plastic-2);
+      background-color: var(--themes--background);
+      color: var(--themes--text);
+      font-family: var(--_typography---primary-font-family);
+      font-size: 1rem;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
     }
-    .tavus-grid {
-      background-image: 
-        radial-gradient(circle at 50% 10%, rgba(255, 92, 53, 0.12), transparent 60%),
-        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 100% 100%, 36px 36px, 36px 36px;
+
+    .font-serif-italic {
+      font-family: var(--_typography---secondary-font-family);
+      font-style: italic;
+      font-weight: 400;
     }
-    .os-window {
-      background: rgba(15, 17, 24, 0.88);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.75);
-      border-radius: 16px;
-      overflow: hidden;
+
+    .text-type-raster {
+      font-family: var(--_typography---tertiary-font-family);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      font-weight: 400;
     }
-    .os-titlebar {
-      background: rgba(20, 23, 33, 0.95);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 10px 16px;
+
+    /* Tavus retro neo-brutalist buttons */
+    .tavus-btn-primary {
+      background-color: var(--primatives--atomic-glow-4);
+      color: #ffffff;
+      border: 1px solid var(--themes--border);
+      box-shadow: 3px 3px 0 0 var(--themes--border);
+      font-family: var(--_typography---primary-font-family);
+      font-weight: 500;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tavus-btn-primary:hover {
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0 0 var(--themes--border);
+    }
+    .tavus-btn-primary:active {
+      transform: translate(3px, 3px);
+      box-shadow: 0 0 0 0 var(--themes--border);
+    }
+
+    .tavus-btn-secondary {
+      background-color: var(--primatives--pc-plastic-2);
+      color: var(--themes--text);
+      border: 1px solid var(--themes--border);
+      box-shadow: 3px 3px 0 0 var(--themes--border);
+      font-family: var(--_typography---primary-font-family);
+      font-weight: 500;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tavus-btn-secondary:hover {
+      background-color: var(--primatives--static-white);
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0 0 var(--themes--border);
+    }
+    .tavus-btn-secondary:active {
+      transform: translate(3px, 3px);
+      box-shadow: 0 0 0 0 var(--themes--border);
+    }
+
+    /* Tavus Window Box */
+    .tavus-window {
+      background-color: var(--primatives--static-white);
+      border: 1px solid var(--themes--border);
+      box-shadow: 4px 4px 0 0 var(--themes--border);
+      position: relative;
+    }
+
+    .tavus-win-title {
+      background-color: var(--primatives--pc-plastic-2);
+      border-bottom: 1px solid var(--themes--border);
+      padding: 8px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .raster-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-    .os-lines {
+
+    .tavus-os-lines {
       display: flex;
       flex-direction: column;
       gap: 2.5px;
-      width: 36px;
+      width: 32px;
     }
-    .os-lines span {
+    .tavus-os-lines span {
       height: 1px;
-      background: rgba(255, 255, 255, 0.15);
+      background: var(--themes--border);
       width: 100%;
     }
+
+    .win-dot-square {
+      width: 8px;
+      height: 8px;
+      border: 1px solid var(--themes--border);
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .tavus-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border: 1px solid var(--themes--border);
+      background-color: var(--primatives--pc-plastic-2);
+      box-shadow: 2px 2px 0 0 var(--themes--border);
+      font-family: var(--_typography---tertiary-font-family);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--themes--text);
+    }
+
+    .tavus-input {
+      background-color: var(--primatives--static-white);
+      border: 1px solid var(--themes--border);
+      box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.06);
+      color: var(--themes--text);
+      font-family: var(--_typography---primary-font-family);
+      font-size: 0.875rem;
+      padding: 10px 14px;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.15s ease;
+    }
+    .tavus-input:focus {
+      border-color: var(--primatives--atomic-glow-4);
+      box-shadow: 0 0 0 1px var(--primatives--atomic-glow-4);
+    }
   </style>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body class="min-h-screen tavus-grid">
+<body>
 
   <!-- Header -->
-  <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#08090d]/85 border-b border-white/[0.08]">
+  <header style="background-color: var(--primatives--pc-plastic-1); border-bottom: 1px solid var(--themes--border);" class="sticky top-0 z-50">
     <div class="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
       <div class="flex items-center gap-4">
-        <a href="/app/projects" class="text-xs font-mono text-slate-400 hover:text-white transition flex items-center gap-1.5">
+        <a href="/app/projects" class="tavus-label no-underline hover:bg-[#ffffff] transition">
           <i class="fa-solid fa-arrow-left text-[10px]"></i>
           <span>PROJECTS</span>
         </a>
-        <span class="text-slate-700">/</span>
-        <span class="raster-tag text-slate-300">CONNECT APPLICATION</span>
+        <span class="text-[#d9d0c2]">/</span>
+        <span class="text-type-raster text-[#484748]">CONNECT APPLICATION</span>
       </div>
 
-      <button onclick="logout()" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 rounded-lg text-xs font-mono transition">
+      <button onclick="logout()" class="tavus-btn-secondary px-3.5 py-1.5 text-xs text-type-raster">
         LOGOUT
       </button>
     </div>
@@ -83,52 +255,58 @@
     
     <!-- Title Area -->
     <div class="mb-8 text-center sm:text-left">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 raster-tag mb-3">
-        <span class="w-1.5 h-1.5 bg-orange-400 rounded-sm"></span>
-        ZERO CODE INTEGRATION
+      <div class="tavus-label mb-3">
+        <span class="win-dot-square" style="background-color: var(--primatives--atomic-glow-4);"></span>
+        <span>ZERO CODE INTEGRATION</span>
       </div>
-      <h1 class="text-3xl font-bold tracking-tight text-white">Connect Web Application</h1>
-      <p class="text-sm text-slate-400 mt-1">
+      <h1 style="font-family: 'Suisse Intl', sans-serif; font-size: 2.25rem; font-weight: 400; line-height: 1.15; letter-spacing: -0.03em; color: var(--primatives--terminal-black); margin-top: 4px; margin-bottom: 6px;">
+        Connect <em class="font-serif-italic" style="color: var(--primatives--atomic-glow-4);">Web Application</em>
+      </h1>
+      <p style="font-size: 0.95rem; color: var(--primatives--hardware-gray-8); line-height: 1.55;">
         Provide your deployed frontend and backend target URLs. SecureScript generates a dedicated reverse proxy path with automatic 3-tier inspection.
       </p>
     </div>
 
     <!-- Success Card Window (hidden until submit) -->
-    <div id="success-card" class="hidden mb-8 os-window border-emerald-500/40">
-      <div class="os-titlebar bg-emerald-950/40 border-b border-emerald-500/30">
+    <div id="success-card" class="hidden mb-8 tavus-window">
+      <div class="tavus-win-title bg-[#e4e0f2]">
         <div class="flex items-center gap-2.5">
-          <span class="w-2 h-2 rounded-sm bg-emerald-400"></span>
-          <span class="raster-tag text-emerald-400">ROUTING FABRIC PROVISIONED</span>
+          <span class="win-dot-square" style="background-color: var(--primatives--neon-field-4);"></span>
+          <span class="text-type-raster text-[#140206]">ROUTING FABRIC PROVISIONED</span>
         </div>
-        <span class="text-[10px] font-mono text-emerald-400">HTTP 200 READY</span>
+        <span class="text-type-raster text-[#0cb531] font-bold">HTTP 200 READY</span>
       </div>
 
       <div class="p-6">
-        <h3 class="text-lg font-bold text-white mb-1">Protection Layer Active!</h3>
-        <p class="text-xs text-slate-400 mb-5">Your site is now guarded by the hybrid WAF.</p>
+        <h3 style="font-family: 'Suisse Intl'; font-weight: 500; font-size: 1.25rem; color: var(--primatives--terminal-black); margin-bottom: 4px;">
+          Protection Layer Active!
+        </h3>
+        <p style="font-size: 0.85rem; color: var(--primatives--hardware-gray-8); margin-bottom: 1.25rem;">
+          Your site is now guarded by the hybrid WAF.
+        </p>
 
         <!-- Proxy URL box -->
-        <div class="p-3.5 bg-[#090b10] border border-white/10 rounded-xl mb-4">
-          <div class="text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-1">Your Protected WAF Proxy URL</div>
+        <div class="p-3.5 bg-[#eae5de] border border-[#140206] shadow-[2px_2px_0_0_#140206] mb-4">
+          <div class="text-type-raster text-[#484748] mb-1">Your Protected WAF Proxy URL</div>
           <div class="flex items-center gap-2">
-            <code id="proxy-path-value" class="text-orange-400 text-sm font-mono flex-1 break-all select-all font-semibold"></code>
-            <button onclick="copyProxyPath()" class="px-3 py-1 bg-white/10 hover:bg-white/20 text-white rounded text-xs font-mono transition">
+            <code id="proxy-path-value" class="text-[#ff6810] text-sm font-mono flex-1 break-all select-all font-semibold"></code>
+            <button onclick="copyProxyPath()" class="tavus-btn-secondary px-3 py-1 text-xs text-type-raster">
               Copy
             </button>
           </div>
         </div>
 
-        <div class="p-3.5 bg-white/[0.02] border border-white/[0.06] rounded-xl text-xs font-mono text-slate-400 mb-6 space-y-1.5">
-          <div class="text-slate-300 font-semibold mb-1">Next Step:</div>
+        <div class="p-3.5 bg-[#f7f4ef] border border-[#140206] text-xs font-mono text-[#28292a] mb-6 space-y-1.5">
+          <div class="text-[#140206] font-semibold text-type-raster mb-1">Next Step:</div>
           <div>Point your form submissions or API calls to:</div>
-          <div class="text-emerald-400 break-all" id="example-proxy"></div>
+          <div class="text-[#0cb531] font-bold break-all" id="example-proxy"></div>
         </div>
 
         <div class="flex gap-3">
-          <a id="dashboard-link" href="#" class="flex-1 py-2.5 text-center bg-orange-500 hover:bg-orange-600 text-white font-mono text-xs font-semibold rounded-lg shadow-lg shadow-orange-500/25 transition">
+          <a id="dashboard-link" href="#" class="tavus-btn-primary flex-1 py-2.5 text-xs text-type-raster">
             OPEN PROJECT DASHBOARD &rarr;
           </a>
-          <a href="/app/projects/new" class="px-4 py-2.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg text-xs font-mono transition">
+          <a href="/app/projects/new" class="tavus-btn-secondary px-4 py-2.5 text-xs text-type-raster">
             Connect Another
           </a>
         </div>
@@ -136,56 +314,55 @@
     </div>
 
     <!-- Form Window -->
-    <div id="form-card" class="os-window">
-      <div class="os-titlebar">
+    <div id="form-card" class="tavus-window">
+      <div class="tavus-win-title">
         <div class="flex items-center gap-2.5">
-          <div class="w-2 h-2 bg-orange-500 rounded-sm"></div>
-          <span class="raster-tag text-slate-300">SITE CONFIGURATION</span>
+          <span class="win-dot-square" style="background-color: var(--primatives--atomic-glow-4);"></span>
+          <span class="text-type-raster text-[#140206]">SITE CONFIGURATION</span>
         </div>
-        <div class="os-lines">
+        <div class="tavus-os-lines">
           <span></span>
           <span></span>
           <span></span>
         </div>
-        <span class="text-[10px] font-mono text-slate-500">STEP 1 OF 1</span>
+        <span class="text-type-raster text-[#484748]">STEP 1 OF 1</span>
       </div>
 
       <div class="p-6 sm:p-8">
-        <div id="form-error" class="hidden mb-5 p-3.5 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-400 text-xs font-mono"></div>
+        <div id="form-error" class="hidden mb-5 p-3.5 bg-[#ffe8bc] border border-[#140206] text-[#140206] text-xs font-mono"></div>
 
         <form id="project-form" onsubmit="handleSubmit(event)" class="space-y-5">
           <div>
-            <label class="block text-xs font-mono text-slate-300 mb-1.5 uppercase tracking-wider">Project Display Name</label>
+            <label class="block text-type-raster text-[#28292a] mb-1.5">Project Display Name</label>
             <input type="text" id="proj-name" required placeholder="e.g. Acme Production, Contact Form Portal"
-              class="w-full px-3.5 py-2.5 bg-[#0a0c12] border border-white/10 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition font-mono">
-            <p class="text-[11px] text-slate-500 font-mono mt-1">Generates unique slug identifier (e.g. acme-production-4c2b)</p>
+              class="tavus-input font-mono">
+            <p class="text-type-raster text-[#484748] mt-1 text-[10px]">Generates unique slug identifier (e.g. acme-production-4c2b)</p>
           </div>
 
           <div>
-            <label class="block text-xs font-mono text-slate-300 mb-1.5 uppercase tracking-wider">Frontend Deployed URL</label>
+            <label class="block text-type-raster text-[#28292a] mb-1.5">Frontend Deployed URL</label>
             <input type="url" id="proj-frontend" required placeholder="https://basic-form-project.vercel.app"
-              class="w-full px-3.5 py-2.5 bg-[#0a0c12] border border-white/10 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition font-mono">
-            <p class="text-[11px] text-slate-500 font-mono mt-1">Target origin for HTML pages, client scripts, and static assets</p>
+              class="tavus-input font-mono">
+            <p class="text-type-raster text-[#484748] mt-1 text-[10px]">Target origin for HTML pages, client scripts, and static assets</p>
           </div>
 
           <div>
-            <label class="block text-xs font-mono text-slate-300 mb-1.5 uppercase tracking-wider">Backend API Target URL</label>
+            <label class="block text-type-raster text-[#28292a] mb-1.5">Backend API Target URL</label>
             <input type="url" id="proj-backend" required placeholder="https://basic-form-project.onrender.com"
-              class="w-full px-3.5 py-2.5 bg-[#0a0c12] border border-white/10 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition font-mono">
-            <p class="text-[11px] text-slate-500 font-mono mt-1">Target origin for form endpoints (`/api/...`), POST, and REST APIs</p>
+              class="tavus-input font-mono">
+            <p class="text-type-raster text-[#484748] mt-1 text-[10px]">Target origin for form endpoints (`/api/...`), POST, and REST APIs</p>
           </div>
 
-          <div class="p-4 bg-[#0a0c12] border border-white/5 rounded-xl font-mono text-xs text-slate-400 space-y-1">
-            <div class="text-slate-300 font-semibold mb-1">Automatic SLA Provisions:</div>
+          <div class="p-4 bg-[#eae5de] border border-[#140206] shadow-[2px_2px_0_0_#140206] font-mono text-xs text-[#28292a] space-y-1">
+            <div class="text-[#140206] font-semibold text-type-raster mb-1">Automatic SLA Provisions:</div>
             <div>&bull; LRU Slug Cached (60s invalidation TTL)</div>
             <div>&bull; 3-Tier Normalization &amp; Fast-Path Lexer &lt; 2ms SLA</div>
             <div>&bull; Automatic Backend Fallback Ingestion on 502/503/504</div>
           </div>
 
           <button type="submit" id="submit-btn"
-            class="w-full py-3.5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2">
-            <span>Provision Proxy &amp; Activate WAF</span>
-            <i class="fa-solid fa-arrow-right text-xs"></i>
+            class="tavus-btn-primary w-full py-3.5 text-xs text-type-raster">
+            <span>Provision Proxy &amp; Activate WAF &rarr;</span>
           </button>
         </form>
       </div>
@@ -206,7 +383,7 @@
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
       const errEl = document.getElementById('form-error');
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i><span>Provisioning Proxy Fabric…</span>';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs mr-2"></i><span>Provisioning Proxy Fabric…</span>';
       btn.disabled = true;
       errEl.classList.add('hidden');
 
@@ -233,13 +410,13 @@
         } else {
           errEl.textContent = data.detail || 'Failed to create project. Please verify inputs and try again.';
           errEl.classList.remove('hidden');
-          btn.innerHTML = '<span>Provision Proxy &amp; Activate WAF</span><i class="fa-solid fa-arrow-right text-xs"></i>';
+          btn.innerHTML = '<span>Provision Proxy &amp; Activate WAF &rarr;</span>';
           btn.disabled = false;
         }
       } catch {
         errEl.textContent = 'Network communication error. Please try again.';
         errEl.classList.remove('hidden');
-        btn.innerHTML = '<span>Provision Proxy &amp; Activate WAF</span><i class="fa-solid fa-arrow-right text-xs"></i>';
+        btn.innerHTML = '<span>Provision Proxy &amp; Activate WAF &rarr;</span>';
         btn.disabled = false;
       }
     }

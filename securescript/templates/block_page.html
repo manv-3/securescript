@@ -1,133 +1,247 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>403 Forbidden - Request Blocked by SecureScript WAF</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Exact Tavus.io Fonts from Production Webflow CDN -->
   <style>
+    @font-face {
+      font-family: 'Suisse Intl';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a38_SuisseIntl-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Suisse Intl';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a27_SuisseIntl-Medium.woff2') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Suisse Intl';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a26_SuisseIntl-Light.woff2') format('woff2');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Perfectlynineties';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a22_PerfectlyNineties-Italic.woff') format('woff');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Perfectlynineties';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a23_PerfectlyNineties-Regular.woff') format('woff');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Fk Raster Grotesk Compact Blended';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a21_FK%20Raster%20Grotesk%20Compact%20Blended.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* Exact Tavus.io CSS Variables & Color Primitives */
+    :root {
+      --primatives--pc-plastic-1: #f7f4ef;
+      --primatives--pc-plastic-2: #eae5de;
+      --primatives--pc-plastic-3: #e4ddd2;
+      --primatives--pc-plastic-4: #d9d0c2;
+      --primatives--terminal-black: #140206;
+      --primatives--hardware-gray-9: #28292a;
+      --primatives--hardware-gray-8: #484748;
+      --primatives--static-white: #ffffff;
+      
+      --primatives--atomic-glow-4: #ff6810;  /* Tavus Orange */
+      --primatives--atomic-glow-1: #ffb835;  /* Tavus Amber */
+      --primatives--bubbletech-4: #ff6183;   /* Tavus Coral Pink */
+      --primatives--bubbletech-1: #ffb4c5;
+      --primatives--neon-field-4: #0cb531;   /* Tavus Green */
+      --primatives--floppy-fog-1: #e4e0f2;   /* Tavus Lavender */
+      --primatives--frost-5: #b8deff;        /* Tavus Cyan */
+
+      --themes--background: var(--primatives--pc-plastic-1);
+      --themes--background-2: var(--primatives--pc-plastic-2);
+      --themes--text: var(--primatives--hardware-gray-9);
+      --themes--border: var(--primatives--terminal-black);
+
+      --_typography---primary-font-family: 'Suisse Intl', Arial, sans-serif;
+      --_typography---secondary-font-family: 'Perfectlynineties', Georgia, serif;
+      --_typography---tertiary-font-family: 'Fk Raster Grotesk Compact Blended', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      background-color: #08090d;
-      color: #f1f5f9;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      border: 10px solid var(--primatives--pc-plastic-2);
+      background-color: var(--themes--background);
+      color: var(--themes--text);
+      font-family: var(--_typography---primary-font-family);
+      font-size: 1rem;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .tavus-grid {
-      background-image: 
-        radial-gradient(circle at 50% 10%, rgba(244, 63, 94, 0.15), transparent 60%),
-        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 100% 100%, 36px 36px, 36px 36px;
+
+    .font-serif-italic {
+      font-family: var(--_typography---secondary-font-family);
+      font-style: italic;
+      font-weight: 400;
     }
-    .os-window {
-      background: rgba(15, 17, 24, 0.92);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(244, 63, 94, 0.25);
-      box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.8), 0 0 35px rgba(244, 63, 94, 0.15);
-      border-radius: 16px;
-      overflow: hidden;
+
+    .text-type-raster {
+      font-family: var(--_typography---tertiary-font-family);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      font-weight: 400;
     }
-    .os-titlebar {
-      background: rgba(24, 18, 24, 0.95);
-      border-bottom: 1px solid rgba(244, 63, 94, 0.2);
-      padding: 10px 16px;
+
+    /* Tavus Window Box */
+    .tavus-window {
+      background-color: var(--primatives--static-white);
+      border: 1px solid var(--themes--border);
+      box-shadow: 6px 6px 0 0 var(--themes--border);
+      position: relative;
+    }
+
+    .tavus-win-title {
+      background-color: var(--primatives--pc-plastic-2);
+      border-bottom: 1px solid var(--themes--border);
+      padding: 8px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .raster-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-    .os-lines {
+
+    .tavus-os-lines {
       display: flex;
       flex-direction: column;
       gap: 2.5px;
-      width: 36px;
+      width: 32px;
     }
-    .os-lines span {
+    .tavus-os-lines span {
       height: 1px;
-      background: rgba(244, 63, 94, 0.3);
+      background: var(--themes--border);
       width: 100%;
     }
-  </style>
-</head>
-<body class="min-h-screen tavus-grid flex items-center justify-center p-4">
 
-  <div class="max-w-2xl w-full os-window">
+    .win-dot-square {
+      width: 8px;
+      height: 8px;
+      border: 1px solid var(--themes--border);
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .tavus-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border: 1px solid var(--themes--border);
+      background-color: var(--primatives--pc-plastic-2);
+      box-shadow: 2px 2px 0 0 var(--themes--border);
+      font-family: var(--_typography---tertiary-font-family);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--themes--text);
+    }
+  </style>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="p-4 sm:p-6">
+
+  <div class="max-w-2xl w-full tavus-window">
     
     <!-- Titlebar -->
-    <div class="os-titlebar">
+    <div class="tavus-win-title bg-[#ffb4c5]">
       <div class="flex items-center gap-2.5">
-        <div class="w-2.5 h-2.5 bg-rose-500 rounded-sm"></div>
-        <span class="raster-tag text-rose-300">THREAT INTERCEPTOR // REAL-TIME DROP</span>
+        <span class="win-dot-square" style="background-color: var(--primatives--bubbletech-4);"></span>
+        <span class="text-type-raster text-[#140206] font-bold">THREAT INTERCEPTOR // REAL-TIME DROP</span>
       </div>
-      <div class="os-lines">
+      <div class="tavus-os-lines">
         <span></span>
         <span></span>
         <span></span>
       </div>
-      <span class="text-[10px] font-mono text-rose-400 font-bold">STATUS 403</span>
+      <span class="text-type-raster text-[#140206] font-bold">STATUS 403</span>
     </div>
 
     <div class="p-6 sm:p-8">
       <div class="flex items-start gap-5">
-        <div class="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 text-2xl flex-shrink-0">
+        <div class="w-12 h-12 bg-[#ff6183] border border-[#140206] shadow-[2px_2px_0_0_#140206] flex items-center justify-center text-white text-2xl flex-shrink-0">
           <i class="fa-solid fa-shield-virus"></i>
         </div>
         <div class="flex-1">
-          <div class="flex items-center justify-between mb-1">
-            <span class="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30 uppercase tracking-wider">
-              HTTP 403 Forbidden
+          <div class="flex items-center justify-between mb-1.5 flex-wrap gap-2">
+            <span class="tavus-label bg-[#ff6183] text-white">
+              <span class="win-dot-square bg-white"></span>
+              <span>HTTP 403 Forbidden</span>
             </span>
-            <span class="text-xs text-slate-400 font-mono">Incident ID: <strong class="text-orange-400">{{ incident_id }}</strong></span>
+            <span class="text-type-raster text-[#484748]">Incident ID: <strong class="text-[#ff6810] font-bold">{{ incident_id }}</strong></span>
           </div>
-          <h1 class="text-2xl font-bold text-white tracking-tight mt-1">Access Denied by SecureScript WAF</h1>
-          <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+          <h1 style="font-family: 'Suisse Intl', sans-serif; font-size: 1.65rem; font-weight: 500; letter-spacing: -0.02em; color: var(--primatives--terminal-black); margin-top: 6px; margin-bottom: 4px;">
+            Access Denied by SecureScript WAF
+          </h1>
+          <p style="font-size: 0.875rem; color: var(--primatives--hardware-gray-8); line-height: 1.5;">
             The requested HTTP stream was intercepted and dropped because it contained active Cross-Site Scripting (XSS) patterns or dangerous payload injections.
           </p>
         </div>
       </div>
 
       <!-- Diagnostic Grid -->
-      <div class="mt-6 bg-[#090b10] border border-white/[0.08] rounded-xl p-5 text-xs font-mono space-y-2.5">
-        <div class="flex justify-between border-b border-white/[0.06] pb-2">
-          <span class="text-slate-500">Target Protected Website:</span>
-          <span class="text-sky-400 font-semibold">{{ target_website }}</span>
+      <div class="mt-6 bg-[#eae5de] border border-[#140206] shadow-[2px_2px_0_0_#140206] p-5 text-xs font-mono space-y-2.5">
+        <div class="flex justify-between border-b border-[#140206]/15 pb-2">
+          <span class="text-type-raster text-[#484748]">Target Protected Website:</span>
+          <span class="text-[#140206] font-semibold">{{ target_website }}</span>
         </div>
-        <div class="flex justify-between border-b border-white/[0.06] pb-2">
-          <span class="text-slate-500">Detection Pipeline Stage:</span>
-          <span class="text-amber-400 font-semibold">{{ detection_stage }}</span>
+        <div class="flex justify-between border-b border-[#140206]/15 pb-2">
+          <span class="text-type-raster text-[#484748]">Detection Pipeline Stage:</span>
+          <span class="text-[#ff6810] font-semibold">{{ detection_stage }}</span>
         </div>
-        <div class="flex justify-between border-b border-white/[0.06] pb-2">
-          <span class="text-slate-500">Threat Confidence Score:</span>
-          <span class="text-rose-400 font-semibold">{{ confidence_score }}</span>
+        <div class="flex justify-between border-b border-[#140206]/15 pb-2">
+          <span class="text-type-raster text-[#484748]">Threat Confidence Score:</span>
+          <span class="text-[#ff6183] font-bold">{{ confidence_score }}</span>
         </div>
-        <div class="flex justify-between border-b border-white/[0.06] pb-2">
-          <span class="text-slate-500">Violation Location:</span>
-          <span class="text-slate-300 font-semibold">{{ incident_location }}</span>
+        <div class="flex justify-between border-b border-[#140206]/15 pb-2">
+          <span class="text-type-raster text-[#484748]">Violation Location:</span>
+          <span class="text-[#28292a] font-semibold">{{ incident_location }}</span>
         </div>
         <div class="pt-1">
-          <span class="text-slate-500 block mb-1">Normalized Trigger Preview:</span>
-          <div class="bg-[#0f1118] border border-rose-500/20 p-2.5 rounded text-rose-300 break-all select-all font-semibold text-[11px]">
+          <span class="text-type-raster text-[#484748] block mb-1">Normalized Trigger Preview:</span>
+          <div class="bg-[#ffffff] border border-[#140206] p-2.5 rounded-none text-[#ff6183] break-all select-all font-semibold text-[11px] font-mono">
             {{ normalized_payload }}
           </div>
         </div>
       </div>
 
       <!-- Footer Info -->
-      <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-white/[0.08] text-xs font-mono text-slate-400">
+      <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-[#140206] text-xs font-mono text-[#484748]">
         <div class="flex items-center gap-2">
-          <i class="fa-solid fa-lock text-emerald-400"></i>
-          <span>Protected by <strong class="text-slate-200">SecureScript Hybrid WAF</strong></span>
+          <i class="fa-solid fa-lock text-[#0cb531]"></i>
+          <span>Protected by <strong class="text-[#140206]">SecureScript Hybrid WAF</strong></span>
         </div>
-        <a href="/dashboard" target="_blank" class="text-orange-400 hover:text-orange-300 font-medium transition flex items-center gap-1.5">
+        <a href="/dashboard" target="_blank" class="text-type-raster text-[#ff6810] font-semibold hover:underline flex items-center gap-1.5 no-underline">
           <span>Security Operations Console</span>
           <i class="fa-solid fa-arrow-right text-[10px]"></i>
         </a>

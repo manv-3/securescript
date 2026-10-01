@@ -1,115 +1,293 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SecureScript — Tenant Authentication</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+  
+  <!-- Exact Tavus.io Fonts from Production Webflow CDN -->
   <style>
+    @font-face {
+      font-family: 'Suisse Intl';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a38_SuisseIntl-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Suisse Intl';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a27_SuisseIntl-Medium.woff2') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Suisse Intl';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a26_SuisseIntl-Light.woff2') format('woff2');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Perfectlynineties';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a22_PerfectlyNineties-Italic.woff') format('woff');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Perfectlynineties';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a23_PerfectlyNineties-Regular.woff') format('woff');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Fk Raster Grotesk Compact Blended';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a21_FK%20Raster%20Grotesk%20Compact%20Blended.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* Exact Tavus.io CSS Variables & Color Primitives */
+    :root {
+      --primatives--pc-plastic-1: #f7f4ef;
+      --primatives--pc-plastic-2: #eae5de;
+      --primatives--pc-plastic-3: #e4ddd2;
+      --primatives--pc-plastic-4: #d9d0c2;
+      --primatives--terminal-black: #140206;
+      --primatives--hardware-gray-9: #28292a;
+      --primatives--hardware-gray-8: #484748;
+      --primatives--static-white: #ffffff;
+      
+      --primatives--atomic-glow-4: #ff6810;  /* Tavus Orange */
+      --primatives--atomic-glow-1: #ffb835;  /* Tavus Amber */
+      --primatives--atomic-glow-5: #ffe8bc;
+      --primatives--bubbletech-4: #ff6183;   /* Tavus Coral Pink */
+      --primatives--neon-field-4: #0cb531;   /* Tavus Green */
+      --primatives--neon-field-2: #38f261;
+      --primatives--floppy-fog-1: #e4e0f2;   /* Tavus Lavender */
+      --primatives--frost-5: #b8deff;        /* Tavus Cyan */
+
+      --themes--background: var(--primatives--pc-plastic-1);
+      --themes--background-2: var(--primatives--pc-plastic-2);
+      --themes--text: var(--primatives--hardware-gray-9);
+      --themes--border: var(--primatives--terminal-black);
+
+      --_typography---primary-font-family: 'Suisse Intl', Arial, sans-serif;
+      --_typography---secondary-font-family: 'Perfectlynineties', Georgia, serif;
+      --_typography---tertiary-font-family: 'Fk Raster Grotesk Compact Blended', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      background-color: #08090d;
-      color: #f1f5f9;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      border: 10px solid var(--primatives--pc-plastic-2);
+      background-color: var(--themes--background);
+      color: var(--themes--text);
+      font-family: var(--_typography---primary-font-family);
+      font-size: 1rem;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
-    .tavus-grid {
-      background-image: 
-        radial-gradient(circle at 50% 10%, rgba(255, 92, 53, 0.15), transparent 60%),
-        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 100% 100%, 36px 36px, 36px 36px;
+
+    .font-serif-italic {
+      font-family: var(--_typography---secondary-font-family);
+      font-style: italic;
+      font-weight: 400;
     }
-    .os-window {
-      background: rgba(15, 17, 24, 0.88);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.04);
-      border-radius: 16px;
-      overflow: hidden;
+
+    .text-type-raster {
+      font-family: var(--_typography---tertiary-font-family);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      font-weight: 400;
     }
-    .os-titlebar {
-      background: rgba(20, 23, 33, 0.95);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 10px 16px;
+
+    /* Tavus retro neo-brutalist buttons */
+    .tavus-btn-primary {
+      background-color: var(--primatives--atomic-glow-4);
+      color: #ffffff;
+      border: 1px solid var(--themes--border);
+      box-shadow: 3px 3px 0 0 var(--themes--border);
+      font-family: var(--_typography---primary-font-family);
+      font-weight: 500;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tavus-btn-primary:hover {
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0 0 var(--themes--border);
+    }
+    .tavus-btn-primary:active {
+      transform: translate(3px, 3px);
+      box-shadow: 0 0 0 0 var(--themes--border);
+    }
+
+    .tavus-btn-secondary {
+      background-color: var(--primatives--pc-plastic-2);
+      color: var(--themes--text);
+      border: 1px solid var(--themes--border);
+      box-shadow: 3px 3px 0 0 var(--themes--border);
+      font-family: var(--_typography---primary-font-family);
+      font-weight: 500;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tavus-btn-secondary:hover {
+      background-color: var(--primatives--static-white);
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0 0 var(--themes--border);
+    }
+    .tavus-btn-secondary:active {
+      transform: translate(3px, 3px);
+      box-shadow: 0 0 0 0 var(--themes--border);
+    }
+
+    /* Tavus Window Box */
+    .tavus-window {
+      background-color: var(--primatives--static-white);
+      border: 1px solid var(--themes--border);
+      box-shadow: 4px 4px 0 0 var(--themes--border);
+      position: relative;
+    }
+
+    .tavus-win-title {
+      background-color: var(--primatives--pc-plastic-2);
+      border-bottom: 1px solid var(--themes--border);
+      padding: 8px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .raster-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-    .os-lines {
+
+    .tavus-os-lines {
       display: flex;
       flex-direction: column;
       gap: 2.5px;
-      width: 36px;
+      width: 32px;
     }
-    .os-lines span {
+    .tavus-os-lines span {
       height: 1px;
-      background: rgba(255, 255, 255, 0.15);
+      background: var(--themes--border);
       width: 100%;
     }
-  </style>
-</head>
-<body class="min-h-screen tavus-grid flex flex-col justify-between p-4 sm:p-6">
 
-  <!-- Header Back Link -->
-  <header class="max-w-md w-full mx-auto pt-4 flex items-center justify-between">
-    <a href="/platform" class="inline-flex items-center gap-2 text-xs font-mono text-slate-400 hover:text-white transition">
+    .win-dot-square {
+      width: 8px;
+      height: 8px;
+      border: 1px solid var(--themes--border);
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .tavus-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border: 1px solid var(--themes--border);
+      background-color: var(--primatives--pc-plastic-2);
+      box-shadow: 2px 2px 0 0 var(--themes--border);
+      font-family: var(--_typography---tertiary-font-family);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--themes--text);
+    }
+
+    .tavus-input {
+      background-color: var(--primatives--static-white);
+      border: 1px solid var(--themes--border);
+      box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.06);
+      color: var(--themes--text);
+      font-family: var(--_typography---primary-font-family);
+      font-size: 0.875rem;
+      padding: 10px 14px;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.15s ease;
+    }
+    .tavus-input:focus {
+      border-color: var(--primatives--atomic-glow-4);
+      box-shadow: 0 0 0 1px var(--primatives--atomic-glow-4);
+    }
+  </style>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="p-4 sm:p-6">
+
+  <!-- Header Return Bar -->
+  <header class="max-w-md w-full mx-auto pt-2 flex items-center justify-between">
+    <a href="/platform" class="tavus-label no-underline hover:bg-[#ffffff] transition">
       <i class="fa-solid fa-arrow-left text-[10px]"></i>
       <span>RETURN TO PLATFORM</span>
     </a>
-    <span class="raster-tag text-slate-500">AUTH GATEWAY // JWT HS256</span>
+    <span class="text-type-raster text-[#484748]">AUTH GATEWAY // JWT HS256</span>
   </header>
 
   <!-- Auth Card Window -->
   <main class="w-full max-w-md mx-auto my-auto pt-6 pb-8">
     
-    <!-- Logo -->
+    <!-- Brand / Title -->
     <div class="text-center mb-6">
-      <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 text-white text-xl shadow-lg shadow-orange-500/25 mb-3">
+      <div class="inline-flex items-center justify-center w-12 h-12 bg-[#ff6810] border border-[#140206] shadow-[3px_3px_0_0_#140206] text-white text-xl mb-3">
         <i class="fa-solid fa-shield-halved"></i>
       </div>
-      <h1 class="text-2xl font-bold tracking-tight text-white">SecureScript</h1>
-      <p class="text-xs text-slate-400 font-mono mt-1">Multi-Tenant Intelligent WAF Platform</p>
+      <h1 style="font-family: 'Suisse Intl', sans-serif; font-size: 1.75rem; font-weight: 500; letter-spacing: -0.02em; color: var(--primatives--terminal-black);">
+        SecureScript <em class="font-serif-italic" style="color: var(--primatives--atomic-glow-4);">Auth</em>
+      </h1>
+      <p class="text-type-raster text-[#484748] mt-1">Multi-Tenant Intelligent WAF Platform</p>
     </div>
 
     <!-- OS Window Container -->
-    <div class="os-window">
+    <div class="tavus-window">
       <!-- Window Title Bar -->
-      <div class="os-titlebar">
+      <div class="tavus-win-title">
         <div class="flex items-center gap-2.5">
-          <div class="w-2 h-2 bg-orange-500 rounded-sm"></div>
-          <span class="raster-tag text-slate-300">IDENTITY VERIFICATION</span>
+          <span class="win-dot-square" style="background-color: var(--primatives--atomic-glow-4);"></span>
+          <span class="text-type-raster text-[#140206]">IDENTITY VERIFICATION</span>
         </div>
-        <div class="os-lines">
+        <div class="tavus-os-lines">
           <span></span>
           <span></span>
           <span></span>
         </div>
         <div class="flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="text-[10px] font-mono text-emerald-400">READY</span>
+          <span class="w-2 h-2 rounded-none bg-[#0cb531]"></span>
+          <span class="text-type-raster text-[#0cb531]">READY</span>
         </div>
       </div>
 
       <!-- Tab Switcher -->
       <div class="p-6 pb-0">
-        <div class="flex bg-[#0a0c12] border border-white/10 rounded-xl p-1">
+        <div class="flex gap-2 p-1 bg-[#eae5de] border border-[#140206]">
           <button id="tab-signup" onclick="switchTab('signup')"
-            class="flex-1 py-2 text-xs font-mono font-semibold rounded-lg bg-orange-500 text-white transition shadow-sm">
+            class="flex-1 py-2 text-xs text-type-raster bg-[#ff6810] text-white border border-[#140206] shadow-[2px_2px_0_0_#140206] font-medium transition cursor-pointer">
             SIGN UP
           </button>
           <button id="tab-login" onclick="switchTab('login')"
-            class="flex-1 py-2 text-xs font-mono font-semibold rounded-lg text-slate-400 hover:text-white transition">
+            class="flex-1 py-2 text-xs text-type-raster bg-[#eae5de] text-[#484748] hover:text-[#140206] border border-transparent transition cursor-pointer">
             LOGIN
           </button>
         </div>
@@ -118,28 +296,31 @@
       <!-- Sign Up Form -->
       <div id="form-signup" class="p-6">
         <div class="mb-5">
-          <h2 class="text-lg font-bold text-white tracking-tight">Create your tenant account</h2>
-          <p class="text-xs text-slate-400 mt-0.5">Start protecting your websites with sub-millisecond WAF.</p>
+          <h2 style="font-family: 'Suisse Intl'; font-weight: 500; font-size: 1.15rem; color: var(--primatives--terminal-black); letter-spacing: -0.01em;">
+            Create your tenant account
+          </h2>
+          <p style="font-size: 0.85rem; color: var(--primatives--hardware-gray-8); margin-top: 2px;">
+            Start protecting your websites with sub-millisecond WAF.
+          </p>
         </div>
 
-        <div id="signup-error" class="hidden mb-4 p-3 bg-rose-500/10 border border-rose-500/30 rounded-lg text-rose-400 text-xs font-mono"></div>
-        <div id="signup-success" class="hidden mb-4 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-emerald-400 text-xs font-mono"></div>
+        <div id="signup-error" class="hidden mb-4 p-3 bg-[#ffe8bc] border border-[#140206] text-[#140206] text-xs font-mono"></div>
+        <div id="signup-success" class="hidden mb-4 p-3 bg-[#e4e0f2] border border-[#140206] text-[#140206] text-xs font-mono"></div>
 
         <form id="signup-form" onsubmit="handleSignup(event)" class="space-y-4">
           <div>
-            <label class="block text-xs font-mono text-slate-300 mb-1.5 uppercase tracking-wider">Email Address</label>
+            <label class="block text-type-raster text-[#28292a] mb-1.5">Email Address</label>
             <input type="email" id="signup-email" required placeholder="name@company.com"
-              class="w-full px-3.5 py-2.5 bg-[#0a0c12] border border-white/10 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition font-mono">
+              class="tavus-input font-mono">
           </div>
           <div>
-            <label class="block text-xs font-mono text-slate-300 mb-1.5 uppercase tracking-wider">Master Password</label>
+            <label class="block text-type-raster text-[#28292a] mb-1.5">Master Password</label>
             <input type="password" id="signup-password" required placeholder="Minimum 8 characters" minlength="8"
-              class="w-full px-3.5 py-2.5 bg-[#0a0c12] border border-white/10 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition font-mono">
+              class="tavus-input font-mono">
           </div>
           <button type="submit" id="signup-btn"
-            class="w-full py-3 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-semibold rounded-lg text-sm transition shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 mt-2">
-            <span>Create Account</span>
-            <i class="fa-solid fa-arrow-right text-xs"></i>
+            class="tavus-btn-primary w-full py-3 text-xs text-type-raster mt-2">
+            <span>Create Account &rarr;</span>
           </button>
         </form>
       </div>
@@ -147,41 +328,44 @@
       <!-- Login Form -->
       <div id="form-login" class="hidden p-6">
         <div class="mb-5">
-          <h2 class="text-lg font-bold text-white tracking-tight">Welcome back</h2>
-          <p class="text-xs text-slate-400 mt-0.5">Authenticate to manage your protected applications.</p>
+          <h2 style="font-family: 'Suisse Intl'; font-weight: 500; font-size: 1.15rem; color: var(--primatives--terminal-black); letter-spacing: -0.01em;">
+            Welcome back
+          </h2>
+          <p style="font-size: 0.85rem; color: var(--primatives--hardware-gray-8); margin-top: 2px;">
+            Authenticate to manage your protected applications.
+          </p>
         </div>
 
-        <div id="login-error" class="hidden mb-4 p-3 bg-rose-500/10 border border-rose-500/30 rounded-lg text-rose-400 text-xs font-mono"></div>
+        <div id="login-error" class="hidden mb-4 p-3 bg-[#ffb4c5] border border-[#140206] text-[#140206] text-xs font-mono"></div>
 
         <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
           <div>
-            <label class="block text-xs font-mono text-slate-300 mb-1.5 uppercase tracking-wider">Email Address</label>
+            <label class="block text-type-raster text-[#28292a] mb-1.5">Email Address</label>
             <input type="email" id="login-email" required placeholder="name@company.com"
-              class="w-full px-3.5 py-2.5 bg-[#0a0c12] border border-white/10 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition font-mono">
+              class="tavus-input font-mono">
           </div>
           <div>
-            <label class="block text-xs font-mono text-slate-300 mb-1.5 uppercase tracking-wider">Master Password</label>
+            <label class="block text-type-raster text-[#28292a] mb-1.5">Master Password</label>
             <input type="password" id="login-password" required placeholder="Enter your password"
-              class="w-full px-3.5 py-2.5 bg-[#0a0c12] border border-white/10 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition font-mono">
+              class="tavus-input font-mono">
           </div>
           <button type="submit" id="login-btn"
-            class="w-full py-3 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-semibold rounded-lg text-sm transition shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 mt-2">
-            <span>Sign In</span>
-            <i class="fa-solid fa-arrow-right text-xs"></i>
+            class="tavus-btn-primary w-full py-3 text-xs text-type-raster mt-2">
+            <span>Sign In &rarr;</span>
           </button>
         </form>
       </div>
 
       <!-- Card Footer -->
-      <div class="px-6 py-3.5 bg-[#090b10] border-t border-white/[0.08] text-[11px] font-mono text-slate-500 flex items-center justify-between">
+      <div class="px-6 py-3 bg-[#eae5de] border-t border-[#140206] text-[11px] text-type-raster text-[#484748] flex items-center justify-between">
         <span>ENCRYPTED: BCRYPT 72B</span>
-        <span class="text-orange-400">SESSION: 24 HOURS</span>
+        <span style="color: var(--primatives--atomic-glow-4);">SESSION: 24 HOURS</span>
       </div>
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="max-w-md w-full mx-auto text-center text-[11px] font-mono text-slate-600 pb-4">
+  <!-- Page Footer -->
+  <footer class="max-w-md w-full mx-auto text-center text-type-raster text-[#484748] pb-4">
     SecureScript Framework &bull; Multi-Tenant WAF &bull; HCL Internship 2026
   </footer>
 
@@ -202,12 +386,15 @@
       const tabSignup = document.getElementById('tab-signup');
       const tabLogin = document.getElementById('tab-login');
       
+      const activeCls = 'flex-1 py-2 text-xs text-type-raster bg-[#ff6810] text-white border border-[#140206] shadow-[2px_2px_0_0_#140206] font-medium transition cursor-pointer';
+      const inactiveCls = 'flex-1 py-2 text-xs text-type-raster bg-[#eae5de] text-[#484748] hover:text-[#140206] border border-transparent transition cursor-pointer';
+
       if (isSignup) {
-        tabSignup.className = 'flex-1 py-2 text-xs font-mono font-semibold rounded-lg bg-orange-500 text-white transition shadow-sm';
-        tabLogin.className = 'flex-1 py-2 text-xs font-mono font-semibold rounded-lg text-slate-400 hover:text-white transition';
+        tabSignup.className = activeCls;
+        tabLogin.className = inactiveCls;
       } else {
-        tabLogin.className = 'flex-1 py-2 text-xs font-mono font-semibold rounded-lg bg-orange-500 text-white transition shadow-sm';
-        tabSignup.className = 'flex-1 py-2 text-xs font-mono font-semibold rounded-lg text-slate-400 hover:text-white transition';
+        tabLogin.className = activeCls;
+        tabSignup.className = inactiveCls;
       }
     }
 
@@ -238,13 +425,13 @@
         } else {
           errEl.textContent = data.detail || 'Registration failed. Please try again.';
           errEl.classList.remove('hidden');
-          btn.innerHTML = '<span>Create Account</span><i class="fa-solid fa-arrow-right text-xs"></i>';
+          btn.innerHTML = '<span>Create Account &rarr;</span>';
           btn.disabled = false;
         }
       } catch {
         errEl.textContent = 'Network error. Please try again.';
         errEl.classList.remove('hidden');
-        btn.innerHTML = '<span>Create Account</span><i class="fa-solid fa-arrow-right text-xs"></i>';
+        btn.innerHTML = '<span>Create Account &rarr;</span>';
         btn.disabled = false;
       }
     }
@@ -264,7 +451,7 @@
       if (!success) {
         errEl.textContent = 'Invalid credentials or inactive account.';
         errEl.classList.remove('hidden');
-        btn.innerHTML = '<span>Sign In</span><i class="fa-solid fa-arrow-right text-xs"></i>';
+        btn.innerHTML = '<span>Sign In &rarr;</span>';
         btn.disabled = false;
       }
     }

