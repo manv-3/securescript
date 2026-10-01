@@ -1,3 +1,13 @@
+# ==============================================================================
+# SecureScript WAF Platform — Render.com Deployment Configuration
+# ==============================================================================
+
+databases:
+  - name: securescript-db
+    databaseName: securescript
+    plan: free
+    user: securescript
+
 services:
   - type: web
     name: securescript-waf
@@ -5,13 +15,30 @@ services:
     plan: free
     dockerfilePath: ./Dockerfile
     envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: securescript-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "1440"
       - key: PORT
-        value: 10000
+        value: "10000"
       - key: WAF_MODE
         value: block
       - key: DL_THRESHOLD
-        value: 0.85
+        value: "0.85"
       - key: UPSTREAM_URL
         value: https://basic-form-project.vercel.app
       - key: BACKEND_API_URL
         value: https://basic-form-project.onrender.com
+      # SMTP — fill in after deploying for email alerts
+      - key: SMTP_HOST
+        value: smtp.sendgrid.net
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_FROM
+        value: noreply@securescript.app
+      # Set these as secret env vars in Render dashboard:
+      # SMTP_USER, SMTP_PASSWORD

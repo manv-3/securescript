@@ -20,8 +20,9 @@ build/
 dist/
 *.egg-info/
 
-# Local IDEs
-.vscode/
-.idea/
-*.swp
-*.swo
+# Local SQLite DB & logs
+*.db
+*.sqlite
+*.sqlite3
+*.log
+.env

@@ -1,29 +1,46 @@
-version: "3.8"
+version: "3.9"
 
 services:
-  securescript-waf:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: securescript-waf
+  # PostgreSQL database
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: securescript
+      POSTGRES_USER: securescript
+      POSTGRES_PASSWORD: securescript_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U securescript"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # SecureScript WAF Platform
+  app:
+    build: .
+    restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
-      - ENVIRONMENT=production
-      - LOG_LEVEL=info
-      - DL_THRESHOLD=0.85
-      - FAST_PATH_MAX_DEPTH=4
-    volumes:
-      - ./data:/app/data:ro
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
-      interval: 20s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: "2.0"
-          memory: 1G
+      DATABASE_URL: postgresql+asyncpg://securescript:securescript_dev@db:5432/securescript
+      SECRET_KEY: dev-secret-key-change-in-production
+      ACCESS_TOKEN_EXPIRE_MINUTES: "1440"
+      WAF_MODE: block
+      DL_THRESHOLD: "0.85"
+      UPSTREAM_URL: https://basic-form-project.vercel.app
+      BACKEND_API_URL: https://basic-form-project.onrender.com
+      # SMTP_HOST: smtp.sendgrid.net
+      # SMTP_PORT: "587"
+      # SMTP_USER: apikey
+      # SMTP_PASSWORD: your-sendgrid-key
+      # SMTP_FROM: noreply@securescript.app
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

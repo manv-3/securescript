@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureScript — Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+  <!-- Nav -->
+  <nav class="border-b border-slate-800 px-6 py-4 flex items-center justify-between max-w-7xl mx-auto">
+    <div class="flex items-center gap-3">
+      <a href="/app/projects" class="text-slate-400 hover:text-white transition text-sm">← Projects</a>
+      <span class="text-slate-700">|</span>
+      <div class="flex items-center gap-2">
+        <span>🛡️</span>
+        <span class="font-bold text-white">SecureScript</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <span id="project-name-nav" class="text-sm text-slate-400"></span>
+      <button onclick="logout()" class="text-sm text-slate-400 hover:text-white transition">Logout</button>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto px-6 py-8">
+
+    <!-- Project Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+      <div>
+        <h1 id="project-title" class="text-2xl font-bold text-white">Loading…</h1>
+        <div class="flex items-center gap-3 mt-2">
+          <code id="proxy-path-display" class="text-sky-400 text-sm"></code>
+          <button onclick="copyProxy()" class="text-xs text-slate-500 hover:text-slate-300 transition">📋 Copy</button>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="downloadReport()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-sm rounded-lg transition border border-slate-700">
+          ⬇ Download Report
+        </button>
+        <span id="live-badge" class="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-400 text-xs font-medium">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>Live
+        </span>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+        <div class="text-xs text-slate-500 uppercase tracking-wide mb-1">Total Inspected</div>
+        <div id="stat-total" class="text-3xl font-bold text-white">—</div>
+      </div>
+      <div class="bg-slate-900 border border-red-900/30 rounded-xl p-5">
+        <div class="text-xs text-slate-500 uppercase tracking-wide mb-1">Blocked</div>
+        <div id="stat-blocked" class="text-3xl font-bold text-red-400">—</div>
+      </div>
+      <div class="bg-slate-900 border border-emerald-900/30 rounded-xl p-5">
+        <div class="text-xs text-slate-500 uppercase tracking-wide mb-1">Passed</div>
+        <div id="stat-passed" class="text-3xl font-bold text-emerald-400">—</div>
+      </div>
+      <div class="bg-slate-900 border border-orange-900/30 rounded-xl p-5">
+        <div class="text-xs text-slate-500 uppercase tracking-wide mb-1">Block Rate</div>
+        <div id="stat-blockrate" class="text-3xl font-bold text-orange-400">—</div>
+      </div>
+      <div class="bg-slate-900 border border-sky-900/30 rounded-xl p-5">
+        <div class="text-xs text-slate-500 uppercase tracking-wide mb-1">Avg Confidence</div>
+        <div id="stat-confidence" class="text-3xl font-bold text-sky-400">—</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+      <!-- Top Attacked Paths -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
+        <h3 class="font-semibold text-white mb-4">🔴 Top Attacked Paths</h3>
+        <div id="top-paths">
+          <div class="text-slate-500 text-sm">No data yet.</div>
+        </div>
+      </div>
+
+      <!-- Alert Config -->
+      <div class="md:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-5">
+        <h3 class="font-semibold text-white mb-4">🔔 Alert Configuration</h3>
+        <div id="alert-success" class="hidden mb-3 p-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-400 text-sm">Saved!</div>
+        <form onsubmit="saveAlerts(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm text-slate-300 mb-2">Webhook URL</label>
+            <input type="url" id="alert-webhook" placeholder="https://hooks.slack.com/…"
+              class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 transition">
+            <p class="mt-1 text-xs text-slate-500">Slack, Discord, webhook.site, or any HTTPS endpoint</p>
+          </div>
+          <div>
+            <label class="block text-sm text-slate-300 mb-2">Alert Email</label>
+            <input type="email" id="alert-email" placeholder="you@example.com"
+              class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 transition">
+            <p class="mt-1 text-xs text-slate-500">Receive HTML email on each blocked attack</p>
+          </div>
+          <div class="md:col-span-2">
+            <button type="submit" class="px-6 py-2 bg-sky-500 hover:bg-sky-400 text-white text-sm font-medium rounded-lg transition">
+              Save Alert Config
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Incident Log -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+        <h3 class="font-semibold text-white">📋 Incident Log</h3>
+        <div class="flex gap-2 text-xs">
+          <select id="filter-action" onchange="loadIncidents()"
+            class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-slate-300 text-xs focus:outline-none">
+            <option value="">All Actions</option>
+            <option value="BLOCKED">Blocked</option>
+            <option value="PASSED">Passed</option>
+            <option value="AUDITED">Audited</option>
+          </select>
+          <select id="filter-severity" onchange="loadIncidents()"
+            class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-slate-300 text-xs focus:outline-none">
+            <option value="">All Severities</option>
+            <option value="CRITICAL">Critical</option>
+            <option value="HIGH">High</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="LOW">Low</option>
+          </select>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-slate-500 text-xs border-b border-slate-800">
+              <th class="px-4 py-3 text-left">Event ID</th>
+              <th class="px-4 py-3 text-left">Time</th>
+              <th class="px-4 py-3 text-left">Action</th>
+              <th class="px-4 py-3 text-left">Severity</th>
+              <th class="px-4 py-3 text-left">Path</th>
+              <th class="px-4 py-3 text-left">Client IP</th>
+              <th class="px-4 py-3 text-left">Detection Stage</th>
+              <th class="px-4 py-3 text-left">Confidence</th>
+            </tr>
+          </thead>
+          <tbody id="incidents-tbody">
+            <tr><td colspan="8" class="px-4 py-8 text-center text-slate-500">Loading incidents…</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Pagination -->
+      <div class="flex items-center justify-between px-6 py-4 border-t border-slate-800">
+        <span id="page-info" class="text-xs text-slate-500"></span>
+        <div class="flex gap-2">
+          <button onclick="prevPage()" id="btn-prev" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg transition disabled:opacity-40">← Prev</button>
+          <button onclick="nextPage()" id="btn-next" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg transition disabled:opacity-40">Next →</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const token = localStorage.getItem('ss_token');
+    if (!token) window.location.href = '/login';
+
+    // Extract project ID from URL: /app/projects/{id}
+    const projectId = window.location.pathname.split('/').pop();
+    let currentPage = 1;
+    const PAGE_SIZE = 20;
+    let totalIncidents = 0;
+    let proxyPath = '';
+    let projectData = null;
+
+    function authHeaders() {
+      return { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+    }
+
+    function logout() {
+      localStorage.removeItem('ss_token');
+      window.location.href = '/login';
+    }
+
+    function copyProxy() {
+      navigator.clipboard.writeText(window.location.origin + proxyPath).then(() => alert('Proxy path copied!'));
+    }
+
+    function severityColor(s) {
+      return { CRITICAL: 'text-red-400', HIGH: 'text-orange-400', MEDIUM: 'text-yellow-400', LOW: 'text-green-400' }[s] || 'text-slate-400';
+    }
+
+    function actionBadge(a) {
+      const m = { BLOCKED: 'bg-red-500/10 text-red-400 border-red-500/20', PASSED: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', AUDITED: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' };
+      const cls = m[a] || 'bg-slate-700 text-slate-400';
+      return `<span class="px-2 py-0.5 text-xs border rounded-full ${cls}">${a}</span>`;
+    }
+
+    function escHtml(str) {
+      return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    async function loadStats() {
+      try {
+        const res = await fetch(`/platform/projects/${projectId}/stats`, { headers: authHeaders() });
+        if (res.status === 401) { logout(); return; }
+        if (!res.ok) return;
+        const stats = await res.json();
+
+        document.getElementById('stat-total').textContent = stats.total_inspected;
+        document.getElementById('stat-blocked').textContent = stats.blocked;
+        document.getElementById('stat-passed').textContent = stats.passed;
+        document.getElementById('stat-blockrate').textContent = stats.block_rate_pct + '%';
+        document.getElementById('stat-confidence').textContent = (stats.avg_confidence * 100).toFixed(0) + '%';
+
+        const topEl = document.getElementById('top-paths');
+        if (stats.top_attacked_paths.length) {
+          topEl.innerHTML = stats.top_attacked_paths.map(p =>
+            `<div class="flex items-center justify-between py-1.5 text-sm">
+               <code class="text-slate-300 truncate flex-1">${escHtml(p.path)}</code>
+               <span class="ml-3 px-2 py-0.5 bg-red-500/10 text-red-400 text-xs rounded-full">${p.count}</span>
+             </div>`
+          ).join('');
+        } else {
+          topEl.innerHTML = '<div class="text-slate-500 text-sm">No attacks recorded yet.</div>';
+        }
+      } catch {}
+    }
+
+    async function loadProject() {
+      try {
+        const res = await fetch(`/platform/projects/${projectId}`, { headers: authHeaders() });
+        if (!res.ok) { window.location.href = '/app/projects'; return; }
+        projectData = await res.json();
+        proxyPath = projectData.proxy_path;
+        document.getElementById('project-title').textContent = projectData.name;
+        document.getElementById('project-name-nav').textContent = projectData.name;
+        document.getElementById('proxy-path-display').textContent = window.location.origin + proxyPath;
+        document.title = `SecureScript — ${projectData.name}`;
+        if (projectData.webhook_url) document.getElementById('alert-webhook').value = projectData.webhook_url;
+        if (projectData.alert_email) document.getElementById('alert-email').value = projectData.alert_email;
+      } catch {}
+    }
+
+    async function loadIncidents() {
+      const action = document.getElementById('filter-action').value;
+      const severity = document.getElementById('filter-severity').value;
+      let url = `/platform/projects/${projectId}/incidents?page=${currentPage}&page_size=${PAGE_SIZE}`;
+      if (action) url += `&action=${action}`;
+      if (severity) url += `&severity=${severity}`;
+
+      try {
+        const res = await fetch(url, { headers: authHeaders() });
+        if (!res.ok) return;
+        const data = await res.json();
+        totalIncidents = data.total;
+
+        const tbody = document.getElementById('incidents-tbody');
+        if (!data.incidents.length) {
+          tbody.innerHTML = '<tr><td colspan="8" class="px-4 py-8 text-center text-slate-500">No incidents found.</td></tr>';
+        } else {
+          tbody.innerHTML = data.incidents.map(i => `
+            <tr class="border-b border-slate-800/50 hover:bg-slate-800/30 transition">
+              <td class="px-4 py-3 font-mono text-xs text-slate-400">${escHtml(i.event_id)}</td>
+              <td class="px-4 py-3 text-xs text-slate-400 whitespace-nowrap">${new Date(i.timestamp).toLocaleString()}</td>
+              <td class="px-4 py-3">${actionBadge(i.action)}</td>
+              <td class="px-4 py-3 text-xs font-medium ${severityColor(i.severity)}">${i.severity}</td>
+              <td class="px-4 py-3 font-mono text-xs text-slate-300 max-w-xs truncate">${escHtml(i.url_path)}</td>
+              <td class="px-4 py-3 font-mono text-xs text-slate-400">${escHtml(i.client_ip)}</td>
+              <td class="px-4 py-3 text-xs text-slate-400">${escHtml(i.detection_stage)}</td>
+              <td class="px-4 py-3 text-xs font-semibold ${i.confidence_score >= 0.9 ? 'text-red-400' : 'text-orange-400'}">${(i.confidence_score*100).toFixed(0)}%</td>
+            </tr>
+          `).join('');
+        }
+
+        const totalPages = Math.ceil(totalIncidents / PAGE_SIZE);
+        document.getElementById('page-info').textContent = `${totalIncidents} total · Page ${currentPage} of ${Math.max(1, totalPages)}`;
+        document.getElementById('btn-prev').disabled = currentPage <= 1;
+        document.getElementById('btn-next').disabled = currentPage >= totalPages;
+      } catch {}
+    }
+
+    async function saveAlerts(e) {
+      e.preventDefault();
+      const webhook = document.getElementById('alert-webhook').value;
+      const email = document.getElementById('alert-email').value;
+      try {
+        const res = await fetch(`/platform/projects/${projectId}/alerts`, {
+          method: 'PUT',
+          headers: authHeaders(),
+          body: JSON.stringify({ webhook_url: webhook || null, alert_email: email || null })
+        });
+        if (res.ok) {
+          const ok = document.getElementById('alert-success');
+          ok.classList.remove('hidden');
+          setTimeout(() => ok.classList.add('hidden'), 3000);
+        }
+      } catch {}
+    }
+
+    async function downloadReport() {
+      try {
+        const res = await fetch(`/platform/projects/${projectId}/report`, { headers: authHeaders() });
+        const data = await res.json();
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `securescript-report-${projectId}.json`;
+        a.click();
+      } catch {}
+    }
+
+    function prevPage() { if (currentPage > 1) { currentPage--; loadIncidents(); } }
+    function nextPage() { const total = Math.ceil(totalIncidents / PAGE_SIZE); if (currentPage < total) { currentPage++; loadIncidents(); } }
+
+    // Initial load
+    loadProject().then(() => {
+      loadStats();
+      loadIncidents();
+    });
+
+    // Auto-refresh stats every 10 seconds
+    setInterval(() => { loadStats(); loadIncidents(); }, 10000);
+  </script>
+</body>
+</html>

@@ -1,12 +1,10 @@
 # ==============================================================================
-# SecureScript Hybrid WAF & Security Dashboard - Production Dockerfile
+# SecureScript Multi-Tenant WAF Platform — Production Dockerfile
 # Optimized for Render Free Tier (512MB RAM) & Cloud Deployments
 # ==============================================================================
 
-FROM python:3.11-slim AS base
+FROM python:3.11-slim
 
-# Prevent Python from writing .pyc files, enable unbuffered logging,
-# and optimize OpenMP/MKL thread counts to prevent RAM spikes on 512MB dynos
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     OMP_NUM_THREADS=1 \
@@ -14,27 +12,29 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONPATH=/app \
     PORT=8000
 
-WORKDIR /app
-
-# Install system runtime dependencies
+# Install runtime and build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libpq-dev \
     curl \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PyTorch CPU first to leverage Docker layer caching
+WORKDIR /app
+
+# Install PyTorch CPU first to leverage Docker layer caching and avoid 2.5GB CUDA bloat
 RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
 
 # Copy requirements and install Python dependencies
-COPY requirements.txt pyproject.toml ./
+COPY pyproject.toml requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application codebase, templates, config, and trained model artifacts
 COPY securescript/ securescript/
 COPY data/ data/
-COPY waf_config.yaml ./
+COPY waf_config.yaml run.py ./
 
-# Install local package in editable mode now that files exist
+# Install local package in editable mode
 RUN pip install --no-cache-dir -e . --no-deps
 
 # Create a non-root security user
@@ -44,7 +44,7 @@ USER appuser
 
 # Health check to ensure WAF gateway is responsive
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -f http://localhost:${PORT}/dashboard || exit 1
+    CMD curl -f http://localhost:${PORT:-8000}/dashboard || exit 1
 
 EXPOSE 8000
 

@@ -7,8 +7,8 @@
 
 ## 1. Project Context & Objectives
 
-* **Project Name:** SecureScript: Intelligent Real-Time Cross-Site Scripting (XSS) Detection Framework
-* **Sponsorship / Context:** HCL Internship Program (September 2026)
+* **Project Name:** SecureScript: Multi-Tenant SaaS Web Application Firewall Platform
+* **Sponsorship / Context:** HCL Internship Program (September–October 2026)
 * **Core Problem:** Traditional WAFs rely on brittle regular expressions that produce high false positives ($> 5\%$) and fail against polyglot and recursively encoded payloads. Conversely, deep learning models applied uniformly across all web traffic introduce unacceptable latency overhead ($> 50\,\text{ms}$).
 * **Solution Architecture:** A **hybrid tiered pipeline**:
   1. Multi-pass **Recursive Normalization Engine** ($k=4$).
@@ -54,6 +54,17 @@
 - [x] Expand test suite to 55/55 tests passing (`tests/test_penetration.py`, `tests/test_siem.py`).
 - [x] Compile final project delivery reports and academic LaTeX thesis (`reports/DAY_4_REPORT.md`, `reports/day_4_execution_report.tex`).
 
+### Phase 5: Multi-Tenant SaaS Platform — **COMPLETED**
+- [x] Task 1: Database Models & PostgreSQL Setup — `securescript/platform/database.py`, `models.py`, async session setup
+- [x] Task 2: Auth API — Register & Login with JWT — `securescript/platform/auth.py`, `routers/auth_router.py`
+- [x] Task 3: Project Management API — `securescript/platform/routers/project_router.py` (CRUD, slug generation, URL verification)
+- [x] Task 4: Multi-Tenant Gateway — Refactor `securescript/proxy/gateway.py` for slug-based per-project proxy routing
+- [x] Task 5: Per-Project Incident Storage — `securescript/platform/incident_store.py` (PostgreSQL-backed, scoped by project_id)
+- [x] Task 6: Per-Project Dashboard API — `securescript/platform/routers/analytics_router.py` (stats, incidents, report endpoints)
+- [x] Task 7: Alert Engine — `securescript/platform/alerts.py` (webhook + email notifications)
+- [x] Task 8: Platform UI Templates — `securescript/templates/` (index, auth, projects, new_project, dashboard HTML)
+- [x] Task 9: Deployment Config — Update `requirements.txt`, `pyproject.toml`, `Dockerfile`, `render.yaml`, `docker-compose.yml`, `run.py`, `.env.example`
+
 ---
 
 ## 3. Strict Non-Negotiable Invariants
@@ -77,6 +88,16 @@ When implementing or modifying code, all agents **MUST** uphold these architectu
 5. **No Dangerous Evaluation:**
    - Never execute, evaluate, or render untrusted payloads using `eval()`, `exec()`, or dangerous sinks anywhere in backend code or testing harnesses.
 
+6. **Multi-Tenancy Isolation:**
+   - Incidents, stats, and project configs must always be scoped by `project_id`. Never query or return incidents without a `project_id` filter on multi-tenant routes.
+   - All `/platform/` API endpoints must verify `project.user_id == current_user.id` (JWT ownership) before returning data. Return HTTP 403 if ownership check fails.
+   - Never leak one tenant's data to another — no global incident queries on authenticated project endpoints.
+
+7. **Non-Blocking Alert Delivery:**
+   - Webhook (`send_webhook_alert`) and email (`send_email_alert`) alerts must always run as FastAPI `BackgroundTask` and never block the proxy response path.
+   - Both alert functions must internally catch all exceptions and log them — they must never propagate errors to the caller.
+   - Alert delivery failure must not cause a proxy request to fail or slow down.
+
 ---
 
 ## 4. Key Module Responsibilities
@@ -89,6 +110,14 @@ When implementing or modifying code, all agents **MUST** uphold these architectu
 | `securescript.models.bilstm` | PyTorch neural network classifying semantic sequences of token embeddings. | `XSSBiLSTM(vocab_size, embed_dim, hidden_dim)` |
 | `securescript.telemetry.csp` | Ingests W3C standard JSON violation reports to detect DOM-based attacks. | `router.post("/api/v1/csp-report")` |
 | `securescript.dashboard.app` | Renders live incident metrics, token attribution maps, and alert feeds. | Web UI console |
+| `securescript.platform.database` | Async SQLAlchemy engine + `AsyncSessionLocal` factory + `get_db()` FastAPI dependency. | `get_db() -> AsyncSession` |
+| `securescript.platform.models` | SQLAlchemy ORM models for `User`, `Project`, and `Incident` tables. | `User`, `Project`, `Incident` mapped classes |
+| `securescript.platform.auth` | JWT creation/verification, bcrypt password hashing, `get_current_user` dependency. | `get_current_user`, `create_access_token`, `hash_password`, `verify_password` |
+| `securescript.platform.incident_store` | PostgreSQL-backed incident persistence scoped by `project_id`. | `record_incident()`, `get_incidents()`, `get_incident_count()` |
+| `securescript.platform.alerts` | Async webhook POST and SMTP email alert delivery — never raises, always background. | `send_webhook_alert()`, `send_email_alert()` |
+| `securescript.platform.routers.auth_router` | `POST /auth/register` and `POST /auth/login` endpoints. | FastAPI `APIRouter` |
+| `securescript.platform.routers.project_router` | Full CRUD for projects + alert config (`PUT /platform/projects/{id}/alerts`). | FastAPI `APIRouter` with `get_current_user` dep |
+| `securescript.platform.routers.analytics_router` | Per-project stats, paginated incident list, and full report download. | `GET /platform/projects/{id}/stats`, `/incidents`, `/report` |
 
 ---
 
@@ -111,6 +140,23 @@ pytest tests/test_lexer.py -v -k "test_latency"
 
 # 5. Launch FastAPI proxy demonstration
 python -m uvicorn securescript.middleware.asgi:demo_app --reload --port 8000
+
+# 6. Run database migrations (Phase 5+)
+alembic upgrade head
+
+# 7. Launch full multi-tenant platform
+python run.py
+# Platform UI:   http://127.0.0.1:8000/
+# Sign Up:       http://127.0.0.1:8000/signup
+# API Docs:      http://127.0.0.1:8000/docs
+
+# 8. Run only platform tests
+pytest tests/test_db_models.py tests/test_auth.py tests/test_projects.py \
+       tests/test_multitenant_gateway.py tests/test_incident_store.py \
+       tests/test_analytics.py tests/test_alerts.py -v
+
+# 9. Launch local stack with PostgreSQL (Docker)
+docker-compose up --build
 ```
 
 ---
