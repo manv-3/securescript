@@ -369,6 +369,29 @@ async def waf_reverse_proxy(request: Request, path: str):
                 html_text = html_text.replace("</body>", f"{badge}</body>")
                 body_content = html_text.encode("utf-8")
 
+        # If client requested API, and upstream failed with 502/503/504 or suspended HTML
+        is_api = "api/" in path or "application/json" in request.headers.get("accept", "") or "application/json" in request.headers.get("content-type", "")
+        if is_api and upstream_resp.status_code in (502, 503, 504):
+            is_suspended = (
+                "suspend" in upstream_resp.text.lower() or 
+                "suspend" in upstream_resp.headers.get("x-render-routing", "").lower()
+            )
+            err_msg = (
+                "Upstream Backend is SUSPENDED on Render (x-render-routing: suspend-by-user). "
+                "Please open https://dashboard.render.com and click 'Resume' on 'basic-form-project'."
+                if is_suspended else
+                f"Upstream Backend Unavailable (HTTP {upstream_resp.status_code})."
+            )
+            return JSONResponse(
+                status_code=upstream_resp.status_code,
+                content={
+                    "error": err_msg,
+                    "status": upstream_resp.status_code,
+                    "upstream_url": target_url
+                },
+                headers={"X-Protected-By": "SecureScript-Hybrid-WAF"}
+            )
+
         return Response(
             content=body_content,
             status_code=upstream_resp.status_code,
@@ -376,6 +399,17 @@ async def waf_reverse_proxy(request: Request, path: str):
         )
 
     except Exception as e:
+        is_api = "api/" in path or "application/json" in request.headers.get("accept", "") or "application/json" in request.headers.get("content-type", "")
+        if is_api:
+            return JSONResponse(
+                status_code=502,
+                content={
+                    "error": f"SecureScript Gateway could not connect to upstream backend ({str(e)})",
+                    "status": 502,
+                    "upstream_url": target_url
+                },
+                headers={"X-Protected-By": "SecureScript-Hybrid-WAF"}
+            )
         return HTMLResponse(
             content=f"""
             <div style="font-family:sans-serif;max-width:600px;margin:50px auto;padding:20px;border:1px solid #e2e8f0;border-radius:8px;">
