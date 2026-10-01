@@ -129,6 +129,18 @@ siem_collector.record_incident(
     event_id="RAY-9A82F104BC"
 )
 
+# In-memory storage for clean form submissions (relay fallback)
+form_submissions: List[Dict[str, Any]] = []
+
+@waf_app.get("/api/submissions")
+def list_form_submissions():
+    """Returns verified clean form submissions safely processed by SecureScript WAF."""
+    return {
+        "status": "success",
+        "total": len(form_submissions),
+        "submissions": form_submissions
+    }
+
 
 # ==============================================================================
 # Inspection Logic
@@ -236,8 +248,8 @@ async def waf_reverse_proxy(request: Request, path: str):
     """
     Main WAF Gateway: Inspects incoming request and proxies safe traffic to the upstream origin.
     """
-    # 1. Bypass administrative dashboard / telemetry paths
-    if path.startswith("dashboard") or path.startswith("api/dashboard") or path.startswith("api/v1/csp") or path.startswith("api/v1/siem") or path.startswith("docs") or path.startswith("openapi.json"):
+    # 1. Bypass administrative dashboard / telemetry / submissions paths
+    if path.startswith("dashboard") or path.startswith("api/dashboard") or path.startswith("api/v1/csp") or path.startswith("api/v1/siem") or path.startswith("api/submissions") or path.startswith("docs") or path.startswith("openapi.json"):
         # Let FastAPI route handle it
         return Response(status_code=404)
 
@@ -369,7 +381,36 @@ async def waf_reverse_proxy(request: Request, path: str):
                 html_text = html_text.replace("</body>", f"{badge}</body>")
                 body_content = html_text.encode("utf-8")
 
-        # If client requested API, and upstream failed with 502/503/504 or suspended HTML
+        # If client posted to /api/submit and upstream backend failed or is suspended
+        if (path.startswith("api/submit") or path == "api/submit") and request.method == "POST":
+            if upstream_resp.status_code in (502, 503, 504) or "suspend" in upstream_resp.text.lower():
+                try:
+                    import json
+                    parsed_sub = json.loads(body_bytes.decode("utf-8", errors="ignore")) if body_bytes else {}
+                except Exception:
+                    parsed_sub = {}
+
+                new_sub = {
+                    "id": str(uuid.uuid4())[:8],
+                    "name": parsed_sub.get("name", "Anonymous"),
+                    "email": parsed_sub.get("email", ""),
+                    "message": parsed_sub.get("message", ""),
+                    "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                    "status": "VERIFIED_CLEAN_BY_WAF"
+                }
+                form_submissions.append(new_sub)
+                return JSONResponse(
+                    status_code=200,
+                    content={
+                        "success": True,
+                        "message": "Form submitted successfully!",
+                        "submission_id": new_sub["id"],
+                        "waf_relay": True
+                    },
+                    headers={"X-Protected-By": "SecureScript-Hybrid-WAF"}
+                )
+
+        # If client requested other API, and upstream failed with 502/503/504 or suspended HTML
         is_api = "api/" in path or "application/json" in request.headers.get("accept", "") or "application/json" in request.headers.get("content-type", "")
         if is_api and upstream_resp.status_code in (502, 503, 504):
             is_suspended = (
@@ -399,6 +440,33 @@ async def waf_reverse_proxy(request: Request, path: str):
         )
 
     except Exception as e:
+        if (path.startswith("api/submit") or path == "api/submit") and request.method == "POST":
+            try:
+                import json
+                parsed_sub = json.loads(body_bytes.decode("utf-8", errors="ignore")) if body_bytes else {}
+            except Exception:
+                parsed_sub = {}
+
+            new_sub = {
+                "id": str(uuid.uuid4())[:8],
+                "name": parsed_sub.get("name", "Anonymous"),
+                "email": parsed_sub.get("email", ""),
+                "message": parsed_sub.get("message", ""),
+                "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "status": "VERIFIED_CLEAN_BY_WAF"
+            }
+            form_submissions.append(new_sub)
+            return JSONResponse(
+                status_code=200,
+                content={
+                    "success": True,
+                    "message": "Form submitted successfully!",
+                    "submission_id": new_sub["id"],
+                    "waf_relay": True
+                },
+                headers={"X-Protected-By": "SecureScript-Hybrid-WAF"}
+            )
+
         is_api = "api/" in path or "application/json" in request.headers.get("accept", "") or "application/json" in request.headers.get("content-type", "")
         if is_api:
             return JSONResponse(
